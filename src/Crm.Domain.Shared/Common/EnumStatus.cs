@@ -1,8 +1,7 @@
-﻿
-namespace Crm.Projects
+﻿namespace Crm.Common
 {
-    public enum ProjectStatus
-    {                          
+    public enum EnumStatus
+    {
         Pending, //Bekliyor,
         Active, //Aktif,
         Completed, //Tamamlandı,

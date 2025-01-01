@@ -34,14 +34,24 @@ public class CrmMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Projects,
+                l["Menu:Projects"],
+                icon: "fas fa-tasks",
+                url: "/projects",
+                order: 1
+            )
+        );
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
         }
-        else
-        {
-            administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
-        }
+        //else
+        //{
+        //    administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
+        //}
 
         administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
         administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);

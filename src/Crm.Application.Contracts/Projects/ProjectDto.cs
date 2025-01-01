@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,10 @@ namespace Crm.Projects
         public string? Description { get; set; } = null;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public ProjectStatus Status { get; set; } = ProjectStatus.Pending;
+        public EnumStatus Status { get; set; } = EnumStatus.Pending;
         public decimal Revenue { get; set; }
         public decimal SuccessRate { get; set; }
-        public Guid UserId { get; set; }
+        public Guid EmployeeId { get; set; }
         public Guid CustomerId { get; set; }
 
         public string ConcurrencyStamp { get; set; } = null!;

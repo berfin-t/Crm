@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Crm.Projects;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -24,6 +26,7 @@ public class CrmDbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+    public DbSet<Project> Projects { get; set; }
 
     #region Entities from the modules
 
@@ -75,12 +78,10 @@ public class CrmDbContext :
         builder.ConfigureTenantManagement();
 
         /* Configure your own tables/entities inside here */
-
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(CrmConsts.DbTablePrefix + "YourEntities", CrmConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        if (builder.IsHostDatabase())
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+        
     }
 }

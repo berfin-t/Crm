@@ -6,5 +6,6 @@ public class CrmMenus
     public const string Home = Prefix + ".Home";
 
     //Add your menu items here...
+    public const string Projects = Prefix + ".Projects";
 
 }

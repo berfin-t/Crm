@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Crm.Projects
         public DateTime EndTime { get; set; }
         [Required]
 
-        public ICollection<ProjectStatus> Statues { get; set; }
+        public ICollection<EnumStatus> Statues { get; set; }
         [Required]
 
         public decimal Revenue { get; set; }
@@ -29,7 +30,7 @@ namespace Crm.Projects
         public decimal SuccesRate { get; set; }
         [Required]
 
-        public Guid UserId { get; set; }
+        public Guid EmployeeId { get; set; }
         [Required]
 
         public Guid CustomerId { get; set; }

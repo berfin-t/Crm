@@ -26,11 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Activities\" />
-    <Folder Include="Customers\" />
-    <Folder Include="CustomerNotes\" />
-    <Folder Include="Orders\" />
-    <Folder Include="Tasks\" />
+    <Folder Include="Positions\" />
   </ItemGroup>
 
 </Project>

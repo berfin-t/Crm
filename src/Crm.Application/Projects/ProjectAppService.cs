@@ -1,10 +1,7 @@
-﻿using Crm.Permissions;
-using Microsoft.AspNetCore.Authorization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -24,13 +21,13 @@ namespace Crm.Projects
                 input.Name, input.Description, input.StartTime,
                 input.EndTime, input.Statues,
                 input.Revenue, input.SuccesRate,
-                input.UserId, input.CustomerId );
+                input.EmployeeId, input.CustomerId );
             
             var items = await projectRepository.GetListAsync(
                 input.Name, input.Description, input.StartTime,
                 input.EndTime, input.Statues,
                 input.Revenue, input.SuccesRate,
-                input.UserId, input.CustomerId,
+                input.EmployeeId, input.CustomerId,
                 input.Sorting, input.MaxResultCount, input.SkipCount);
 
             return new PagedResultDto<ProjectDto>
@@ -58,7 +55,7 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await projectManager.CreateAsync(
-                input.UserId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
+                input.EmployeeId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
                 input.Revenue, input.SuccesRate, input.Description);            
 
             return ObjectMapper.Map<Project, ProjectDto>(project);
@@ -71,7 +68,7 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input)
         {
             var project = await projectManager.UpdateAsync(
-                id, input.UserId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
+                id, input.EmployeeId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
                 input.Revenue, input.SuccesRate, input.Description);
 
             return ObjectMapper.Map<Project, ProjectDto>(project);

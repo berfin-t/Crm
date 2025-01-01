@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,13 +15,13 @@ namespace Crm.Projects
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public ICollection<ProjectStatus> Statues { get; set; }
+        public ICollection<EnumStatus> Statues { get; set; }
         [Required]
         public decimal Revenue { get; set; }
         [Required]
         public decimal SuccesRate { get; set; }
         [Required]
-        public Guid UserId { get; set; }
+        public Guid EmployeeId { get; set; }
         [Required]
         public Guid CustomerId { get; set; } 
     }
