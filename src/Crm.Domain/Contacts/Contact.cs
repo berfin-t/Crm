@@ -1,13 +1,8 @@
 ﻿using Crm.ContactTypes;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.Domain.Services;
 
 namespace Crm.Contacts
 {
@@ -19,8 +14,8 @@ namespace Crm.Contacts
         public virtual string ContactValue { get; private set; }
         [NotNull]
         public virtual bool IsPrimary { get; private set; }
-        public virtual Guid? CustomerId { get; private set; }
-        public virtual Guid? EmployeeId { get; private set; }
+        public virtual Guid CustomerId { get; private set; }
+        public virtual Guid EmployeeId { get; private set; }
 
         protected Contact()
         {
@@ -29,7 +24,7 @@ namespace Crm.Contacts
             IsPrimary = true;
         }
 
-        public Contact(Guid id, EnumType type, string contactValue, bool isPrimary, Guid? customerId, Guid? employeeId)
+        public Contact(Guid id, EnumType type, string contactValue, bool isPrimary, Guid customerId, Guid employeeId)
         {
             SetType(type);
             SetContactValue(contactValue);
@@ -41,7 +36,7 @@ namespace Crm.Contacts
         public void SetType(EnumType type) => Type = Check.NotNull(type, nameof(type));
         public void SetContactValue(string contactValue) => ContactValue = Check.NotNullOrWhiteSpace(contactValue, nameof(contactValue));
         public void SetIsPrimary(bool isPrimary) => IsPrimary = Check.NotNull(isPrimary, nameof(isPrimary));
-        public void SetCustomerId(Guid? customerId) => CustomerId = customerId;
-        public void SetEmployeeId(Guid? employeeId) => EmployeeId = employeeId;
+        public void SetCustomerId(Guid customerId) => CustomerId = Check.NotDefaultOrNull<Guid>(customerId, nameof(customerId));
+        public void SetEmployeeId(Guid employeeId) => EmployeeId = Check.NotDefaultOrNull<Guid>(employeeId, nameof(employeeId));
     }
 }

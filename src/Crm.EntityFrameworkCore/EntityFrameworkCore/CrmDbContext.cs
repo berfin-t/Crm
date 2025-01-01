@@ -1,4 +1,11 @@
-﻿using Crm.Projects;
+﻿using Crm.Contacts;
+using Crm.CustomerNotes;
+using Crm.Customers;
+using Crm.Employees;
+using Crm.Orders;
+using Crm.Positions;
+using Crm.Projects;
+using Crm.Activities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -14,6 +21,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Crm.Tasks;
 
 namespace Crm.EntityFrameworkCore;
 
@@ -27,6 +35,14 @@ public class CrmDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Project> Projects { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<Activity> Activities { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
+    public DbSet<CustomerNote> CustomerNotes { get; set; }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Position> Positions { get; set; }
+    public DbSet<Task> Tasks { get; set; }
 
     #region Entities from the modules
 
