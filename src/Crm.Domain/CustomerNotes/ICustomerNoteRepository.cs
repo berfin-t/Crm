@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 
@@ -9,8 +10,9 @@ namespace Crm.CustomerNotes
     {
         Task<List<CustomerNote>> GetListAsync(string? note = null, DateTime? noteDate = null,
             Guid? customerId = null, string? sorting = null, int maxResults = int.MaxValue,
-            int skipCount = 0);
+            int skipCount = 0, CancellationToken cancellationToken=default);
 
-        Task<long> GetCountAsync(string? note = null, DateTime? noteDate = null, Guid? customerId = null);
+        Task<long> GetCountAsync(string? note = null, DateTime? noteDate = null, 
+            Guid? customerId = null, CancellationToken cancellationToken=default);
     }
 }

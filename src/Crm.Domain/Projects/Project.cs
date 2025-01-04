@@ -53,8 +53,8 @@ namespace Crm.Projects
             SetCustomerId(customerId);
         }
 
-        public void SetName(string name) => Name = Check.NotNullOrWhiteSpace(name, nameof(name), ProjectConsts.MinNameLength, ProjectConsts.MaxNameLength);
-        public void SetDescription(string description) => Description = Check.Length(description, nameof(description), ProjectConsts.MinDescriptionLength, ProjectConsts.MaxDescriptionLength);
+        public void SetName(string name) => Name = Check.NotNullOrWhiteSpace(name, nameof(name));
+        public void SetDescription(string description) => Description = Check.NotNullOrWhiteSpace(description, nameof(description));
         public void SetStartTime(DateTime startTime) => StartTime = Check.NotNull(startTime, nameof(startTime));
         public void SetEndTime(DateTime endTime) => EndTime = Check.NotNull(endTime, nameof(endTime));
         public void SetStatus(EnumStatus status) => Status = Check.NotNull(status, nameof(status));
