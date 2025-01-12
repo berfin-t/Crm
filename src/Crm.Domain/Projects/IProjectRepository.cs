@@ -9,7 +9,7 @@ namespace Crm.Projects
 {
     public interface IProjectRepository : IRepository<Project, Guid>
     {
-        Task<List<Project>> GetListAsync(string? name = null, string? description = null,
+        Task<List<Project>> GetListAllAsync(string? name = null, string? description = null,
             DateTime? startTime = null, DateTime? endTime = null,
             ICollection<EnumStatus>? statues = null, decimal? revenue = null,
             decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null,

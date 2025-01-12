@@ -9,6 +9,7 @@ using Volo.Abp.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using Crm.Common;
+using Crm.Orders;
 
 
 namespace Crm.Projects
@@ -17,40 +18,36 @@ namespace Crm.Projects
         : EfCoreRepository<CrmDbContext, Project, Guid>(dbContextProvider), IProjectRepository
     {
         #region GetListAll
-        public virtual async Task<List<Project>> GetListAllAsync(string? filterText = null,
-            string? name = null, string? description = null,
-            DateTime? startTime = null, DateTime? endTime = null,
-            ICollection<EnumStatus>? statues = null, decimal? revenue = null,
-            decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null,
-            string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0,
-            CancellationToken cancellationToken = default)
+        public async Task<List<Project>> GetListAllAsync(string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null, string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
-            query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? ProjectConsts.GetDefaultSorting(true) : sorting);
+            var query = ApplyDataFilters(await GetQueryableAsync(), name, description, startTime, endTime, statues, revenue, succesRate, employeeId, customerId);
+            query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? OrderConsts.GetDefaultSorting(false) : sorting);
             return await query.PageBy(skipCount, maxResults).ToListAsync(cancellationToken);
         }
         #endregion
 
-        #region GetCount 
-        public virtual async Task<long> GetCountAsync(string? filterText = null,
-            string? name = null, string? description = null,
-            DateTime? startTime = null, DateTime? endTime = null,
-            ICollection<EnumStatus>? statues = null, decimal? revenue = null,
-            decimal? succesRate = null, Guid? employeeId = null,
-            Guid? customerId = null, CancellationToken cancellationToken = default)
+        #region GetCount             
+        public async Task<long> GetCountAsync(string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null, CancellationToken cancellationToken = default)
         {
             var query = await GetQueryableAsync();
-            return await query.LongCountAsync(cancellationToken);
+            query = ApplyDataFilters(query, name, description, startTime, endTime, statues, revenue, succesRate, employeeId, customerId);
+            return await query.LongCountAsync(GetCancellationToken(cancellationToken));
         }
+        #endregion
 
-        public Task<List<Project>> GetListAsync(string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null, string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default)
+        #region ApplyDataFilters
+        protected virtual IQueryable<Project> ApplyDataFilters(IQueryable<Project> query, string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<long> GetCountAsync(string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            query.WhereIf(!string.IsNullOrWhiteSpace(name), e => e.Name == name)
+                 .WhereIf(!string.IsNullOrWhiteSpace(description), e => e.Description == description)
+                 .WhereIf(startTime != null, e => e.StartTime == startTime)
+                 .WhereIf(endTime != null, e => e.EndTime == endTime)
+                 .WhereIf(statues != null && statues.Any(), e => statues.Contains(e.Status))
+                 .WhereIf(revenue != null, e => e.Revenue == revenue)
+                 .WhereIf(succesRate != null, e => e.SuccessRate == succesRate)
+                 .WhereIf(employeeId != null, e => e.EmployeeId == employeeId)
+                 .WhereIf(customerId != null, e => e.CustomerId == customerId);
+            return query;
         }
         #endregion
     }

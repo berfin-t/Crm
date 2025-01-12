@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,14 @@ namespace Crm.Orders
 {
     public interface IOrderRepository:IRepository<Order, Guid>
     {
-        Task<List<Order>> GetListAsync(string? firstName=null, string? lastName = null,
-            string? email = null, string? phoneNumber = null, string? address = null,
-            DateTime? birthDate = null, Guid? positionId = null,
+        Task<List<Order>> GetListAsync(ICollection<EnumStatus>? statuses = null, 
+            DateTime? orderDate = null, DateTime? deliveryDate = null, 
+            decimal? totalAmount = null, Guid? customerId = null, Guid? projectId = null,
             string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0,
             CancellationToken cancellationToken=default);
-        Task<long> GetCountAsync(string? firstName = null, string? lastName = null,
-            string? email = null, string? phoneNumber = null, string? address = null,
-            DateTime? birthDate = null, Guid? positionId = null, CancellationToken cancellationToken=default);
+        Task<long> GetCountAsync(ICollection<EnumStatus>? statuses=null,
+            DateTime? orderDate = null, DateTime? deliveryDate = null,
+            decimal? totalAmount = null, Guid? customerId = null, Guid? projectId = null,
+            CancellationToken cancellationToken=default);
     }
 }

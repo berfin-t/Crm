@@ -1,5 +1,4 @@
-﻿using Crm.ContactTypes;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
