@@ -24,11 +24,11 @@ namespace Crm.Activities
             query = ApplyDataFilters(query, type, description, date, customerId, employeeId);
             return await query.LongCountAsync(GetCancellationToken(cancellationToken));
 
-        }
+        }       
         #endregion
 
         #region GetListAsync
-        public async Task<List<Activity>> GetListAsync(ICollection<EnumType>? type = null, 
+        public async Task<List<Activity>> GetListAllAsync(ICollection<EnumType>? type = null, 
             string? description = null, DateTime? date = null, Guid? customerId = null, 
             Guid? employeeId = null, string? sorting = null, int maxResults = int.MaxValue, 
             int skipCount = 0, CancellationToken cancellationToken = default)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 
+
 namespace Crm.Projects
 {
     [RemoteService(IsEnabled = false)]
@@ -23,7 +24,7 @@ namespace Crm.Projects
                 input.Revenue, input.SuccesRate,
                 input.EmployeeId, input.CustomerId );
             
-            var items = await projectRepository.GetListAsync(
+            var items = await projectRepository.GetListAllAsync(
                 input.Name, input.Description, input.StartTime,
                 input.EndTime, input.Statues,
                 input.Revenue, input.SuccesRate,
