@@ -8,5 +8,14 @@ namespace Crm.Positions
 {
     public class GetPagedPositionsInput
     {
+        public GetPagedPositionsInput()
+        {
+            
+        }
+        public string? Name { get; set; } = null;
+        public string? Description { get; set; } = null;
+        public decimal? Salary { get; set; } = 0;
+        public int? MinExperience { get; set; } = 0;
+        public int? MaxExperience { get; set; } = 0;
     }
 }

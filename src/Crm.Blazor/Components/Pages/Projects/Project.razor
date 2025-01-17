@@ -1,4 +1,48 @@
-﻿<h3>Project</h3>
+﻿@page "/projects"
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense>
+        <MudText Typo="Typo.h6" Class="ml-2">Project</MudText>
+        <MudSpacer />
+
+        <!-- Search Bar -->
+@*         <MudTextField Placeholder="Search..." Variant="Variant.Outlined" Class="mr-2" Adornment="Adornment.Start" />
+ *@
+        <!-- Toggle Theme Icon -->
+        <MudIconButton Class="mr-1" />
+
+        <!-- Notifications -->
+        <MudBadge Dot="false" Content="9">
+            <MudIconButton/>
+        </MudBadge>
+
+        <!-- User Profile Dropdown -->
+        <MudMenu AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.TopCenter">
+            <ActivatorContent>
+@*                 <MudAvatar Image="/path/to/avatar.jpg" Size="Size.Medium" Class="mr-2" />
+ *@                <MudText>Nowak</MudText>
+            </ActivatorContent>
+           @*  <MudMenuItem>Profile</MudMenuItem>
+            <MudMenuItem>Logout</MudMenuItem> *@
+        </MudMenu>
+
+        <!-- Settings Icon -->
+        <MudIconButton/>
+    </MudAppBar>
+
+    <MudContainer Class="mt-4">
+        <MudButton Variant="Variant.Filled">+ Create Project</MudButton>
+
+        @* <MudSelect Label="Phase" Class="ml-4">
+            <MudSelectItem Value="All Projects">All Projects (6)</MudSelectItem>
+        </MudSelect>
+
+        <MudSelect Label="Sort" Class="ml-2">
+            <MudSelectItem Value="Date">Date</MudSelectItem>
+        </MudSelect> *@
+    </MudContainer>
+</MudLayout>
+
 
 @code {
 

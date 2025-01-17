@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
 
 namespace Crm.Customers
 {
@@ -12,29 +13,59 @@ namespace Crm.Customers
     public class CustomerAppService(ICustomerRepository customerRepository,
         CustomerManager customerManager) : CrmAppService, ICustomerAppService
     {
-        public Task<CustomerDto> CreateAsync(CustomerCreateDto input)
+        #region Create
+        //[Authorize(CrmPermissions.Customers.Create)]
+        public async Task<CustomerDto> CreateAsync(CustomerCreateDto input)
         {
-            throw new NotImplementedException();
-        }
+            var customer = await customerManager.CreateAsync(
+                input.Name, input.Surname, input.Email, input.Phone, input.Address,
+                input.CompanyName);
 
-        public Task<CustomerDto> GetAsync(Guid id)
-        {
-            throw new NotImplementedException();
+            return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
+        #endregion
 
-        public Task<List<CustomerDto>> GetListAllAsync()
+        #region Get
+        public async Task<CustomerDto> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return ObjectMapper.Map<Customer, CustomerDto>(await customerRepository.GetAsync(id));
         }
+        #endregion
 
-        public Task<Volo.Abp.Application.Dtos.PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
+        #region GetListAll
+        public async Task<List<CustomerDto>> GetListAllAsync()
         {
-            throw new NotImplementedException();
+            var items= await customerRepository.GetListAsync();
+            return ObjectMapper.Map<List<Customer>, List<CustomerDto>>(items);
         }
+        #endregion
 
-        public Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
+        #region GetListPaged
+        public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
         {
-            throw new NotImplementedException();
+            var totalCount = await customerRepository.GetCountAsync(
+                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+
+            var items = await customerRepository.GetListAsync(
+                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+
+            return new PagedResultDto<CustomerDto>
+            {
+                TotalCount = totalCount,
+                Items = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(items)
+            };
         }
+        #endregion
+
+        #region Update
+        public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
+        {
+           var customer = await customerManager.UpdateAsync(
+               id, input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+            
+            return ObjectMapper.Map<Customer, CustomerDto>(customer);
+
+        }
+        #endregion
     }
 }

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider>
+    <MudLayout>
+       
+        @Body
+
+        <MudPopoverProvider />
+    </MudLayout>
+</MudThemeProvider>
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,11 @@ namespace Crm.Orders
 {
     public class OrderDto
     {
+        public EnumStatus Status { get; set; }
+        public DateTime OrderDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Guid CustomerId { get; set; }
+        public Guid ProjectId { get; set; }
     }
 }

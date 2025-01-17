@@ -8,5 +8,10 @@ namespace Crm.Positions
 {
     public class PositionDto
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Salary { get; set; }
+        public int MinExperience { get; set; }
+        public int MaxExperience { get; set; }
     }
 }

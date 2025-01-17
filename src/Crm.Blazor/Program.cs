@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MudBlazor.Services;
 using Serilog;
 using Serilog.Events;
 
@@ -32,6 +33,9 @@ public class Program
             builder.Host.AddAppSettingsSecretsJson()
                 .UseAutofac()
                 .UseSerilog();
+
+            builder.Services.AddMudServices();
+
             await builder.AddApplicationAsync<CrmBlazorModule>();
             var app = builder.Build();
             await app.InitializeApplicationAsync();

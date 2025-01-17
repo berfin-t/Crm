@@ -1,40 +1,72 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
 
 namespace Crm.Positions
 {
     [RemoteService(IsEnabled = false)]
     //[Authorize(CrmPermissions.Positions.Default)]
-    internal class PositionAppService(IPositionRepository positionRepository,
+    public class PositionAppService(IPositionRepository positionRepository,
         PositionManager positionManager) : CrmAppService, IPositionAppService
     {
-        public Task<PositionDto> CreateAsync(PositionCreateDto input)
+        #region Create
+        //[Authorize(CrmPermissions.Positions.Create)]
+        public async Task<PositionDto> CreateAsync(PositionCreateDto input)
         {
-            throw new NotImplementedException();
-        }
+            var position = await positionManager.CreateAsync(
+                input.Name, input.Description, input.Salary, input.MinExperience, input.MaxExperience);
 
-        public Task<PositionDto> GetAsync(Guid id)
-        {
-            throw new NotImplementedException();
+            return ObjectMapper.Map<Position, PositionDto>(position);
         }
+        #endregion
 
-        public Task<List<PositionDto>> GetListAllAsync()
+        #region Get
+        public async Task<PositionDto> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+           return ObjectMapper.Map<Position, PositionDto>(await positionRepository.GetAsync(id));
         }
+        #endregion
 
-        public Task<Volo.Abp.Application.Dtos.PagedResultDto<PositionDto>> GetListAsync(GetPagedPositionsInput input)
+        #region GetListAll
+        public async Task<List<PositionDto>> GetListAllAsync()
         {
-            throw new NotImplementedException();
+           var items = await positionRepository.GetListAsync();
+            return ObjectMapper.Map<List<Position>, List<PositionDto>>(items);
         }
+        #endregion
 
-        public Task<PositionDto> UpdateAsync(Guid id, PositionUpdateDto input)
+        #region GetListPaged
+        public async Task<PagedResultDto<PositionDto>> GetListAsync(GetPagedPositionsInput input)
         {
-            throw new NotImplementedException();
+            var totalCount = await positionRepository.GetCountAsync(
+                input.Name, input.Description, input.Salary, input.MaxExperience, input.MaxExperience);
+
+            var items = await positionRepository.GetListAsync(
+                input.Name, input.Description, input.Salary, input.MaxExperience, input.MaxExperience);
+
+            return new PagedResultDto<PositionDto>
+            {
+                TotalCount = totalCount,
+                Items = ObjectMapper.Map<List<Position>, List<PositionDto>>(items)
+            };
+
         }
+        #endregion
+
+        #region Update
+        public async Task<PositionDto> UpdateAsync(Guid id, PositionUpdateDto input)
+        {
+            var position = await positionManager.UpdateAsync(
+                id, input.Name, input.Description, input.Salary, input.MinExperience, input.MaxExperience);
+
+            return ObjectMapper.Map<Position, PositionDto>(position);
+        }
+        #endregion
     }
 }
