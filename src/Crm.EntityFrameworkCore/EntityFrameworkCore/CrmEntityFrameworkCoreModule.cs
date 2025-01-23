@@ -13,6 +13,14 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Crm.Projects;
+using Crm.Activities;
+using Crm.Contacts;
+using Crm.CustomerNotes;
+using Crm.Customers;
+using Crm.Employees;
+using Crm.Orders;
+using Crm.Positions;
+using Crm.Tasks;
 
 namespace Crm.EntityFrameworkCore;
 
@@ -46,7 +54,15 @@ public class CrmEntityFrameworkCoreModule : AbpModule
                  * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
 
+            options.AddRepository<Activity, EfCoreActivityRepository>();
+            options.AddRepository<Contact, EfCoreContactRepository>();
+            options.AddRepository<CustomerNote, EfCoreCustomerNoteRepository>();
+            options.AddRepository<Customer, EfCoreCustomerRepository>();
+            options.AddRepository<Employee, EfCoreEmployeeRepository>();
+            options.AddRepository<Order, EfCoreOrderRepository>();
+            options.AddRepository<Position, EfCorePositionRepository>();
             options.AddRepository<Project, EfCoreProjectRepository>();
+            options.AddRepository<Task, EfCoreTaskRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>

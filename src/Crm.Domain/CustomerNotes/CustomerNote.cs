@@ -17,7 +17,7 @@ namespace Crm.CustomerNotes
             Note = string.Empty;
             NoteDate = DateTime.Now;
         }
-        public CustomerNote(Guid id, Guid customerId, string note, DateTime noteDate)
+        public CustomerNote(Guid id, string note, DateTime noteDate, Guid customerId)
         {
             SetNote(note);
             SetNoteDate(noteDate);

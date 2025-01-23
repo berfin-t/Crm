@@ -1,49 +1,117 @@
 ﻿@page "/projects"
 
-<MudLayout>
-    <MudAppBar Elevation="0" Dense>
-        <MudText Typo="Typo.h6" Class="ml-2">Project</MudText>
-        <MudSpacer />
+<Div Margin="Margin.IsAuto.OnX">
+    <Card>
+        <CardHeader Flex="Flex.JustifyContent.Between.AlignItems.Center">
+            <Div>
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    <TextEdit Placeholder="Search order" />
+                </Field>
+            </Div>
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    <DatePicker TValue="DateTime?" Placeholder="Pick date range" InputMode="DateInputMode.Date" SelectionMode="DateInputSelectionMode.Range" />
+                </Field>
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    <Select TValue="string">
+                        <SelectItem>All</SelectItem>
+                        <SelectItem>Cancelled</SelectItem>
+                        <SelectItem>Completed</SelectItem>
+                        <SelectItem>Denied</SelectItem>
+                        <SelectItem>Expired</SelectItem>
+                        <SelectItem>Failed</SelectItem>
+                        <SelectItem>Pending</SelectItem>
+                        <SelectItem>Processing</SelectItem>
+                        <SelectItem>Refunded</SelectItem>
+                        <SelectItem>Delivered</SelectItem>
+                        <SelectItem>Delivering</SelectItem>
+                    </Select>
+                </Field>
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    <Button Color="Color.Primary">Add order</Button>
+                </Field>
+            </Div>
+        </CardHeader>
+    </Card>
+</Div>
 
-        <!-- Search Bar -->
-@*         <MudTextField Placeholder="Search..." Variant="Variant.Outlined" Class="mr-2" Adornment="Adornment.Start" />
- *@
-        <!-- Toggle Theme Icon -->
-        <MudIconButton Class="mr-1" />
-
-        <!-- Notifications -->
-        <MudBadge Dot="false" Content="9">
-            <MudIconButton/>
-        </MudBadge>
-
-        <!-- User Profile Dropdown -->
-        <MudMenu AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.TopCenter">
-            <ActivatorContent>
-@*                 <MudAvatar Image="/path/to/avatar.jpg" Size="Size.Medium" Class="mr-2" />
- *@                <MudText>Nowak</MudText>
-            </ActivatorContent>
-           @*  <MudMenuItem>Profile</MudMenuItem>
-            <MudMenuItem>Logout</MudMenuItem> *@
-        </MudMenu>
-
-        <!-- Settings Icon -->
-        <MudIconButton/>
-    </MudAppBar>
-
-    <MudContainer Class="mt-4">
-        <MudButton Variant="Variant.Filled">+ Create Project</MudButton>
-
-        @* <MudSelect Label="Phase" Class="ml-4">
-            <MudSelectItem Value="All Projects">All Projects (6)</MudSelectItem>
-        </MudSelect>
-
-        <MudSelect Label="Sort" Class="ml-2">
-            <MudSelectItem Value="Date">Date</MudSelectItem>
-        </MudSelect> *@
-    </MudContainer>
-</MudLayout>
-
-
-@code {
-
-}
+<Row>
+    <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
+        <Card>
+            <CardImage Source="img/office/office-1.jpg" />
+            <CardBody>
+                <CardTitle Size="5">
+                    Affordable Design Ideas to Refresh Your Office
+                </CardTitle>
+                <Div Flex="Flex.JustifyContent.Between">
+                    <Text>
+                        <Icon Name="IconName.CalendarDay" />
+                        <Small>Apr 15th, 2023</Small>
+                    </Text>
+                    <Text>
+                        <Icon Name="IconName.Comment" />
+                        <Small>16 Comments</Small>
+                    </Text>
+                </Div>
+                <Paragraph Margin="Margin.Is3.FromTop">
+                    These interior UI/UX design tips will help you save money while creating a space that your team will love. Get to know people.
+                </Paragraph>
+                <Anchor To="#">
+                    Read More
+                </Anchor>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
+        <Card>
+            <CardImage Source="img/office/office-2.jpg" />
+            <CardBody>
+                <CardTitle Size="5">
+                    Affordable Design Ideas to Refresh Your Office
+                </CardTitle>
+                <Div Flex="Flex.JustifyContent.Between">
+                    <Text>
+                        <Icon Name="IconName.CalendarDay" />
+                        <Small>Apr 15th, 2023</Small>
+                    </Text>
+                    <Text>
+                        <Icon Name="IconName.Comment" />
+                        <Small>16 Comments</Small>
+                    </Text>
+                </Div>
+                <Paragraph Margin="Margin.Is3.FromTop">
+                    These interior UI/UX design tips will help you save money while creating a space that your team will love. Get to know people.
+                </Paragraph>
+                <Anchor To="#">
+                    Read More
+                </Anchor>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
+        <Card>
+            <CardImage Source="img/office/office-3.jpg" />
+            <CardBody>
+                <CardTitle Size="5">
+                    Affordable Design Ideas to Refresh Your Office
+                </CardTitle>
+                <Div Flex="Flex.JustifyContent.Between">
+                    <Text>
+                        <Icon Name="IconName.CalendarDay" />
+                        <Small>Apr 15th, 2023</Small>
+                    </Text>
+                    <Text>
+                        <Icon Name="IconName.Comment" />
+                        <Small>16 Comments</Small>
+                    </Text>
+                </Div>
+                <Paragraph Margin="Margin.Is3.FromTop">
+                    These interior UI/UX design tips will help you save money while creating a space that your team will love. Get to know people.
+                </Paragraph>
+                <Anchor To="#">
+                    Read More
+                </Anchor>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>

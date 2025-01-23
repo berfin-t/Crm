@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MudBlazor.Services;
 using Serilog;
 using Serilog.Events;
 
@@ -34,10 +36,18 @@ public class Program
                 .UseAutofac()
                 .UseSerilog();
 
-            builder.Services.AddMudServices();
-
             await builder.AddApplicationAsync<CrmBlazorModule>();
+
+            builder.Services
+                .AddBlazorise(options =>
+                {
+                    options.Immediate = true;
+                })
+                .AddBootstrap5Providers()
+                .AddFontAwesomeIcons();
+
             var app = builder.Build();
+
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;

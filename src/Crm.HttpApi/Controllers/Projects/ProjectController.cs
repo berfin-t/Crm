@@ -15,29 +15,29 @@ namespace Crm.Controllers.Projects
     [Route("api/app/projects")]
     public class ProjectController:CrmController, IProjectAppService
     {
-        protected IProjectAppService projectAppService;
+        protected IProjectAppService _projectAppService;
 
-        public ProjectController(IProjectAppService projectAppService) => projectAppService = projectAppService;
+        public ProjectController(IProjectAppService projectAppService) => _projectAppService = projectAppService;
         
         [HttpGet]
         [Route("{id}")]
-        public Task<ProjectDto> GetAsync(Guid id) => projectAppService.GetAsync(id);
+        public virtual Task<ProjectDto> GetAsync(Guid id) => _projectAppService.GetAsync(id);
         
         [HttpGet]
         [Route("all")]
-        public Task<List<ProjectDto>> GetListAllAsync() => projectAppService.GetListAllAsync();
+        public virtual Task<List<ProjectDto>> GetListAllAsync() => _projectAppService.GetListAllAsync();
        
         [HttpGet]
         [Route("paged")]
-        public Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input) => projectAppService.GetListAsync(input);
+        public virtual Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input) => _projectAppService.GetListAsync(input);
         
         [HttpPost]
         [Route("create")]
-        public Task<ProjectDto> CreateAsync(ProjectCreateDto input) => projectAppService.CreateAsync(input);
+        public virtual Task<ProjectDto> CreateAsync(ProjectCreateDto input) => _projectAppService.CreateAsync(input);
         
         [HttpPut]
         [Route("update/{id}")]
-        public Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input) => projectAppService.UpdateAsync(id, input);
+        public virtual Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input) => _projectAppService.UpdateAsync(id, input);
         
 
     }
