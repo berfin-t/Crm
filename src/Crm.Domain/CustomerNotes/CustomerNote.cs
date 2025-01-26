@@ -24,7 +24,7 @@ namespace Crm.CustomerNotes
             SetCustomerId(customerId);
         }
         public void SetNoteDate(DateTime noteDate) => NoteDate = Check.NotNull(noteDate, nameof(noteDate));
-        public void SetNote(string note) => Note = Check.NotNullOrWhiteSpace(note, nameof(note), CustomerNoteConsts.MinNoteLength, CustomerNoteConsts.MaxNoteLength);
+        public void SetNote(string note) => Note = Check.NotNullOrWhiteSpace(note, nameof(note), CustomerNoteConsts.MaxNoteLength);
         public void SetCustomerId(Guid customerId) => CustomerId = Check.NotDefaultOrNull<Guid>(customerId, nameof(customerId));
     }
 }

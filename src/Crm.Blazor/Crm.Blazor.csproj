@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Crm.Application.Contracts\Crm.Application.Contracts.csproj" />
     <ProjectReference Include="..\Crm.Application\Crm.Application.csproj" />
     <ProjectReference Include="..\Crm.HttpApi\Crm.HttpApi.csproj" />
     <ProjectReference Include="..\Crm.EntityFrameworkCore\Crm.EntityFrameworkCore.csproj" />

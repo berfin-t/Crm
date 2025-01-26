@@ -1,13 +1,15 @@
 ﻿using Crm.Activities;
+using Crm.Common;
 using Crm.Contacts;
 using Crm.CustomerNotes;
 using Crm.Customers;
 using Crm.Employees;
+using Crm.Orders;
 using Crm.Positions;
 using Crm.Projects;
+using Crm.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
@@ -16,6 +18,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Activity = Crm.Activities.Activity;
 using EnumType = Crm.Activities.EnumType;
+using Task = Crm.Tasks.Task;
 
 namespace Crm;
 
@@ -27,9 +30,11 @@ public class CrmDataSeederContributor(
     IActivityRepository activityRepository,
     IContactRepository contactRepository,
     ICustomerNoteRepository customerNoteRepository,
+    IOrderRepository orderRepository,
+    ITaskRepository taskRepository,
     IGuidGenerator guidGenerator) : IDataSeedContributor, ITransientDependency
 {
-    public async Task SeedAsync(DataSeedContext context)
+    public async System.Threading.Tasks.Task SeedAsync(DataSeedContext context)
     {        
         var customers = await SeedCustomersAsync();
         var positions = await SeedPositionsAsync();
@@ -37,7 +42,9 @@ public class CrmDataSeederContributor(
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
-        //var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id)); 
+        var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
+        var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
+        var tasks = await SeedTasksAsync(customers.Select(p => p.Id), employees.Select(e => e.Id));
     }
 
     // Customers
@@ -70,7 +77,8 @@ public class CrmDataSeederContributor(
             ];
         await positionRepository.InsertManyAsync(positions, true);
         return positions;
-    }
+    }   
+
 
     // Employees
     private async Task<IEnumerable<Employee>> SeedEmployeesAsync(IEnumerable<Guid> positions)
@@ -136,29 +144,55 @@ public class CrmDataSeederContributor(
 
         await customerNoteRepository.InsertManyAsync(customerNotes, true);
         return customerNotes;
-    } 
+    }
 
-    //    // Projects
-    //    private async Task<IEnumerable<Project>> SeedProjectsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
-    //    {
-    //        if (await projectRepository.AnyAsync())
-    //        {
-    //            return await projectRepository.GetListAsync();
-    //        }
+    // Projects
+    private async Task<IEnumerable<Project>> SeedProjectsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    {
+        if (await projectRepository.AnyAsync())
+        {
+            return await projectRepository.GetListAsync();
+        }
 
-    //        IEnumerable<Project> projects = [
-    //            new (guidGenerator.Create(), "Project 1", "Description 1", DateTime.Now, DateTime.Now, EnumStatus.Pending, 1000, 0, customers.ElementAt(0), employees.ElementAt(0)),
-    //            new (guidGenerator.Create(), "Project 2", "Description 2", DateTime.Now, DateTime.Now, EnumStatus.Pending, 2000, 0, customers.ElementAt(0), employees.ElementAt(0)),
-    //            new (guidGenerator.Create(), "Project 3", "Description 3", DateTime.Now, DateTime.Now, EnumStatus.Pending, 3000, 0, customers.ElementAt(0), employees.ElementAt(0))
-    //            ];
-    //        await projectRepository.InsertManyAsync(projects, true);
-    //        return projects;
-    //    }
+        IEnumerable<Project> projects = [
+            new (guidGenerator.Create(), "Project 1", "Description 1", DateTime.Now, DateTime.Now, EnumStatus.Pending, 1000, 0, employees.ElementAt(0), customers.ElementAt(0)),
+                new (guidGenerator.Create(), "Project 2", "Description 2", DateTime.Now, DateTime.Now, EnumStatus.Pending, 2000, 0, employees.ElementAt(0), customers.ElementAt(0)),
+                new (guidGenerator.Create(), "Project 3", "Description 3", DateTime.Now, DateTime.Now, EnumStatus.Pending, 3000, 0, employees.ElementAt(0), customers.ElementAt(0))
+            ];
+        await projectRepository.InsertManyAsync(projects, true);
+        return projects;
+    }
 
+    //Orders
+    private async Task<IEnumerable<Order>> SeedOrdersAsync(IEnumerable<Guid> customers, IEnumerable<Guid> projects)
+    {
+        if (await orderRepository.AnyAsync())
+        {
+            return await orderRepository.GetListAsync();
+        }
+        IEnumerable<Order> orders = [
+            new(guidGenerator.Create(), EnumStatus.Active,  DateTime.Now, DateTime.Now, 1, customers.ElementAt(0), projects.ElementAt(0)),
+            new(guidGenerator.Create(), EnumStatus.Canceled,  DateTime.Now, DateTime.Now, 2, customers.ElementAt(1), projects.ElementAt(1)),
+            new(guidGenerator.Create(), EnumStatus.Completed,  DateTime.Now, DateTime.Now, 3, customers.ElementAt(2), projects.ElementAt(2))
+            ];
+        await orderRepository.InsertManyAsync(orders, true);
+        return orders;
+    }
 
-
-
-
-
+    //Tasks
+    private async Task<IEnumerable<Task>> SeedTasksAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    {
+        if (await taskRepository.AnyAsync())
+        {
+            return await taskRepository.GetListAsync();
+        }
+        IEnumerable<Task> tasks = [
+            new(guidGenerator.Create(), "Task 1", "Description 1", DateTime.Now, EnumPriority.Medium, EnumStatus.Pending, customers.ElementAt(0), employees.ElementAt(0)),
+            new(guidGenerator.Create(), "Task 2", "Description 2", DateTime.Now, EnumPriority.Critical, EnumStatus.Canceled, customers.ElementAt(1), employees.ElementAt(1)),
+            new(guidGenerator.Create(), "Task 3", "Description 3", DateTime.Now, EnumPriority.High, EnumStatus.Completed, customers.ElementAt(2), employees.ElementAt(2))
+            ];
+        await taskRepository.InsertManyAsync(tasks, true);
+        return tasks;
+    }
 
 }

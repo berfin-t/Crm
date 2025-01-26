@@ -4,6 +4,14 @@ public static class CrmPermissions
 {
     public const string GroupName = "Crm";
 
-    //Add your own permission names. Example:
-    //public const string MyPermission1 = GroupName + ".MyPermission1";
+    public static class Projects
+    {
+        public const string Default = GroupName + ".Projects";
+        public const string Menu = Default + ".Menu";
+        public const string Edit = Default + ".Edit";
+        public const string Create = Default + ".Create";
+        public const string Delete = Default + ".Delete";
+    }
+
+    
 }

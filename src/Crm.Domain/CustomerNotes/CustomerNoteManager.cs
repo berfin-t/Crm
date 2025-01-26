@@ -10,13 +10,13 @@ namespace Crm.CustomerNotes
     public class CustomerNoteManager(ICustomerNoteRepository customerNoteRepository) : DomainService
     {
         #region Create
-        public virtual async Task<CustomerNote> CreateAsync(Guid customerId, string name, DateTime noteDate)
+        public virtual async Task<CustomerNote> CreateAsync(Guid customerId, string note, DateTime noteDate)
         {
             var customerNote = new CustomerNote(
                 GuidGenerator.Create(),
-                customerId,
-                name,
-                noteDate
+                note,
+                noteDate,
+                customerId
             );
             return await customerNoteRepository.InsertAsync(customerNote);
         }

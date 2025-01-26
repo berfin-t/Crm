@@ -518,12 +518,11 @@ namespace Crm.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("DeletionTime");
 
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("Description");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
@@ -545,21 +544,26 @@ namespace Crm.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<int>("MaxExperience")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("MaxExperience");
 
                     b.Property<int>("MinExperience")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("MinExperience");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("Name");
 
                     b.Property<decimal>("Salary")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric")
+                        .HasColumnName("Salary");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Positions");
+                    b.ToTable("AppPositions", (string)null);
                 });
 
             modelBuilder.Entity("Crm.Projects.Project", b =>

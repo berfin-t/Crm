@@ -43,8 +43,8 @@ namespace Crm.Tasks
             SetEmployeeId(employeeId);
         }
 
-        public void SetTitle(string title) => Title = Check.NotNullOrWhiteSpace(title, nameof(title), TaskConsts.MinTitleLength, TaskConsts.MaxTitleLength);
-        public void SetDescription(string description) => Description = Check.Length(description, nameof(description), TaskConsts.MinDescriptionLength, TaskConsts.MaxDescriptionLength);
+        public void SetTitle(string title) => Title = Check.NotNullOrWhiteSpace(title, nameof(title), TaskConsts.MaxTitleLength);
+        public void SetDescription(string description) => Description = Check.Length(description, nameof(description), TaskConsts.MaxDescriptionLength);
         public void SetDueDate(DateTime dueDate) => DueDate = Check.NotNull(dueDate, nameof(dueDate));
         public void SetPriority(EnumPriority priority) => Priority = Check.NotNull(priority, nameof(priority));
         public void SetStatus(EnumStatus status) => Status = Check.NotNull(status, nameof(status));

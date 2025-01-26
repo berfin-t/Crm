@@ -11,7 +11,7 @@ namespace Crm.Projects
 {
     public class ProjectDto:FullAuditedEntityDto<Guid>, IHasConcurrencyStamp
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; } = null;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
