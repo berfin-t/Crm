@@ -4,6 +4,8 @@
 @using Crm.Blazor.Components.Dialogs.Projects
 @using Crm.Projects
 
+@inject NavigationManager Navigation
+
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
         <CardHeader Flex="Flex.JustifyContent.Between.AlignItems.Center">
@@ -23,7 +25,7 @@
                     </Autocomplete>
                 </Field>
                 @*Daha sonra kaldıracam burayı*@
-                <p><Strong>Selected Project Name:</Strong> @selectedProjectName</p>
+               @*  <p><Strong>Selected Project Name:</Strong> @selectedProjectName</p> *@
 
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
@@ -45,11 +47,71 @@
     </Card>
 </Div> 
 
+<Row>
+    @foreach (var project in Projects)
+    {
+        <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
+            <Card>
+                <CardBody>
+                    <CardTitle Size="5">
+                        <Div Flex="Flex.JustifyContent.Between">
+                            <Span>@project.Name</Span>
+                            <Span class="status-label">@project.Status</Span>
+                        </Div>
+                    </CardTitle>
+                    <Paragraph Margin="Margin.Is3.FromTop">
+                        @project.Description
+                    </Paragraph>
+                    <Div Flex="Flex.AlignItems.Center">
+                        <Text>
+                            <Small>@project.StartTime.ToShortDateString()</Small>
+                        </Text>
+
+                        <Div class="progress-container">
+                            <Div class="progress-bar" style="@($"width: {GetCompletionPercentage(project.StartTime, project.EndTime)}%")">
+                                @GetCompletionPercentage(project.StartTime, project.EndTime)%
+                            </Div>
+                        </Div>
+
+                        <Text>
+                            <Small>@project.EndTime.ToShortDateString()</Small>
+                        </Text>
+                    </Div>
+
+                    <br />
+                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">
+                        Read More
+                    </Anchor>
+                </CardBody>
+            </Card>
+        </Column>
+    }
+</Row>
+
 
 @* ********** CREATE MODAL ********** *@
 <ProjectCreateModal @ref="projectCreateModal" />
 
 @code {
+    private void NavigateToProjectDetail(Guid projectId)
+    {
+        Navigation.NavigateTo($"/project-detail/{projectId}");
+    }
+
+    private int GetCompletionPercentage(DateTime? start, DateTime? end)
+    {
+        if (start == null || end == null || start >= end)
+        {
+            return 0;
+        }
+
+        var totalDuration = (end.Value - start.Value).TotalDays;
+        var elapsedDuration = (DateTime.Now - start.Value).TotalDays;
+
+        var percentage = (elapsedDuration / totalDuration) * 100;
+        return Math.Clamp((int)percentage, 0, 100);
+    }
+
     //Select Project
     [Inject]
     public IProjectAppService ProjectAppService { get; set; }
@@ -59,7 +121,6 @@
     protected override async Task OnInitializedAsync()
     {
         Projects = await ProjectAppService.GetListAllAsync();
-        //?? new List<ProjectDto>();
         await base.OnInitializedAsync();
     }
     
@@ -76,6 +137,25 @@
             await projectCreateModal.ShowModal();
         }
     }
-
-
 }
+
+<style>
+    .progress-container {
+        width: 100px;
+        height: 10px;
+        background-color: #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 0 10px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background-color: #4caf50;
+        text-align: center;
+        font-size: 10px;
+        color: white;
+        line-height: 10px;
+    }
+
+</style>

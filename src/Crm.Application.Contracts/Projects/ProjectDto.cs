@@ -12,10 +12,10 @@ namespace Crm.Projects
     public class ProjectDto:FullAuditedEntityDto<Guid>, IHasConcurrencyStamp
     {
         public string? Name { get; set; }
-        public string? Description { get; set; } = null;
+        public string? Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public EnumStatus Status { get; set; } = EnumStatus.Pending;
+        public EnumStatus Status { get; set; } 
         public decimal Revenue { get; set; }
         public decimal SuccessRate { get; set; }
         public Guid EmployeeId { get; set; }

@@ -56,7 +56,7 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await projectManager.CreateAsync(
-                input.EmployeeId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
+                input.EmployeeId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues,
                 input.Revenue, input.SuccesRate, input.Description);            
 
             return ObjectMapper.Map<Project, ProjectDto>(project);

@@ -1,30 +1,111 @@
-﻿<CascadingValue Value="this">
-<Modal @ref="modalRef">
-    <ModalContent Centered>
-        <ModalHeader>
-            <ModalTitle>Employee edit</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <FieldLabel>Name</FieldLabel>
-                <TextEdit Placeholder="Enter name..." />
-            </Field>
-            <Field>
-                <FieldLabel>Surname</FieldLabel>
-                <TextEdit Placeholder="Enter surname..." />
-            </Field>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@HideModal">Save Changes</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+﻿@using Crm.Employees
+@using Crm.Projects
+@using Crm.Common
+@using Crm.Customers
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Add Project</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Project Name:</FieldLabel>
+                    <InputText @bind-Value="Name" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Project Description:</FieldLabel>
+                    <InputText @bind-Value="Description" class="form-control"/>
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Start Time:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="StartTime" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>End Time:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="EndTime" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>
+                <Field>
+                    <FieldLabel>Status:</FieldLabel>
+                    <Select @bind-SelectedValue="Status">
+                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        {
+                            <SelectItem Value="@status">@status</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Revenue:</FieldLabel>
+                    <InputNumber @bind-Value="Revenue" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Succes Rate:</FieldLabel>
+                    <InputNumber @bind-Value="SuccesRate" class="form-control" />
+                </Field>
+
+                <Field>
+                    <FieldLabel>Employees:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedEmployeeId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var employee in Employees)
+                        {
+                            <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Customer:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="@SelectedCustomerId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var customer in Customers)
+                        {
+                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateProjectAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
 </CascadingValue>
 
 @code {
-    // reference to the modal component
+    [Inject]
+    public IProjectAppService ProjectAppService { get; set; }
+    [Inject]
+    public IEmployeeAppService EmployeeAppService { get; set; }
+    [Inject]
+    public ICustomerAppService CustomerAppService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Employees = await EmployeeAppService.GetListAllAsync();
+        Customers = await CustomerAppService.GetListAllAsync();
+    }
+
+    #region Form Fields
+    private string? Name { get; set; } 
+    private string? Description { get; set; }
+    private DateTime? StartTime { get; set; } 
+    private DateTime? EndTime { get; set; } 
+    private EnumStatus Status { get; set; }
+    private decimal Revenue { get; set; }
+    private decimal SuccesRate { get; set; }
+    private string? Employee { get; set; }
+    private string? Customer { get; set; }
+    #endregion
+
+    #region reference to the modal component
     private Modal modalRef;
 
     public Task ShowModal()
@@ -36,4 +117,62 @@
     {
         return modalRef.Hide();
     }
+    #endregion   
+
+    #region Create Project
+
+    private ProjectCreateDto ProjectCreateDto { get; set; } = new ProjectCreateDto();
+    private Guid SelectedEmployeeId { get; set; }
+    private Guid SelectedCustomerId { get; set; }
+
+    private async Task CreateProjectAsync()  {
+        
+        ProjectCreateDto.Name = Name;
+        ProjectCreateDto.Description = Description;
+        ProjectCreateDto.StartTime = StartTime ?? DateTime.MinValue; 
+        ProjectCreateDto.EndTime = EndTime ?? DateTime.MinValue;     
+        ProjectCreateDto.Statues = Status;
+        ProjectCreateDto.Revenue = Revenue;
+        ProjectCreateDto.SuccesRate = SuccesRate;
+        ProjectCreateDto.EmployeeId = SelectedEmployeeId;
+        ProjectCreateDto.CustomerId = SelectedCustomerId;
+            
+        try
+        {
+            await ProjectAppService.CreateAsync(ProjectCreateDto);
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hata: {ex.Message}");
+        }
+
+    }
+    #endregion
+
+    #region Employee Select
+    private List<EmployeeDto> Employees { get; set; } = new();
+    
+    private async Task EmployeeSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
+        {
+            SelectedEmployeeId = employeeId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    #endregion
+
+    #region Customer Select
+    private List<CustomerDto> Customers { get; set; } = new();
+
+    private async Task CustomerSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var customerId))
+        {
+            SelectedCustomerId = customerId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    #endregion
 }

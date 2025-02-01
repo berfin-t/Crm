@@ -1,5 +1,52 @@
-﻿<h3>ProjectDetail</h3>
+﻿@page "/project-detail/{ProjectId:guid}"
+
+@using Crm.Projects
+
+<PageTitle>Project Detail</PageTitle>
+
+@if (project != null)
+{
+    <h3>Project: @project.Name</h3>
+
+    <Card>
+        <CardBody>
+            <Field>
+                <FieldLabel>Total Tasks</FieldLabel>
+                <TextEdit ReadOnly="true" />
+            </Field>
+            <Field>
+                <FieldLabel>Total Tasks Completed</FieldLabel>
+                <TextEdit ReadOnly="true" />
+            </Field>
+            <Field>
+                <FieldLabel>Total Team Size</FieldLabel>
+                <TextEdit ReadOnly="true" />
+            </Field>
+            <Field>
+                <FieldLabel>Total Hours Spent</FieldLabel>
+                <TextEdit ReadOnly="true"  />
+            </Field>
+        </CardBody>
+    </Card>
+}
+else
+{
+    <p>Loading project details...</p>
+}
 
 @code {
+    [Inject]
+    public IProjectAppService ProjectAppService { get; set; }
+
+    [Parameter]
+    public Guid ProjectId { get; set; }
+
+    private ProjectDto project; 
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+        project = await ProjectAppService.GetAsync(ProjectId);
+    }
 
 }

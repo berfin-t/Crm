@@ -11,11 +11,11 @@ namespace Crm.Projects
         public string Name { get; set; } 
         public string? Description { get; set; }
         [Required]
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } 
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public ICollection<EnumStatus> Statues { get; set; }
+        public EnumStatus Statues { get; set; }
         [Required]
         public decimal Revenue { get; set; }
         [Required]
