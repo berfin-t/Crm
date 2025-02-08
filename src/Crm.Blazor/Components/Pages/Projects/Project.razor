@@ -3,8 +3,10 @@
 @using Blazorise.Components
 @using Crm.Blazor.Components.Dialogs.Projects
 @using Crm.Projects
+@using Crm.Common
 
 @inject NavigationManager Navigation
+@inject IProjectAppService ProjectAppService
 
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
@@ -25,7 +27,7 @@
                     </Autocomplete>
                 </Field>
                 @*Daha sonra kaldıracam burayı*@
-               @*  <p><Strong>Selected Project Name:</Strong> @selectedProjectName</p> *@
+                @*  <p><Strong>Selected Project Name:</Strong> @selectedProjectName</p> *@
 
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
@@ -33,10 +35,11 @@
                     <DatePicker TValue="DateTime?" Placeholder="Pick date range" InputMode="DateInputMode.Date" SelectionMode="DateInputSelectionMode.Range" />
                 </Field>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <Select TValue="string">
-                        <SelectItem>All</SelectItem>
-                        <SelectItem>Cancelled</SelectItem>
-                        <SelectItem>Completed</SelectItem>                        
+                    <Select TValue="EnumStatus" @bind-Value="SelectedStatus">
+                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        {
+                            <SelectItem Value="@status">@status</SelectItem>
+                        }
                     </Select>
                 </Field>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
@@ -56,26 +59,30 @@
                     <CardTitle Size="5">
                         <Div Flex="Flex.JustifyContent.Between">
                             <Span>@project.Name</Span>
-                            <Span class="status-label">@project.Status</Span>
+                            <span class="status-label status-@project.Status.ToString().ToLower()">@project.Status</span>
                         </Div>
                     </CardTitle>
                     <Paragraph Margin="Margin.Is3.FromTop">
                         @project.Description
                     </Paragraph>
                     <Div Flex="Flex.AlignItems.Center">
-                        <Text>
+                        @* <Text>
                             <Small>@project.StartTime.ToShortDateString()</Small>
                         </Text>
-
-                        <Div class="progress-container">
-                            <Div class="progress-bar" style="@($"width: {GetCompletionPercentage(project.StartTime, project.EndTime)}%")">
-                                @GetCompletionPercentage(project.StartTime, project.EndTime)%
-                            </Div>
-                        </Div>
-
                         <Text>
                             <Small>@project.EndTime.ToShortDateString()</Small>
-                        </Text>
+                        </Text> *@
+                        <div class="progress-container">
+                            <div class="progress-header">
+                                <span>Progress</span>
+                                <span>@GetCompletionPercentage(project.StartTime, project.EndTime)%</span>
+                            </div>
+
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: @GetCompletionPercentage(project.StartTime, project.EndTime)%;">
+                                </div>
+                            </div>
+                        </div>
                     </Div>
 
                     <br />
@@ -88,11 +95,54 @@
     }
 </Row>
 
+@if (Projects.Count < TotalCount)
+{
+    <Div Class="load-more-container">
+        <Button Color="Color.Light" @onclick="LoadMoreProjects">Load More...</Button>
+    </Div>
+}
 
 @* ********** CREATE MODAL ********** *@
 <ProjectCreateModal @ref="projectCreateModal" />
 
 @code {
+
+    private List<ProjectDto> Projects = new();
+    private int CurrentPage = 0;
+    private int PageSize = 9;
+    private int TotalCount = 0;
+    private string selectedProjectName = string.Empty;
+    private EnumStatus SelectedStatus { get; set; } = EnumStatus.Active;
+
+    // private DateTime? value;
+
+    // Modal bileşeni
+    private ProjectCreateModal projectCreateModal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMoreProjects();
+    }
+
+    private async Task LoadMoreProjects()
+    {
+        var input = new GetPagedProjectsInput
+            {
+                Sorting = "StartTime ASC",
+                MaxResultCount = PageSize,
+                SkipCount = CurrentPage * PageSize
+            };
+
+        var result = await ProjectAppService.GetListAsync(input);
+
+        if (result != null)
+        {
+            Projects.AddRange(result.Items);
+            TotalCount = (int)result.TotalCount;
+            CurrentPage++;
+        }
+    }
+
     private void NavigateToProjectDetail(Guid projectId)
     {
         Navigation.NavigateTo($"/project-detail/{projectId}");
@@ -112,24 +162,6 @@
         return Math.Clamp((int)percentage, 0, 100);
     }
 
-    //Select Project
-    [Inject]
-    public IProjectAppService ProjectAppService { get; set; }
-    public IEnumerable<ProjectDto> Projects { get; set; }
-    public string selectedProjectName { get; set; } = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Projects = await ProjectAppService.GetListAllAsync();
-        await base.OnInitializedAsync();
-    }
-    
-    //Date Range
-    DateTime? value;
-
-    //Create Modal
-    private ProjectCreateModal projectCreateModal;
-
     private async Task ShowCreateModal()
     {
         if (projectCreateModal != null)
@@ -140,22 +172,76 @@
 }
 
 <style>
-    .progress-container {
+
+    .status-label {
+        color: white; /* Yazı rengi beyaz */
+        padding: 5px 10px; /* İç boşluk */
+        border-radius: 5px; /* Köşeleri yuvarlak yap */
+        font-size: 12px; /* Yazı boyutunu küçült */
+        font-weight: bold; /* Yazıyı kalın yap (isteğe bağlı) */
+    }
+
+    .status-pending {
+        background-color: orange;
+    }
+
+    .status-active {
+        background-color: dodgerblue;
+    }
+
+    .status-completed {
+        background-color: forestgreen;
+    }   
+
+    .status-canceled {
+        background-color: red;
+    }
+
+    /* .progress-container {
         width: 100px;
         height: 10px;
         background-color: #ddd;
         border-radius: 5px;
         overflow: hidden;
         margin: 0 10px;
-    }
+    } */
 
-    .progress-bar {
+    /* .progress-bar {
         height: 100%;
         background-color: #4caf50;
         text-align: center;
         font-size: 10px;
         color: white;
         line-height: 10px;
+    } */
+
+    .progress-container {
+        width: 100%;
+        max-width: 300px;
     }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background-color: #ddd;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: #6c63ff; /* Mavi renk */
+        border-radius: 3px;
+        transition: width 0.5s ease-in-out;
+    }
+
 
 </style>

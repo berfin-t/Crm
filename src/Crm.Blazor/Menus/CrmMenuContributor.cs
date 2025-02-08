@@ -44,6 +44,86 @@ public class CrmMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Activities,
+                l["Menu:Activities"],
+                icon: "fas fa-tasks",
+                url: "/activities",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Contacts,
+                l["Menu:Contacts"],
+                icon: "fas fa-tasks",
+                url: "/contacts",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.CustomerNotes,
+                l["Menu:CustomerNotes"],
+                icon: "fas fa-tasks",
+                url: "/customerNotes",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Customers,
+                l["Menu:Customers"],
+                icon: "fas fa-tasks",
+                url: "/customers",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Employees,
+                l["Menu:Employees"],
+                icon: "fas fa-tasks",
+                url: "/employees",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Orders,
+                l["Menu:Orders"],
+                icon: "fas fa-tasks",
+                url: "/orders",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Positions,
+                l["Menu:Positions"],
+                icon: "fas fa-tasks",
+                url: "/positions",
+                order: 1
+            )
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Tasks,
+                l["Menu:Tasks"],
+                icon: "fas fa-tasks",
+                url: "/tasks",
+                order: 1
+            )
+        );
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

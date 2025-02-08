@@ -1,0 +1,105 @@
+﻿@using Crm.Customers
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Add Customer</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Customer Name:</FieldLabel>
+                    <InputText @bind-Value="Name" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Customer Surname:</FieldLabel>
+                    <InputText @bind-Value="Surname" class="form-control"/>
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Email:</FieldLabel>
+                        <InputText @bind-Value="Email" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Phone:</FieldLabel>
+                        <InputText @bind-Value="Phone" class="form-control" />
+                    </Field>
+                </Card> 
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Address:</FieldLabel>
+                        <InputText @bind-Value="Address" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Company Name:</FieldLabel>
+                        <InputText @bind-Value="CompanyName" class="form-control" />
+                    </Field>
+                </Card>
+
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateCustomerAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>
+
+@code{
+    [Inject] 
+    ICustomerAppService CustomerAppService { get; set; }
+
+    private string Name { get; set; }
+    private string Surname { get; set; }
+    private string Email { get; set; }
+    private string Phone { get; set; }
+    private string Address { get; set; }
+    private string CompanyName { get; set; }
+
+    #region reference to the modal component
+    private Modal modalRef;
+
+    public Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+    #endregion
+
+    #region Create Customer
+    private CustomerCreateDto CustomerCreateDto { get; set; } = new CustomerCreateDto();
+
+    private async Task CreateCustomerAsync()
+    {     
+        CustomerCreateDto.Name = Name;
+        CustomerCreateDto.Surname = Surname;
+        CustomerCreateDto.Email = Email;
+        CustomerCreateDto.Phone = Phone;
+        CustomerCreateDto.Address = Address;
+        CustomerCreateDto.CompanyName = CompanyName;
+
+        try
+        {
+            await CustomerAppService.CreateAsync(CustomerCreateDto);
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+    #endregion      
+    
+}

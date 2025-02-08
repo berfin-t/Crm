@@ -8,6 +8,8 @@ namespace Crm.Customers
 {
     public class CustomerUpdateDto
     {
+        public Guid Id { get; set; }
+        //public string FullName => $"{Name} {Surname}";
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }

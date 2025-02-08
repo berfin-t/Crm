@@ -1,33 +1,107 @@
 ﻿@page "/project-detail/{ProjectId:guid}"
 
 @using Crm.Projects
+@using Blazorise.Icons.FontAwesome
 
-<PageTitle>Project Detail</PageTitle>
+
 
 @if (project != null)
 {
-    <h3>Project: @project.Name</h3>
+    <PageTitle>Project Detail</PageTitle>
+    <Card>
+        <CardBody>
+            <Div class="project-overview">
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.CheckSquare" Class="icon" />
+                    <Div>
+                        <Div class="top-label">Total Tasks</Div>
+                        <Div class="field-label">210</Div>
+                    </Div>
+                </Div>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" Class="icon" />
+                    <Div>
+                        <Div class="top-label">Total Tasks Completed</Div>
+                        <Div class="field-label">121</Div>
+                    </Div>
+                </Div>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
+                    <Div>
+                        <Div class="top-label">Total Team Size</Div>
+                        <Div class="field-label">12</Div>
+                    </Div>
+                </Div>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Clock" Class="icon" />
+                    <Div>
+                        <Div class="top-label">Total Hours Spent</Div>
+                        <Div class="field-label">2500</Div>
+                    </Div>
+                </Div>
+            </Div>
+        </CardBody>
+    </Card>
+
 
     <Card>
         <CardBody>
-            <Field>
-                <FieldLabel>Total Tasks</FieldLabel>
-                <TextEdit ReadOnly="true" />
-            </Field>
-            <Field>
-                <FieldLabel>Total Tasks Completed</FieldLabel>
-                <TextEdit ReadOnly="true" />
-            </Field>
-            <Field>
-                <FieldLabel>Total Team Size</FieldLabel>
-                <TextEdit ReadOnly="true" />
-            </Field>
-            <Field>
-                <FieldLabel>Total Hours Spent</FieldLabel>
-                <TextEdit ReadOnly="true"  />
-            </Field>
+            <CardTitle Size="5">
+                <Div class="project-header">
+                    <h4 style="color: #000000; font-size: 20px;">
+                        @project.Name
+                        <span class="status-label status-@project.Status.ToString().ToLower()">
+                            @project.Status
+                        </span>
+                    </h4>
+
+                    <Dropdown>
+                        <DropdownToggle>
+                            <span class="menu-icon">⋮</span>
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem>Edit</DropdownItem>
+                            <DropdownItem>Delete</DropdownItem>
+                            <DropdownItem>Invite</DropdownItem>
+                            <DropdownItem>Leave</DropdownItem>
+                            
+                        </DropdownMenu>
+                    </Dropdown>
+                </Div>
+            </CardTitle>
+
+            <p class="project-overview">
+                @project.Description
+            </p>
+
+            <Div class="project-dates">
+                <Div>
+                    <strong>Start Date</strong>
+                    <p>@project.StartTime.ToString("dd MMMM yyyy h:mm tt")</p>
+                </Div>
+                <Div>
+                    <strong>End Date</strong>
+                    <p>@project.EndTime.ToString("dd MMMM yyyy h:mm tt")</p>
+                </Div>
+                @* <Div>
+                    <strong>Budget</strong>
+                    <p>@project.Budget.ToString("C")</p>
+                </Div> *@
+            </Div>
+
+            <Div class="team-members">
+                <strong>Team Members:</strong>
+                @* <Div class="member-avatars">
+                    @foreach (var member in project.TeamMembers)
+                    {
+                        <img src="@member.ProfileImage" alt="@member.Name" class="member-avatar" />
+                    }
+                </Div> *@
+            </Div>
         </CardBody>
     </Card>
+
+    
 }
 else
 {
@@ -41,12 +115,126 @@ else
     [Parameter]
     public Guid ProjectId { get; set; }
 
-    private ProjectDto project; 
+    private ProjectDto project;
 
     protected override async Task OnInitializedAsync()
     {
-       
         project = await ProjectAppService.GetAsync(ProjectId);
     }
-
 }
+
+<style>
+
+    .status-label {
+        color: white; /* Yazı rengi beyaz */
+        padding: 3px 8px; /* İç boşluk */
+        border-radius: 3px; /* Köşeleri yuvarlak yap */
+        font-size: 12px; /* Yazı boyutunu küçült */
+        font-weight: bold; /* Yazıyı kalın yap */
+    }
+
+    .status-pending {
+        background-color: #e8f5e9;
+        color: orange;
+    }
+
+    .status-active {
+        background-color: #e8f5e9;
+        color: dodgerblue;
+    }
+
+    .status-canceled {
+        background-color: #e8f5e9;
+        color: red;
+    }
+
+    .status-completed {
+        background-color: #e8f5e9;
+        color: #28a745;
+    }
+
+    .project-overview {
+        display: flex;
+        justify-content: space-between;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+    }
+
+    .overview-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .overview-item .icon {
+            font-size: 24px;
+            color: #6c757d;
+        }
+
+    .top-label {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .field-label {
+        font-size: 18px;
+        color: #000;
+        font-weight: 500;
+    }
+
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .status-label {
+        padding: 4px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        margin-left: 10px;
+    }   
+
+    .menu-icon {
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    .project-overview {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .project-dates {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+        .project-dates div {
+            text-align: center;
+        }
+
+    .team-members {
+        margin-top: 15px;
+    }
+
+    .member-avatars {
+        display: flex;
+        gap: 5px;
+    }
+
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+
+</style>

@@ -1,0 +1,140 @@
+﻿@page "/customers"
+
+@using Blazorise
+@using Blazorise.DataGrid
+@using Crm.Customers
+@using Crm.Blazor.Components.Dialogs.Customers
+
+@inject ICustomerAppService CustomerAppService
+
+<Container>
+    <Card>
+        <CardHeader>
+            
+        </CardHeader>
+        <CardBody>         
+            <DataGrid 
+            TItem="CustomerDto" 
+            Data="@customerList"
+            @bind-SelectedRow="@selectedCustomer"
+            Editable
+            Responsive="true">
+                <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable/>
+                <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="Phone" Editable />
+                <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable />
+                <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable />
+                <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable/> 
+
+                <DataGridCommandColumn>  
+                    <NewCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Customer</Button>
+                        </Field>                        
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                         <Field>
+                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedCustomer))">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </Button>
+                        </Field>                         
+                    </EditCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Danger">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </Button>
+                        </Field>                        
+                    </DeleteCommandTemplate>
+                </DataGridCommandColumn>            
+                                
+            </DataGrid> 
+        </CardBody>
+    </Card>
+</Container>
+
+@* ********** CREATE MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Customers.CustomerCreateModal @ref="customerCreateModal" />
+
+@* ********** EDIT MODAL ********** *@
+@* <CustomerGrid @ref="customerGrid" />
+ *@
+ <Crm.Blazor.Components.Dialogs.Customers.CustomerEditModal @ref="customerEditModal" />
+
+@code {
+    private CustomerDto CustomerDto { get; set; }
+    private List<CustomerDto> customerList;
+    private CustomerDto selectedCustomer;
+    private CustomerUpdateDto customerUpdateDto = new();
+    private bool isEditModalOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        customerList = await CustomerAppService.GetListAllAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private CustomerCreateModal customerCreateModal;
+    private CustomerEditModal customerEditModal;
+    // private CustomerGrid customerGrid;
+
+
+    private async Task ShowCreateModal()
+    {
+        if (customerCreateModal != null)
+        {
+            await customerCreateModal.ShowModal();
+        }
+    }
+
+    private async Task ShowEditModal(CustomerDto customer)
+    {
+        if (customerEditModal != null)
+        {
+            await customerEditModal.ShowModal(customer);
+        }
+    }
+
+    private void EditCustomer(CustomerDto customer)
+    {
+        customerUpdateDto = new CustomerUpdateDto
+            {
+                Id = customer.Id, // Güncelleme için ID gerekli olabilir
+                Name = customer.Name,
+                Surname = customer.Surname,
+                Phone = customer.Phone,
+                Email = customer.Email,
+                Address = customer.Address,
+                CompanyName = customer.CompanyName
+            };
+
+        isEditModalOpen = true;
+    }
+
+    private void CloseModal()
+    {
+        isEditModalOpen = false;
+    }
+
+    private async Task SaveCustomer()
+    {
+        await CustomerAppService.UpdateAsync(customerUpdateDto.Id, customerUpdateDto);
+
+        var updatedCustomer = customerList.FirstOrDefault(c => c.Id == customerUpdateDto.Id);
+        if (updatedCustomer != null)
+        {
+            updatedCustomer.Name = customerUpdateDto.Name;
+            updatedCustomer.Surname = customerUpdateDto.Surname;
+            updatedCustomer.Phone = customerUpdateDto.Phone;
+            updatedCustomer.Email = customerUpdateDto.Email;
+            updatedCustomer.Address = customerUpdateDto.Address;
+            updatedCustomer.CompanyName = customerUpdateDto.CompanyName;
+        }
+
+        isEditModalOpen = false;
+    }
+
+    private void DeleteCustomer(CustomerDto customer)
+    {
+
+    }
+}

@@ -1,0 +1,97 @@
+﻿@using Crm.Customers
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Edit Customer</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Customer Name:</FieldLabel>
+                    <InputText @bind-Value="CustomerUpdateDto.Name" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Customer Surname:</FieldLabel>
+                    <InputText @bind-Value="CustomerUpdateDto.Surname" class="form-control" />
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Email:</FieldLabel>
+                        <InputText @bind-Value="CustomerUpdateDto.Email" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Phone:</FieldLabel>
+                        <InputText @bind-Value="CustomerUpdateDto.Phone" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Address:</FieldLabel>
+                        <InputText @bind-Value="CustomerUpdateDto.Address" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Company Name:</FieldLabel>
+                        <InputText @bind-Value="CustomerUpdateDto.CompanyName" class="form-control" />
+                    </Field>
+                </Card>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateCustomerAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>        
+</CascadingValue>
+
+@code {
+    [Inject]
+    ICustomerAppService CustomerAppService { get; set; }   
+
+    private Modal modalRef;
+    private CustomerUpdateDto CustomerUpdateDto { get; set; } = new CustomerUpdateDto();
+
+    public async Task ShowModal(CustomerDto customer)
+    {
+        if (customer != null)
+        {
+            CustomerUpdateDto.Id = customer.Id;
+            CustomerUpdateDto.Name = customer.Name;
+            CustomerUpdateDto.Surname = customer.Surname;
+            CustomerUpdateDto.Email = customer.Email;
+            CustomerUpdateDto.Phone = customer.Phone;
+            CustomerUpdateDto.Address = customer.Address;
+            CustomerUpdateDto.CompanyName = customer.CompanyName;
+        }
+
+        await modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+
+    private async Task UpdateCustomerAsync()
+    {
+        try
+        {
+            await CustomerAppService.UpdateAsync(CustomerUpdateDto.Id, CustomerUpdateDto);
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+}
