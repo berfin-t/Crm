@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿using Crm.Customers;
+using Crm.Employees;
+using JetBrains.Annotations;
 using System;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -18,6 +20,10 @@ namespace Crm.Activities
         [NotNull]
         public virtual Guid EmployeeId { get; private set; }
 
+        // Olası bir senaryo için aşağıdaki property'ler eklenebilir.
+        //public virtual Guid OwnerId { get; private set; }
+        //public virtual Employee? Employee { get; private set; } 
+        //public virtual Customer? Customer { get; private set; }
         protected Activity()
         {
             Type = EnumType.Call;

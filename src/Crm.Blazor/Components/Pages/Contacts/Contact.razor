@@ -1,5 +1,80 @@
 ﻿@page "/contacts"
 
-@code {
+@using Blazorise
+@using Crm.Contacts
+@using Blazorise.DataGrid
+@using Crm.Blazor.Components.Dialogs.Contacts
 
+@inject IContactAppService ContactAppService
+
+<Container>
+    <Card>
+        <CardHeader>
+
+        </CardHeader>
+
+        <CardBody>
+            <DataGrid TItem="ContactDto"
+                Data-="@contactList"
+            @bind-SelectedRow="@selectedContact"
+            Editable
+            Responsive="true">
+            <DataGridColumn Field="@nameof(ContactDto.Type)" Caption="Type" Editable/>
+            <DataGridColumn Field="@nameof(ContactDto.ContactValue)" Caption="Contact Value" Editable/>
+            <DataGridColumn Field="@nameof(ContactDto.IsPrimary)" Caption="Is Primary" Editable/>
+            <DataGridColumn Field="@nameof(ContactDto.CustomerId)" Caption="Customer" Editable/>
+            <DataGridColumn Field="@nameof(ContactDto.EmployeeId)" Caption="Employee" Editable/>
+
+            <DataGridCommandColumn>
+                    <NewCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Activity</Button>
+                        </Field>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedContact))">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </Button>
+                        </Field>
+                    </EditCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Danger">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </Button>
+                        </Field>
+                    </DeleteCommandTemplate>
+                </DataGridCommandColumn>
+
+            </DataGrid>
+        </CardBody>
+    </Card>
+</Container>
+
+<Crm.Blazor.Components.Dialogs.Contacts.ContactCreateModal @ref="contactCreateModal" />
+<Crm.Blazor.Components.Dialogs.Contacts.ContactEditModal @ref="contactEditModal" />
+
+@code {
+    private List<ContactDto> contactList;
+    private ContactDto selectedContact;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contactList = await ContactAppService.GetListAllAsync();
+    }
+
+    private ContactCreateModal contactCreateModal;
+    private ContactEditModal contactEditModal;
+
+    private async Task ShowCreateModal()
+    {        
+        await contactCreateModal.ShowModal();
+    }
+
+    private async Task ShowEditModal(ContactDto contact)
+    {
+        selectedContact = contact;
+        await contactEditModal.ShowModal(contact);
+    }
 }

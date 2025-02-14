@@ -1,0 +1,19 @@
+﻿@using Crm.Contacts
+
+@code {
+    private Modal modalRef;
+
+    public async Task ShowModal(ContactDto contact)
+    {
+        if (contact != null)
+        {
+            // ContactUpdateDto.Id = contact.Id;
+            // ContactUpdateDto.Type = contact.Type;
+            // ContactUpdateDto.ContactValue = contact.ContactValue;
+            // ContactUpdateDto.IsPrimary = contact.IsPrimary;
+            // ContactUpdateDto.CustomerId = contact.CustomerId;
+            // ContactUpdateDto.EmployeeId = contact.EmployeeId;
+        }
+        await modalRef.Show();
+    }
+}

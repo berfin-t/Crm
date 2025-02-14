@@ -1,0 +1,152 @@
+﻿@using Crm.Employees
+@using Crm.Activities
+@using Crm.Common
+@using Crm.Customers
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Add Activity</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Type:</FieldLabel>
+                    <Select @bind-SelectedValue="Types">
+                        @foreach (var type in Enum.GetValues(typeof(EnumType)).Cast<EnumType>())
+                        {
+                            <SelectItem Value="@type">@type</SelectItem>
+                        }
+                    </Select>
+                </Field>                
+                <Field>
+                    <FieldLabel>Description:</FieldLabel>
+                    <InputText @bind-Value="Description" class="form-control" />
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Activity Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="ActivityDate" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>                                         
+
+                <Field>
+                    <FieldLabel>Employees:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedEmployeeId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var employee in Employees)
+                        {
+                            <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Customer:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="@SelectedCustomerId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var customer in Customers)
+                        {
+                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateProjectAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>
+
+@code {
+    [Inject]
+    public IActivityAppService ActivityAppService { get; set; }
+    [Inject]
+    public IEmployeeAppService EmployeeAppService { get; set; }
+    [Inject]
+    public ICustomerAppService CustomerAppService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Employees = await EmployeeAppService.GetListAllAsync();
+        Customers = await CustomerAppService.GetListAllAsync();
+    }
+
+    #region Form Fields
+    private string? Description { get; set; }
+    private DateTime? ActivityDate { get; set; }
+    private EnumType Types { get; set; }
+    private string? Employee { get; set; }
+    private string? Customer { get; set; }
+    #endregion
+
+    #region reference to the modal component
+    private Modal modalRef;
+
+    public Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+    #endregion
+
+    #region Create Project
+
+    private ActivityCreateDto ActivityCreateDto { get; set; } = new ActivityCreateDto();
+    private Guid SelectedEmployeeId { get; set; }
+    private Guid SelectedCustomerId { get; set; }
+
+    private async Task CreateProjectAsync()
+    {
+
+        ActivityCreateDto.Description = Description;
+        ActivityCreateDto.Date = ActivityDate ?? DateTime.MinValue;
+        ActivityCreateDto.Type = Types;
+        ActivityCreateDto.EmployeeId = SelectedEmployeeId;
+        ActivityCreateDto.CustomerId = SelectedCustomerId;
+
+        try
+        {
+            await ActivityAppService.CreateAsync(ActivityCreateDto);
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hata: {ex.Message}");
+        }
+
+    }
+    #endregion
+
+    #region Employee Select
+    private List<EmployeeDto> Employees { get; set; } = new();
+
+    private async Task EmployeeSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
+        {
+            SelectedEmployeeId = employeeId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    #endregion
+
+    #region Customer Select
+    private List<CustomerDto> Customers { get; set; } = new();
+
+    private async Task CustomerSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var customerId))
+        {
+            SelectedCustomerId = customerId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    #endregion
+}

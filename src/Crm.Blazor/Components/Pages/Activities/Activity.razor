@@ -1,5 +1,134 @@
 ﻿@page "/activities"
 
-@code {
+@using Blazorise
+@using Blazorise.DataGrid
+@using Crm.Activities
+@using Crm.Blazor.Components.Dialogs.Activities
 
+@inject IActivityAppService ActivityAppService
+
+<Container>
+    <Card>
+        <CardHeader>
+
+        </CardHeader>
+        <CardBody>
+            <DataGrid TItem="ActivityDto"
+                      Data="@activityList"
+                      @bind-SelectedRow="@selectedActivity"
+                      Editable
+                      Responsive="true">
+                <DataGridColumn Field="@nameof(ActivityDto.Type)" Caption="Type" Editable />
+                <DataGridColumn Field="@nameof(ActivityDto.Description)" Caption="Description" Editable />
+                <DataGridColumn Field="@nameof(ActivityDto.Date)" Caption="Activity Date" Editable />
+                <DataGridColumn Field="@nameof(ActivityDto.CustomerId)" Caption="Customer" Editable />
+                <DataGridColumn Field="@nameof(ActivityDto.EmployeeId)" Caption="Employee" Editable />
+
+                <DataGridCommandColumn>
+                    <NewCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Activity</Button>
+                        </Field>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedActivity))">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </Button>
+                        </Field>
+                    </EditCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Danger">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </Button>
+                        </Field>
+                    </DeleteCommandTemplate>
+                </DataGridCommandColumn>
+
+            </DataGrid>
+        </CardBody>
+    </Card>
+</Container>
+
+@* ********** CREATE MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Activities.ActivityCreateModal @ref="activityCreateModal" />
+
+@* ********** EDIT MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Activities.ActivityEditModal @ref="activityEditModal" />
+
+@code {
+    private ActivityDto ActivityDto { get; set; }
+    private List<ActivityDto> activityList;
+    private ActivityDto selectedActivity;
+    private ActivityUpdateDto activityUpdateDto = new();
+    private bool isEditModalOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        activityList = await ActivityAppService.GetListAllAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private ActivityCreateModal activityCreateModal;
+    private ActivityEditModal activityEditModal;
+
+    private async Task ShowCreateModal()
+    {
+        if (activityCreateModal != null)
+        {
+            await activityCreateModal.ShowModal();
+        }
+    }
+
+    private async Task ShowEditModal(ActivityDto activity)
+    {
+        if (activityEditModal != null)
+        {
+            await activityEditModal.ShowModal(activity);
+            
+        }
+    }
+
+    private void EditActivity(ActivityDto activity)
+    {
+        activityUpdateDto = new ActivityUpdateDto
+            {
+                Id = activity.Id,
+                Description = activity.Description,
+                Date = activity.Date,
+                Type = activity.Type,
+                CustomerId = activity.CustomerId,
+                EmployeeId = activity.EmployeeId
+            };
+
+        isEditModalOpen = true;
+    }
+
+    private void CloseModal()
+    {
+        isEditModalOpen = false;
+    }
+
+    private async Task SaveActivity()
+    {
+        await ActivityAppService.UpdateAsync(activityUpdateDto.Id, activityUpdateDto);
+
+        var updatedActivity = activityList.FirstOrDefault(c => c.Id == activityUpdateDto.Id);
+        if (updatedActivity != null)
+        {
+            updatedActivity.Description = activityUpdateDto.Description;
+            updatedActivity.Date = activityUpdateDto.Date;
+            updatedActivity.Type = activityUpdateDto.Type;
+            updatedActivity.CustomerId = activityUpdateDto.CustomerId;
+            updatedActivity.EmployeeId = activityUpdateDto.EmployeeId;
+        }
+
+        isEditModalOpen = false;
+    }
+
+    private void DeleteActivity(ActivityDto activity)
+    {
+
+    }
 }

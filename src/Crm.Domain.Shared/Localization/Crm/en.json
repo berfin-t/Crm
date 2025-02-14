@@ -12,6 +12,10 @@
     "Menu:Tasks": "Tasks",
     "Menu:Reports": "Reports",
     "Menu:Activities": "Activities",
+    "Menu:CustomerNotes": "CustomerNotes", 
+    "Menu:Employees": "Employees", 
+    "Menu:Orders": "Orders", 
+    "Menu:Positions": "Positions", 
 
   }
 }

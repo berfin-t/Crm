@@ -4,55 +4,54 @@
 @using Crm.Blazor.Components.Dialogs.Projects
 @using Crm.Projects
 @using Crm.Common
+@using Crm.Blazor.Components
 
 @inject NavigationManager Navigation
 @inject IProjectAppService ProjectAppService
 
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
-        <CardHeader Flex="Flex.JustifyContent.Between.AlignItems.Center">
+        <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
             <Div>
-                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">                    
-
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    
                     <Autocomplete TItem="ProjectDto"
-                    TValue="string"
-                    Data="@Projects"
-                    TextField="@((item) => item.Name)"                                  
-                    @bind-SelectedText="@selectedProjectName"
-                    Placeholder="Search projects..."
-                    Filter="AutocompleteFilter.StartsWith"
-                    FreeTyping
-                    CustomFilter="@(( item, searchValue ) => item.Name.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
-                        <NotFoundContent> Sorry, no project found for "@context". </NotFoundContent>
-                    </Autocomplete>
+                                  TValue="string"
+                                  Data="@Projects"
+                                  TextField="@(( item ) => item.Name)"
+                                  ValueField="@((item) => item.Id.ToString())"
+                                  Placeholder="Search..."
+                                  HighlightSearch>
+                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                    </Autocomplete>                    
                 </Field>
-                @*Daha sonra kaldıracam burayı*@
-                @*  <p><Strong>Selected Project Name:</Strong> @selectedProjectName</p> *@
-
+                <Button Color="Color.Primary">Search</Button>
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <DatePicker TValue="DateTime?" Placeholder="Pick date range" InputMode="DateInputMode.Date" SelectionMode="DateInputSelectionMode.Range" />
+                    <DatePicker TValue="DateTime?" 
+                        @bind-Dates="selectedDates" 
+                        InputMode="DateInputMode.Date" 
+                        SelectionMode="DateInputSelectionMode.Range" />
                 </Field>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <Select TValue="EnumStatus" @bind-Value="SelectedStatus">
-                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        @foreach (var status in Enum.GetValues<EnumStatus>())
                         {
                             <SelectItem Value="@status">@status</SelectItem>
                         }
                     </Select>
                 </Field>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <Button Color="Color.Primary" Clicked="@ShowCreateModal">Add Project</Button>
+                    <Button Color="Color.Primary">Add Project</Button>
                 </Field>
-            </Div>
-        </CardHeader>
+            </Div>            
+        </CardBody>
     </Card>
-</Div> 
+</Div>
 
 <Row>
-    @foreach (var project in Projects)
-    {
+    @foreach(var project in Projects) {
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
                 <CardBody>
@@ -63,185 +62,23 @@
                         </Div>
                     </CardTitle>
                     <Paragraph Margin="Margin.Is3.FromTop">
-                        @project.Description
+                        @(project.Description.Length > 80 ? project.Description[..80] + "..." : project.Description)
                     </Paragraph>
                     <Div Flex="Flex.AlignItems.Center">
-                        @* <Text>
-                            <Small>@project.StartTime.ToShortDateString()</Small>
-                        </Text>
-                        <Text>
-                            <Small>@project.EndTime.ToShortDateString()</Small>
-                        </Text> *@
-                        <div class="progress-container">
-                            <div class="progress-header">
+                        <Div class="progress-container">
+                            <Div class="progress-header">
                                 <span>Progress</span>
                                 <span>@GetCompletionPercentage(project.StartTime, project.EndTime)%</span>
-                            </div>
-
+                            </Div>
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: @GetCompletionPercentage(project.StartTime, project.EndTime)%;">
-                                </div>
+                                <div class="progress-fill" style="width: @GetCompletionPercentage(project.StartTime, project.EndTime)%;"></div>
                             </div>
-                        </div>
+                        </Div>
                     </Div>
-
                     <br />
-                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">
-                        Read More
-                    </Anchor>
+                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">Read More</Anchor>
                 </CardBody>
             </Card>
         </Column>
     }
 </Row>
-
-@if (Projects.Count < TotalCount)
-{
-    <Div Class="load-more-container">
-        <Button Color="Color.Light" @onclick="LoadMoreProjects">Load More...</Button>
-    </Div>
-}
-
-@* ********** CREATE MODAL ********** *@
-<ProjectCreateModal @ref="projectCreateModal" />
-
-@code {
-
-    private List<ProjectDto> Projects = new();
-    private int CurrentPage = 0;
-    private int PageSize = 9;
-    private int TotalCount = 0;
-    private string selectedProjectName = string.Empty;
-    private EnumStatus SelectedStatus { get; set; } = EnumStatus.Active;
-
-    // private DateTime? value;
-
-    // Modal bileşeni
-    private ProjectCreateModal projectCreateModal;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadMoreProjects();
-    }
-
-    private async Task LoadMoreProjects()
-    {
-        var input = new GetPagedProjectsInput
-            {
-                Sorting = "StartTime ASC",
-                MaxResultCount = PageSize,
-                SkipCount = CurrentPage * PageSize
-            };
-
-        var result = await ProjectAppService.GetListAsync(input);
-
-        if (result != null)
-        {
-            Projects.AddRange(result.Items);
-            TotalCount = (int)result.TotalCount;
-            CurrentPage++;
-        }
-    }
-
-    private void NavigateToProjectDetail(Guid projectId)
-    {
-        Navigation.NavigateTo($"/project-detail/{projectId}");
-    }
-
-    private int GetCompletionPercentage(DateTime? start, DateTime? end)
-    {
-        if (start == null || end == null || start >= end)
-        {
-            return 0;
-        }
-
-        var totalDuration = (end.Value - start.Value).TotalDays;
-        var elapsedDuration = (DateTime.Now - start.Value).TotalDays;
-
-        var percentage = (elapsedDuration / totalDuration) * 100;
-        return Math.Clamp((int)percentage, 0, 100);
-    }
-
-    private async Task ShowCreateModal()
-    {
-        if (projectCreateModal != null)
-        {
-            await projectCreateModal.ShowModal();
-        }
-    }
-}
-
-<style>
-
-    .status-label {
-        color: white; /* Yazı rengi beyaz */
-        padding: 5px 10px; /* İç boşluk */
-        border-radius: 5px; /* Köşeleri yuvarlak yap */
-        font-size: 12px; /* Yazı boyutunu küçült */
-        font-weight: bold; /* Yazıyı kalın yap (isteğe bağlı) */
-    }
-
-    .status-pending {
-        background-color: orange;
-    }
-
-    .status-active {
-        background-color: dodgerblue;
-    }
-
-    .status-completed {
-        background-color: forestgreen;
-    }   
-
-    .status-canceled {
-        background-color: red;
-    }
-
-    /* .progress-container {
-        width: 100px;
-        height: 10px;
-        background-color: #ddd;
-        border-radius: 5px;
-        overflow: hidden;
-        margin: 0 10px;
-    } */
-
-    /* .progress-bar {
-        height: 100%;
-        background-color: #4caf50;
-        text-align: center;
-        font-size: 10px;
-        color: white;
-        line-height: 10px;
-    } */
-
-    .progress-container {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .progress-header {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 5px;
-    }
-
-    .progress-bar {
-        width: 100%;
-        height: 6px;
-        background-color: #ddd;
-        border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background-color: #6c63ff; /* Mavi renk */
-        border-radius: 3px;
-        transition: width 0.5s ease-in-out;
-    }
-
-
-</style>

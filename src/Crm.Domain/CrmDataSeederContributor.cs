@@ -155,9 +155,15 @@ public class CrmDataSeederContributor(
         }
 
         IEnumerable<Project> projects = [
-            new (guidGenerator.Create(), "Project 1", "Description 1", DateTime.Now, DateTime.Now, EnumStatus.Pending, 1000, 0, employees.ElementAt(0), customers.ElementAt(0)),
-                new (guidGenerator.Create(), "Project 2", "Description 2", DateTime.Now, DateTime.Now, EnumStatus.Pending, 2000, 0, employees.ElementAt(0), customers.ElementAt(0)),
-                new (guidGenerator.Create(), "Project 3", "Description 3", DateTime.Now, DateTime.Now, EnumStatus.Pending, 3000, 0, employees.ElementAt(0), customers.ElementAt(0))
+            new (guidGenerator.Create(), "App design and development",
+            "With supporting text below as a natural lead-in to additional contenposuere erat a ante. Voluptates, illo, iste itaque voluptas corrupti ratione" +
+            " reprehenderit magni similique? Tempore, quos delectus asperiores libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem ipsum dolor " +
+            "sit amet.\r\n\r\nVoluptates, illo, iste itaque voluptas corrupti ratione reprehenderit magni similique? Tempore, quos delectus asperiores libero " +
+            "voluptas quod perferendis! Voluptate, quod illo rerum? Lorem ipsum dolor sit amet. With supporting text below as a natural lead-in to additional " +
+            "contenposuere erat a ante.", 
+            DateTime.Now, DateTime.Now, EnumStatus.Pending, 1000, 0, employees.ElementAt(0), customers.ElementAt(0)),
+                new (guidGenerator.Create(), "Multipurpose Landing Template", "Description 2", DateTime.Now, DateTime.Now, EnumStatus.Pending, 2000, 0, employees.ElementAt(0), customers.ElementAt(0)),
+                new (guidGenerator.Create(), "Website Redesign", "Description 3", DateTime.Now, DateTime.Now, EnumStatus.Pending, 3000, 0, employees.ElementAt(0), customers.ElementAt(0))
             ];
         await projectRepository.InsertManyAsync(projects, true);
         return projects;
