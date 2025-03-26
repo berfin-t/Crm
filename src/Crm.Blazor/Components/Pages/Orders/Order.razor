@@ -1,5 +1,50 @@
 ﻿@page "/orders"
 
-@code {
+@using Crm.Orders
+@using Blazorise
+@using Blazorise.DataGrid
 
-}
+@inject IOrderAppService OrderAppService
+
+<Container>
+    <Card>
+        <CardBody>
+            <DataGrid 
+                TItem="OrderDto"
+            Data="@orderList"
+            @bind-SelectedRow="@selectedOrder"
+            Editable
+            Responsive="true">
+                <DataGridColumn Field="@nameof(OrderDto.Id)" Caption="Id" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="Status" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="Delivery Date" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.TotalAmount)" Caption="Total Amount" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.CustomerId)" Caption="Customer" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.ProjectId)" Caption="Project" Editable/>
+
+                <DataGridCommandColumn>
+                    <NewCommandTemplate>
+                        <Field>
+                             <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Order</Button>
+                        </Field>
+                    </NewCommandTemplate>
+                    <EditCommandTemplate>
+                        <Field>
+                              <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedOrder))">
+                                 <i class="fa-solid fa-pen-to-square"></i>
+                            </Button> 
+                        </Field>
+                    </EditCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Danger">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </Button>
+                        </Field>
+                    </DeleteCommandTemplate>
+                </DataGridCommandColumn>
+
+            </DataGrid>
+        </CardBody>
+    </Card>
+</Container>

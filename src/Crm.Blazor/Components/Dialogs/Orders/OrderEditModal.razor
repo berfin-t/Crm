@@ -1,0 +1,18 @@
+﻿@using Crm.Orders
+
+<h3>OrderEditModal</h3>
+
+@code {
+    private Modal modalRef;
+
+    public async Task ShowModal(OrderDto order)
+    {       
+
+        await modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+}

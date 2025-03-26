@@ -14,8 +14,9 @@
     "Menu:Activities": "Activities",
     "Menu:CustomerNotes": "CustomerNotes", 
     "Menu:Employees": "Employees", 
-    "Menu:Orders": "Orders", 
+    "Menu:Orders": "Orders",
     "Menu:Positions": "Positions", 
+    "Menu:Dashboard": "Dashboard", 
 
   }
 }

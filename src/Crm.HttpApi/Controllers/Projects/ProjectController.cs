@@ -38,7 +38,7 @@ namespace Crm.Controllers.Projects
         [HttpPut]
         [Route("update/{id}")]
         public virtual Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input) => _projectAppService.UpdateAsync(id, input);
-        
+
 
     }
 }

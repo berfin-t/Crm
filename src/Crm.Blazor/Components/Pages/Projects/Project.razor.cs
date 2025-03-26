@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 using Crm.Blazor.Components.Dialogs.Projects;
 using Crm.Common;
 using Crm.Projects;
-using Microsoft.AspNetCore.Components;
 
 namespace Crm.Blazor.Components.Pages.Projects
 {
     public partial class Project
     {
-        public List<ProjectDto> Projects { get; set; } = new();
-        public List<ProjectDto> FilteredProjects { get; set; } = new();
+        public List<ProjectDto> Projects = new();
+        public List<ProjectDto> FilteredProjects = new();
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
         public int TotalCount { get; set; } = 0;
-        public string selectedProjectName { get; set; } = string.Empty;
-        public EnumStatus SelectedStatus { get; set; } = EnumStatus.Active;
+        public string selectedProjectName = string.Empty;
+        public string selectedProjectId = string.Empty; 
+        public EnumStatus SelectedStatus = EnumStatus.Active;
         public DateTime? startDate { get; set; }
         public DateTime? endDate { get; set; }
         private ProjectCreateModal projectCreateModal;
@@ -26,6 +26,11 @@ namespace Crm.Blazor.Components.Pages.Projects
         protected override async Task OnInitializedAsync()
         {
             await LoadMoreProjects();
+        }
+
+        private async Task OnProjectSelected(string value)
+        {
+            selectedProjectId = value;
         }
 
         public async Task LoadMoreProjects()
@@ -47,9 +52,20 @@ namespace Crm.Blazor.Components.Pages.Projects
             }
         }
 
-        public void ApplySearch()
+        public async Task ApplySearch()
         {
-            ApplyFilters();
+            if (!string.IsNullOrEmpty(selectedProjectId))
+            {
+                FilteredProjects = Projects
+                    .Where(p => p.Id.ToString() == selectedProjectId)
+                    .ToList();
+            }
+            else
+            {
+                FilteredProjects = Projects;
+            }
+
+            await InvokeAsync(StateHasChanged);
         }
 
         public async Task ApplyDateFilter()
@@ -60,9 +76,7 @@ namespace Crm.Blazor.Components.Pages.Projects
         private void ApplyFilters()
         {
             FilteredProjects = Projects
-                .Where(p => string.IsNullOrEmpty(selectedProjectName) || p.Name.Contains(selectedProjectName, StringComparison.OrdinalIgnoreCase))
-                .Where(p => !startDate.HasValue || !endDate.HasValue || (p.StartTime >= startDate && p.StartTime <= endDate))
-                .Where(p => p.Status == SelectedStatus)
+                .Where(p => string.IsNullOrEmpty(selectedProjectName)|| p.Name.Contains(selectedProjectName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -89,5 +103,7 @@ namespace Crm.Blazor.Components.Pages.Projects
                 await projectCreateModal.ShowModal();
             }
         }
+
+        
     }
 }

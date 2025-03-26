@@ -21,11 +21,15 @@
                                   TextField="@(( item ) => item.Name)"
                                   ValueField="@((item) => item.Id.ToString())"
                                   Placeholder="Search..."
-                                  HighlightSearch>
+                                  HighlightSearch
+                                  Value="@selectedProjectId"
+                                  ValueChanged="@OnProjectSelected"
+                                  ValueExpression="@( () => selectedProjectId )">
                         <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
                     </Autocomplete>                    
                 </Field>
-                <Button Color="Color.Primary">Search</Button>
+                <Button Color="Color.Primary" @onclick="ApplySearch">Search</Button>
+                
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
@@ -51,7 +55,8 @@
 </Div>
 
 <Row>
-    @foreach(var project in Projects) {
+    @foreach (var project in FilteredProjects)
+    {
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
                 <CardBody>
@@ -72,8 +77,8 @@
                             </Div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: @GetCompletionPercentage(project.StartTime, project.EndTime)%;"></div>
-                            </div>
-                        </Div>
+                        </div>
+                    </Div>
                     </Div>
                     <br />
                     <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">Read More</Anchor>
@@ -82,3 +87,6 @@
         </Column>
     }
 </Row>
+<Div Flex="Flex.JustifyContent.Center">
+    <Button Color="Color.Light" @onclick="LoadMoreProjects">Load More</Button>
+</Div>

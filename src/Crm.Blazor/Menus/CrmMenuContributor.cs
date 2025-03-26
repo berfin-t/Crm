@@ -27,12 +27,22 @@ public class CrmMenuContributor : IMenuContributor
             0,
             new ApplicationMenuItem(
                 CrmMenus.Home,
-                l["Menu:Home"],
+                l["Menu:Dashboard"],
                 "/",
                 icon: "fas fa-home",
                 order: 0
             )
         );
+
+        //context.Menu.AddItem(
+        //    new ApplicationMenuItem(
+        //        CrmMenus.Dashboard,
+        //        l["Menu:Dashboard"],
+        //        icon: "fa-light fa-table-columns",
+        //        url: "/dashboard",
+        //        order: 1
+        //    )
+        //);
 
         context.Menu.AddItem(
             new ApplicationMenuItem(
@@ -54,25 +64,25 @@ public class CrmMenuContributor : IMenuContributor
             )
         );
 
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                CrmMenus.Contacts,
-                l["Menu:Contacts"],
-                icon: "fas fa-tasks",
-                url: "/contacts",
-                order: 1
-            )
-        );
+        //context.Menu.AddItem(
+        //    new ApplicationMenuItem(
+        //        CrmMenus.Contacts,
+        //        l["Menu:Contacts"],
+        //        icon: "fas fa-tasks",
+        //        url: "/contacts",
+        //        order: 1
+        //    )
+        //);
 
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                CrmMenus.CustomerNotes,
-                l["Menu:CustomerNotes"],
-                icon: "fas fa-tasks",
-                url: "/customerNotes",
-                order: 1
-            )
-        );
+        //context.Menu.AddItem(
+        //    new ApplicationMenuItem(
+        //        CrmMenus.CustomerNotes,
+        //        l["Menu:CustomerNotes"],
+        //        icon: "fas fa-tasks",
+        //        url: "/customerNotes",
+        //        order: 1
+        //    )
+        //);
 
         context.Menu.AddItem(
             new ApplicationMenuItem(
@@ -104,15 +114,15 @@ public class CrmMenuContributor : IMenuContributor
             )
         );
 
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                CrmMenus.Positions,
-                l["Menu:Positions"],
-                icon: "fas fa-tasks",
-                url: "/positions",
-                order: 1
-            )
-        );
+        //context.Menu.AddItem(
+        //    new ApplicationMenuItem(
+        //        CrmMenus.Positions,
+        //        l["Menu:Positions"],
+        //        icon: "fas fa-tasks",
+        //        url: "/positions",
+        //        order: 1
+        //    )
+        //);
 
         context.Menu.AddItem(
             new ApplicationMenuItem(

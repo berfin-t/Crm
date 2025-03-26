@@ -1,5 +1,29 @@
 ﻿@page "/tasks"
 
-@code {
+@using Crm.Tasks
+@using Crm.Common
+@using Blazorise
 
-}
+@inject ITaskAppService TaskAppService
+
+<DropContainer TItem="TaskDto" Items="@tasks" ItemsFilter="@((item, dropZone) => item.Status.ToString() == dropZone)" ItemDropped="@TaskDropped" Flex="Flex.Wrap.Grow.Is1">
+    <ChildContent>
+        @foreach (var status in Enum.GetValues<EnumStatus>())
+        {
+            <DropZone TItem="TaskDto" Name="@status.ToString()" Border="Border.Rounded" Background="Background.Light" Padding="Padding.Is3" Margin="Margin.Is3" Flex="Flex.Grow.Is1">
+                <Heading Size="HeadingSize.Is4" Margin="Margin.Is3.FromBottom">@status.ToString()</Heading>
+            </DropZone>
+        }
+    </ChildContent>
+    <ItemTemplate>
+        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY">
+            <CardBody>
+                <strong>@context.Title</strong> <br />
+                <p>@context.Description</p>
+                <p><strong>Due Date:</strong> @context.DueDate.ToShortDateString()</p>
+                <p><strong>Priority:</strong> @context.Priority</p>
+            </CardBody>
+        </Card>
+    </ItemTemplate>
+</DropContainer>
+
