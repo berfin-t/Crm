@@ -39,6 +39,15 @@ namespace Crm.Controllers.Projects
         [Route("update/{id}")]
         public virtual Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input) => _projectAppService.UpdateAsync(id, input);
 
+        [HttpGet]
+        [Route("count")]
+        public virtual Task<long> GetTotalProjectCountAsync() => _projectAppService.GetTotalProjectCountAsync();
+
+        [HttpGet]
+        [Route("success-rate-average")]
+        public virtual Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null) => _projectAppService.GetSuccessRateAverageAsync(successRate);
+
+
 
     }
 }

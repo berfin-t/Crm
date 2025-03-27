@@ -67,5 +67,12 @@ namespace Crm.Customers
 
         }
         #endregion
+
+        #region
+        public async Task<long> GetTotalCustomerCountAsync()
+        {
+            return await customerRepository.GetCountAsync();
+        }
+        #endregion
     }
 }

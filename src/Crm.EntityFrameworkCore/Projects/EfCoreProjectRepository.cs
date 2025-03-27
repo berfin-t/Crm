@@ -50,5 +50,20 @@ namespace Crm.Projects
             return query;
         }
         #endregion
+
+        public async Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null, CancellationToken cancellationToken = default)
+        {
+            var query = await GetQueryableAsync();
+
+            if (successRate.HasValue)
+            {
+                query = query.Where(p => p.SuccessRate == successRate.Value);
+            }
+
+            var average = await query.AverageAsync(p => p.SuccessRate, cancellationToken);
+
+            return Math.Round(average, 2);
+        }
+
     }
 }

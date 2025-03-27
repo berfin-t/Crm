@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Projects;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -60,6 +61,13 @@ namespace Crm.Tasks
                 id, input.Title, input.Description, input.DueDate, input.Priority, input.Status, input.CustomerId, input.EmployeeId);
 
             return ObjectMapper.Map<Task, TaskDto>(task);
+        }
+        #endregion
+
+        #region GetTotalTaskCount
+        public async Task<long> GetTotalTaskCountAsync()
+        {
+            return await taskRepository.GetCountAsync();
         }
         #endregion
     }

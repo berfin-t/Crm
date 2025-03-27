@@ -39,5 +39,9 @@ namespace Crm.Controllers.Customers
         [HttpPut]
         [Route("update/{id}")]
         public virtual Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input) => _customerAppService.UpdateAsync(id, input);
+
+        [HttpGet]
+        [Route("count")]
+        public virtual Task<long> GetTotalCustomerCountAsync() => _customerAppService.GetTotalCustomerCountAsync();
     }
 }

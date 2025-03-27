@@ -75,5 +75,20 @@ namespace Crm.Projects
             return ObjectMapper.Map<Project, ProjectDto>(project);
         }
         #endregion
+
+        #region GetTotalProjectCount
+        public async Task<long> GetTotalProjectCountAsync()
+        {
+            return await projectRepository.GetCountAsync();
+        }
+        #endregion
+
+        #region GetSuccessRateAverage
+        public async Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null)
+        {
+            return await projectRepository.GetSuccessRateAverageAsync(successRate);
+        }
+        #endregion
+
     }
 }

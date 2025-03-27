@@ -1,9 +1,13 @@
 @page "/"
 @using Volo.Abp.MultiTenancy
 @using Crm.Projects
+@using Crm.Tasks
+@using Crm.Customers
 @inherits CrmComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IProjectAppService ProjectAppService
+@inject ITaskAppService TasksAppService
+@inject ICustomerAppService CustomersAppService
 @using Blazorise.Charts
 @using Crm.Common
 
@@ -14,33 +18,49 @@
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.CheckSquare" Class="icon" />
                 <Div>
                     <Div class="top-label">Total Projects</Div>
-                    <Div class="field-label">210</Div>
+                    <Div class="field-label">@totalProjects</Div>
                 </Div>
             </Div>
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" Class="icon" />
                 <Div>
                     <Div class="top-label">Total Tasks</Div>
-                    <Div class="field-label">121</Div>
+                    <Div class="field-label">@totalTasks</Div>
                 </Div>
             </Div>
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                 <Div>
-                    <Div class="top-label">Total Member</Div>
-                    <Div class="field-label">12</Div>
+                    <Div class="top-label">Total Customer</Div>
+                    <Div class="field-label">@totalCustomer</Div>
                 </Div>
             </Div>
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.Clock" Class="icon" />
                 <Div>
-                    <Div class="top-label">Total Hours Spent</Div>
-                    <Div class="field-label">2500</Div>
+                    <Div class="top-label">Total Succes Rate</Div>
+                    <Div class="field-label">@totalSuccessRate</Div>
                 </Div>
             </Div>
         </Div>
     </CardBody>
 </Card>
+
+@code {
+    private long totalProjects;
+    private long totalTasks;
+    private long totalCustomer;
+    private decimal totalSuccessRate;  
+    private decimal? successRate = null;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        totalProjects = await ProjectAppService.GetTotalProjectCountAsync();
+        totalTasks = await TasksAppService.GetTotalTaskCountAsync();
+        totalCustomer = await CustomersAppService.GetTotalCustomerCountAsync();
+        totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(successRate);  // Yazým hatasý düzeltildi
+    }
+}
 
 
 <style>

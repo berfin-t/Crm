@@ -40,6 +40,9 @@ namespace Crm.Controllers.Tasks
         [Route("update/{id}")]
         public virtual Task<TaskDto> UpdateAsync(Guid id, TaskUpdateDto input) => _taskAppService.UpdateAsync(id, input);
 
+        [HttpGet]
+        [Route("count")]
+        public virtual Task<long> GetTotalTaskCountAsync() => _taskAppService.GetTotalTaskCountAsync();
     }
     
 }

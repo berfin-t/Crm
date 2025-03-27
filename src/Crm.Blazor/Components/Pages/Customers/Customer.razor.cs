@@ -12,7 +12,7 @@ namespace Crm.Blazor.Components.Pages.Customers
         private List<CustomerDto> customerList;
         private CustomerDto selectedCustomer;
         private CustomerUpdateDto customerUpdateDto = new();
-        private bool isEditModalOpen = false;
+        //private bool isEditModalOpen = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -39,48 +39,48 @@ namespace Crm.Blazor.Components.Pages.Customers
             }
         }
 
-        private void EditCustomer(CustomerDto customer)
-        {
-            customerUpdateDto = new CustomerUpdateDto
-            {
-                Id = customer.Id, // Güncelleme için ID gerekli olabilir
-                Name = customer.Name,
-                Surname = customer.Surname,
-                Phone = customer.Phone,
-                Email = customer.Email,
-                Address = customer.Address,
-                CompanyName = customer.CompanyName
-            };
+        //private void EditCustomer(CustomerDto customer)
+        //{
+        //    customerUpdateDto = new CustomerUpdateDto
+        //    {
+        //        Id = customer.Id, // Güncelleme için ID gerekli olabilir
+        //        Name = customer.Name,
+        //        Surname = customer.Surname,
+        //        Phone = customer.Phone,
+        //        Email = customer.Email,
+        //        Address = customer.Address,
+        //        CompanyName = customer.CompanyName
+        //    };
 
-            isEditModalOpen = true;
-        }
+        //    isEditModalOpen = true;
+        //}
 
-        private void CloseModal()
-        {
-            isEditModalOpen = false;
-        }
+        //private void CloseModal()
+        //{
+        //    isEditModalOpen = false;
+        //}
 
-        private async Task SaveCustomer()
-        {
-            await CustomerAppService.UpdateAsync(customerUpdateDto.Id, customerUpdateDto);
+        //private async Task SaveCustomer()
+        //{
+        //    await CustomerAppService.UpdateAsync(customerUpdateDto.Id, customerUpdateDto);
 
-            var updatedCustomer = customerList.FirstOrDefault(c => c.Id == customerUpdateDto.Id);
-            if (updatedCustomer != null)
-            {
-                updatedCustomer.Name = customerUpdateDto.Name;
-                updatedCustomer.Surname = customerUpdateDto.Surname;
-                updatedCustomer.Phone = customerUpdateDto.Phone;
-                updatedCustomer.Email = customerUpdateDto.Email;
-                updatedCustomer.Address = customerUpdateDto.Address;
-                updatedCustomer.CompanyName = customerUpdateDto.CompanyName;
-            }
+        //    var updatedCustomer = customerList.FirstOrDefault(c => c.Id == customerUpdateDto.Id);
+        //    if (updatedCustomer != null)
+        //    {
+        //        updatedCustomer.Name = customerUpdateDto.Name;
+        //        updatedCustomer.Surname = customerUpdateDto.Surname;
+        //        updatedCustomer.Phone = customerUpdateDto.Phone;
+        //        updatedCustomer.Email = customerUpdateDto.Email;
+        //        updatedCustomer.Address = customerUpdateDto.Address;
+        //        updatedCustomer.CompanyName = customerUpdateDto.CompanyName;
+        //    }
 
-            isEditModalOpen = false;
-        }
+        //    isEditModalOpen = false;
+        //}
 
-        private void DeleteCustomer(CustomerDto customer)
-        {
+        //private void DeleteCustomer(CustomerDto customer)
+        //{
 
-        }
+        //}
     }
 }

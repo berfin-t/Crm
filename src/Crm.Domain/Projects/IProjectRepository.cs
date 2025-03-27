@@ -22,5 +22,9 @@ namespace Crm.Projects
             decimal? succesRate = null, Guid? employeeId = null,
             Guid? customerId = null, CancellationToken cancellationToken = default);
 
-           }
+        Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null, CancellationToken cancellationToken = default);
+
+
+
+    }
 }
