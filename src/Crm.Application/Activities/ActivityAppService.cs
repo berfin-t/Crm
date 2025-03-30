@@ -36,7 +36,8 @@ namespace Crm.Activities
         public async Task<List<ActivityDto>> GetListAllAsync()
         {
             var items = await activityRepository.GetListAsync();
-            return ObjectMapper.Map<List<Activity>, List<ActivityDto>>(items);
+            var sortedItems = items.AsQueryable().OrderByDescending(a => a.Date).ToList();
+            return ObjectMapper.Map<List<Activity>, List<ActivityDto>>(sortedItems);
         }
         #endregion
 

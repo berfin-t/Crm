@@ -7,7 +7,11 @@
 @inject IActivityAppService ActivityAppService
 
 <Container>
-    <h3 class="text-center">Timeline</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-center">Timeline</h3>
+        <Button Color="Color.Success">Add Activity</Button>
+    </div>
+
     <div class="timeline">
         @for (int i = 0; i < activityList.Count; i++)
         {
@@ -28,95 +32,3 @@
     </div>
 </Container>
 
-<style>
-    .timeline {
-        position: relative;
-        width: 60%;
-        margin: auto;
-        padding: 20px 0;
-    }
-
-        .timeline::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background-color: #007bff;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -2px;
-        }
-
-    .timeline-item {
-        display: flex;
-        align-items: center;
-        position: relative;
-        width: 50%;
-        padding: 20px;
-    }
-
-        .timeline-item.left {
-            justify-content: flex-end;
-            text-align: right;
-            left: 0;
-        }
-
-        .timeline-item.right {
-            left: 50%;
-        }
-
-    .timeline-date {
-        background: #007bff;
-        color: white;
-        padding: 10px;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        position: absolute;
-        top: 20px;
-    }
-
-    .timeline-item.left .timeline-date {
-        right: -80px;
-    }
-
-    .timeline-item.right .timeline-date {
-        left: -80px;
-    }
-
-    .timeline-content {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 80%;
-    }
-</style>
-
-@code {
-    private List<ActivityDto> activityList = new();
-    private ActivityDto selectedActivity;
-    private ActivityEditModal activityEditModal;
-
-    protected override async Task OnInitializedAsync()
-    {
-        activityList = await ActivityAppService.GetListAllAsync();
-        if (activityList != null)
-        {
-            activityList = activityList;
-        }
-    }
-
-    private async Task ShowEditModal(ActivityDto activity)
-    {
-        if (activityEditModal != null)
-        {
-            await activityEditModal.ShowModal(activity);
-        }
-    }
-}
