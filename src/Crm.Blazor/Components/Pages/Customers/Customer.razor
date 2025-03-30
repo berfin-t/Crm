@@ -16,7 +16,6 @@
             <DataGrid 
             TItem="CustomerDto" 
             Data="@customerList"
-            @bind-SelectedRow="@selectedCustomer"
             Editable
             Responsive="true">
                 <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable/>
@@ -33,7 +32,7 @@
                     </NewCommandTemplate>
                     <EditCommandTemplate>
                          <Field>
-                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedCustomer))">
+                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(context.Item))">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </Button>
                         </Field>                         

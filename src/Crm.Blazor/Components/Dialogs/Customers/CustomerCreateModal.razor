@@ -64,11 +64,14 @@
     private string Address { get; set; }
     private string CompanyName { get; set; }
 
+    private EventCallback EventCallback { get; set; }
+
     #region reference to the modal component
     private Modal modalRef;
 
-    public Task ShowModal()
+    public Task ShowModal(EventCallback eventCallback)
     {
+        EventCallback = eventCallback;
         return modalRef.Show();
     }
 
@@ -94,6 +97,7 @@
         {
             await CustomerAppService.CreateAsync(CustomerCreateDto);
             await HideModal();
+            await EventCallback.InvokeAsync();
         }
         catch (Exception ex)
         {

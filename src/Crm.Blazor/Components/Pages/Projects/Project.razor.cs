@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazorise.Components;
 using Crm.Blazor.Components.Dialogs.Projects;
 using Crm.Common;
 using Crm.Projects;
@@ -10,28 +12,44 @@ namespace Crm.Blazor.Components.Pages.Projects
 {
     public partial class Project
     {
-        public List<ProjectDto> Projects = new();
+        public List<ProjectDto> ProjectList = new();
         public List<ProjectDto> FilteredProjects = new();
+        public IEnumerable<ProjectDto> ReadDataProjects;
+        public IEnumerable<ProjectDto> ProjectDto;
+
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
         public int TotalCount { get; set; } = 0;
+        public DateTime? startDate { get; set; }
+        public DateTime? endDate { get; set; }
+
         public string selectedProjectName = string.Empty;
         public string selectedProjectId = string.Empty; 
         public EnumStatus SelectedStatus = EnumStatus.Active;
-        public DateTime? startDate { get; set; }
-        public DateTime? endDate { get; set; }
-        private ProjectCreateModal projectCreateModal;
+        public string selectedAutoCompleteText { get; set; }
         IReadOnlyList<DateTime?> selectedDates;
+
+        private ProjectCreateModal projectCreateModal;        
 
         protected override async Task OnInitializedAsync()
         {
+            ProjectDto = await ProjectAppService.GetListAllAsync();
             await LoadMoreProjects();
+
+            await base.OnInitializedAsync();
         }
 
-        private async Task OnProjectSelected(string value)
+        private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
         {
-            selectedProjectId = value;
-        }
+            if(!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(100);
+                if(!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+                {
+                    ReadDataProjects = ProjectDto.Where(x => x.Name.StartsWith(autocompleteReadDataEventArgs.SearchValue, StringComparison.InvariantCultureIgnoreCase));
+                }
+            }
+        }        
 
         public async Task LoadMoreProjects()
         {
@@ -45,7 +63,7 @@ namespace Crm.Blazor.Components.Pages.Projects
             var result = await ProjectAppService.GetListAsync(input);
             if (result?.Items != null)
             {
-                Projects.AddRange(result.Items);
+                ProjectList.AddRange(result.Items);
                 TotalCount = (int)result.TotalCount;
                 CurrentPage++;
                 ApplyFilters();
@@ -56,13 +74,13 @@ namespace Crm.Blazor.Components.Pages.Projects
         {
             if (!string.IsNullOrEmpty(selectedProjectId))
             {
-                FilteredProjects = Projects
+                FilteredProjects = ProjectList
                     .Where(p => p.Id.ToString() == selectedProjectId)
                     .ToList();
             }
             else
             {
-                FilteredProjects = Projects;
+                FilteredProjects = ProjectList;
             }
 
             await InvokeAsync(StateHasChanged);
@@ -75,7 +93,7 @@ namespace Crm.Blazor.Components.Pages.Projects
 
         private void ApplyFilters()
         {
-            FilteredProjects = Projects
+            FilteredProjects = ProjectList
                 .Where(p => string.IsNullOrEmpty(selectedProjectName)|| p.Name.Contains(selectedProjectName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }

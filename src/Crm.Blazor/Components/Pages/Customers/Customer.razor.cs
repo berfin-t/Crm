@@ -1,5 +1,6 @@
 ﻿using Crm.Blazor.Components.Dialogs.Customers;
 using Crm.Customers;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Crm.Blazor.Components.Pages.Customers
         private List<CustomerDto> customerList;
         private CustomerDto selectedCustomer;
         private CustomerUpdateDto customerUpdateDto = new();
+        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         //private bool isEditModalOpen = false;
 
         protected override async Task OnInitializedAsync()
@@ -27,7 +29,8 @@ namespace Crm.Blazor.Components.Pages.Customers
         {
             if (customerCreateModal != null)
             {
-                await customerCreateModal.ShowModal();
+
+                await customerCreateModal.ShowModal(EventCallback);
             }
         }
 

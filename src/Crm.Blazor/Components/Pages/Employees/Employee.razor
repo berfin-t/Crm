@@ -4,9 +4,11 @@
 @using Crm.Employees
 @using Crm.Common
 @using Crm.Blazor.Components
+@using Crm.Positions
 
 @inject NavigationManager Navigation
 @inject IEmployeeAppService EmployeeAppService
+@inject IPositionAppService PositionAppService
 
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
@@ -47,7 +49,7 @@
                     <Div style="display: flex; flex-direction: column; align-items: center;">
                         <Span Style="font-size: 16px; color:black">@employee.FullName</Span>
                         <br />
-                        <Span>@employee.PositionId</Span>
+                        <Span>@PositionDto.FirstOrDefault(p=>p.Id == employee.PositionId)?.Name</Span>
                         <br />
                         <Div style="display: inline-flex; gap: 8px; align-items: center;">
                             <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">
