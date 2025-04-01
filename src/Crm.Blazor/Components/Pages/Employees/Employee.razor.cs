@@ -20,6 +20,7 @@ namespace Crm.Blazor.Components.Pages.Employees
         public int TotalCount { get; set; } = 0;
         public string selectedEmployeeName = string.Empty;
         public string selectedEmployeeId = string.Empty;
+        
         protected override async Task OnInitializedAsync()
         {
             PositionDto = await PositionAppService.GetListAllAsync();

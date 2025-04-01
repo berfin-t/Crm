@@ -47,16 +47,16 @@
             <Card>
                 <CardBody>
                     <Div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="@employee.PhotoPath" alt="Profile Photo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover;" />
+
                         <Span Style="font-size: 16px; color:black">@employee.FullName</Span>
                         <br />
                         <Span>@PositionDto.FirstOrDefault(p=>p.Id == employee.PositionId)?.Name</Span>
-                        <br />
-                        <Div style="display: inline-flex; gap: 8px; align-items: center;">
+                        <br />                        
                             <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">
                                 @employee.Email
-                            </a> | 
-                            <Span Style="color:black;">@employee.PhoneNumber</Span>
-                        </Div>                     
+                            </a> 
+                            <Span Style="color:black;">@employee.PhoneNumber</Span>                                           
 
                     </Div>
                 </CardBody>

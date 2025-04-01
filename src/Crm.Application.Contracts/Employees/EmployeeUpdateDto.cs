@@ -15,5 +15,7 @@ namespace Crm.Employees
         public string Address { get; set; }
         public DateTime BirthDate { get; set; }
         public Guid PositionId { get; set; }
+        public string PhotoPath { get; set; }
+        public EnumGender Gender { get; set; }
     }
 }

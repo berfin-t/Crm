@@ -22,6 +22,8 @@ namespace Crm.Configurations
             builder.Property(x => x.PhoneNumber).HasColumnName(nameof(Employee.PhoneNumber)).IsRequired();
             builder.Property(x => x.Address).HasColumnName(nameof(Employee.Address)).IsRequired();
             builder.Property(x => x.BirthDate).HasColumnName(nameof(Employee.BirthDate)).IsRequired();
+            builder.Property(x => x.PhotoPath).HasColumnName(nameof(Employee.PhotoPath)).IsRequired();
+            builder.Property(x => x.Gender).HasColumnName(nameof(Employee.Gender)).IsRequired();
             builder.Property(x => x.PositionId).HasColumnName(nameof(Employee.PositionId)).IsRequired();
 
             builder.HasOne<Position>().WithMany().IsRequired().HasForeignKey(x => x.PositionId).OnDelete(DeleteBehavior.NoAction);

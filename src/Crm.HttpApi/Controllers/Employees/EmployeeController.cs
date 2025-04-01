@@ -39,5 +39,8 @@ namespace Crm.Controllers.Employees
         [HttpPut]
         [Route("update/{id}")]
         public virtual Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input) => _employeeAppService.UpdateAsync(id, input);
+
+        [HttpPost("upload-photo")]
+        public virtual Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath) => _employeeAppService.UpdatePhotoAsync(employeeId, photoPath);
     }
 }

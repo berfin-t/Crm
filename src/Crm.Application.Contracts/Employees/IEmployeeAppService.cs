@@ -15,5 +15,6 @@ namespace Crm.Employees
         Task<EmployeeDto> GetAsync(Guid id);
         Task<EmployeeDto> CreateAsync(EmployeeCreateDto input);
         Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input);
+        Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath);
     }
 }

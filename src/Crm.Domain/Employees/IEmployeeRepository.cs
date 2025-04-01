@@ -12,11 +12,11 @@ namespace Crm.Employees
     {
         Task<List<Employee>> GetListAsync(string? firstName = null, string? lastName = null,
             string? email = null, string? phoneNumber = null, string? address = null,
-            DateTime? birthDate = null, Guid? positionId = null,
+            DateTime? birthDate = null, string? photoPath=null, EnumGender? gender = null, Guid? positionId = null,
             string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0,
             CancellationToken cancellationToken=default);
         Task<long> GetCountAsync(string? firstName = null, string? lastName = null,
             string? email = null, string? phoneNumber = null, string? address = null,
-            DateTime? birthDate = null, Guid? positionId = null, CancellationToken cancellationToken=default);
+            DateTime? birthDate = null, string? photoPath=null, EnumGender? gender = null, Guid? positionId = null, CancellationToken cancellationToken=default);
     }
 }

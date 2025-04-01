@@ -22,8 +22,13 @@ namespace Crm.Employees
         [NotNull]
         public virtual string Address { get; private set; }
         [NotNull]
+        public virtual string PhotoPath { get; private set; }
+        [NotNull]
+        public virtual EnumGender Gender { get; private set; }
+        [NotNull]
         public virtual DateTime BirthDate { get; private set; }
         public virtual Guid PositionId { get; private set; }
+        
         
         protected Employee()
         {
@@ -33,8 +38,10 @@ namespace Crm.Employees
             PhoneNumber = string.Empty;
             Address = string.Empty;
             BirthDate = DateTime.Now;
+            PhotoPath = string.Empty;
+            
         }
-        public Employee(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, DateTime birthDate, Guid positionId)
+        public Employee(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, DateTime birthDate, string photoPath, EnumGender gender, Guid positionId)
         {
             SetFirstName(firstName);
             SetLastName(lastName);
@@ -43,7 +50,9 @@ namespace Crm.Employees
             SetAddress(address);
             SetBirthDate(birthDate);
             SetPositionId(positionId);
-            
+            SetPhotoPath(photoPath);
+            SetGender(gender);
+
         }
         public void SetFirstName(string firstName) => FirstName = Check.NotNullOrWhiteSpace(firstName, nameof(firstName));
         public void SetLastName(string lastName) => LastName = Check.NotNullOrWhiteSpace(lastName, nameof(lastName));
@@ -52,5 +61,7 @@ namespace Crm.Employees
         public void SetAddress(string address) => Address = Check.NotNullOrWhiteSpace(address, nameof(address));
         public void SetBirthDate(DateTime birthDate) => BirthDate = Check.NotNull(birthDate, nameof(birthDate));
         public void SetPositionId(Guid positionId) => PositionId = Check.NotDefaultOrNull<Guid>(positionId, nameof(positionId));
+        public void SetPhotoPath(string photoPath) => PhotoPath = photoPath;
+        public void SetGender(EnumGender gender) => Gender = Check.NotNull(gender, nameof(gender));
     }
 }
