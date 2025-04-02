@@ -51,7 +51,7 @@
 
                         <Span Style="font-size: 16px; color:black">@employee.FullName</Span>
                         <br />
-                        <Span>@PositionDto.FirstOrDefault(p=>p.Id == employee.PositionId)?.Name</Span>
+                        <Span>@PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name</Span>
                         <br />                        
                             <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">
                                 @employee.Email

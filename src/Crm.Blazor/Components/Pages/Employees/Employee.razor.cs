@@ -13,7 +13,7 @@ namespace Crm.Blazor.Components.Pages.Employees
         public List<EmployeeDto> Employees = new();
         public List<EmployeeDto> FilteredEmployees = new();
 
-        public List<PositionDto> PositionDto { get; set; } = new();
+        public List<PositionDto> PositionList { get; set; } = new();
 
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
@@ -23,7 +23,7 @@ namespace Crm.Blazor.Components.Pages.Employees
         
         protected override async Task OnInitializedAsync()
         {
-            PositionDto = await PositionAppService.GetListAllAsync();
+            PositionList = await PositionAppService.GetListAllAsync();
             await LoadMoreEmployees();
         }
         private async Task OnEmployeeSelected(string value)

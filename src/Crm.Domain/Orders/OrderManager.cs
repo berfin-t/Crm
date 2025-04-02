@@ -11,7 +11,7 @@ namespace Crm.Orders
     public class OrderManager(IOrderRepository orderRepository) : DomainService
     {
         #region Create
-        public virtual async Task<Order> CreateAsync(EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, Guid customerId, Guid projectId)
+        public virtual async Task<Order> CreateAsync(EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
         {
             var order = new Order(
                 GuidGenerator.Create(),
@@ -19,6 +19,7 @@ namespace Crm.Orders
                 orderDate,
                 deliveryDate,
                 totalAmount,
+                orderCode,
                 customerId,
                 projectId
             );
@@ -26,7 +27,7 @@ namespace Crm.Orders
         }
         #endregion
         #region Update
-        public virtual async Task<Order> UpdateAsync(Guid id, EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, Guid customerId, Guid projectId)
+        public virtual async Task<Order> UpdateAsync(Guid id, EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
         {
             var order = await orderRepository.GetAsync(id);
             order.SetStatus(status);
@@ -35,6 +36,7 @@ namespace Crm.Orders
             order.SetTotalAmount(totalAmount);
             order.SetCustomerId(customerId);
             order.SetProjectId(projectId);
+            order.SetOrderCode(orderCode);
             return await orderRepository.UpdateAsync(order);
         }
         #endregion

@@ -16,7 +16,7 @@ namespace Crm.Orders
         public async Task<OrderDto> CreateAsync(OrderCreateDto input)
         {
             var order = await orderManager.CreateAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.CustomerId, input.ProjectId);
+                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
             return ObjectMapper.Map<Order, OrderDto>(order);
         }
@@ -41,10 +41,10 @@ namespace Crm.Orders
         public async Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input)
         {
             var totalCount = await orderRepository.GetCountAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.CustomerId, input.ProjectId);
+                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
             var items = await orderRepository.GetListAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.CustomerId, input.ProjectId);
+                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
             return new PagedResultDto<OrderDto>
             {
@@ -58,7 +58,7 @@ namespace Crm.Orders
         public async Task<OrderDto> UpdateAsync(Guid id, OrderUpdateDto input)
         {
             var order = await orderManager.UpdateAsync(
-                id, input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.CustomerId, input.ProjectId);
+                id, input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
             return ObjectMapper.Map<Order, OrderDto>(order);
         }

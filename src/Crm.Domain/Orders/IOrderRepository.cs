@@ -13,12 +13,12 @@ namespace Crm.Orders
     {
         Task<List<Order>> GetListAsync(ICollection<EnumStatus>? statuses = null, 
             DateTime? orderDate = null, DateTime? deliveryDate = null, 
-            decimal? totalAmount = null, Guid? customerId = null, Guid? projectId = null,
+            decimal? totalAmount = null, string? orderCode = null, Guid? customerId = null, Guid? projectId = null,
             string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0,
             CancellationToken cancellationToken=default);
         Task<long> GetCountAsync(ICollection<EnumStatus>? statuses=null,
             DateTime? orderDate = null, DateTime? deliveryDate = null,
-            decimal? totalAmount = null, Guid? customerId = null, Guid? projectId = null,
+            decimal? totalAmount = null, string? orderCode = null, Guid? customerId = null, Guid? projectId = null,
             CancellationToken cancellationToken=default);
     }
 }

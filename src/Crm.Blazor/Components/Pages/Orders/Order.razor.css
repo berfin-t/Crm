@@ -1,0 +1,25 @@
+﻿.status-label {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background-color: orange;
+    color: white;
+}
+
+.status-completed {
+    background-color: green;
+    color: white;
+}
+
+.status-canceled {
+    background-color: red;
+    color: white;
+}
+
+.status-active {
+    background-color: blue;
+    color: white;
+}

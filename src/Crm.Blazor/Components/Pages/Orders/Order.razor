@@ -3,8 +3,12 @@
 @using Crm.Orders
 @using Blazorise
 @using Blazorise.DataGrid
+@using Crm.Customers
+@using Crm.Projects
 
 @inject IOrderAppService OrderAppService
+@inject ICustomerAppService CustomerAppService
+@inject IProjectAppService ProjectAppService
 
 <Container>
     <Card>
@@ -15,12 +19,25 @@
             @bind-SelectedRow="@selectedOrder"
             Editable
             Responsive="true">
-                <DataGridColumn Field="@nameof(OrderDto.Id)" Caption="Id" Editable/>
-                <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="Status" Editable/>
-                <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="Delivery Date" Editable/>
-                <DataGridColumn Field="@nameof(OrderDto.TotalAmount)" Caption="Total Amount" Editable/>
-                <DataGridColumn Field="@nameof(OrderDto.CustomerId)" Caption="Customer" Editable/>
-                <DataGridColumn Field="@nameof(OrderDto.ProjectId)" Caption="Project" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.OrderCode)" Caption="Order Code" Editable/>
+                <DataGridColumn Caption="Customer">
+                    <DisplayTemplate Context="order">
+                        @((CustomerList.FirstOrDefault(c => c.Id == order.CustomerId)?.FullName) ?? "N/A")
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn Caption="Project">
+                    <DisplayTemplate Context="order">
+                        @((ProjectList.FirstOrDefault(p => p.Id == order.ProjectId)?.Name) ?? "N/A")
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="Delivery Date" Editable />
+                <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="Status" Editable>
+                    <DisplayTemplate Context="order">
+                        <span class="status-label status-@order.Status.ToString().ToLower()">
+                            @order.Status
+                        </span>
+                    </DisplayTemplate>
+                </DataGridColumn>
 
                 <DataGridCommandColumn>
                     <NewCommandTemplate>

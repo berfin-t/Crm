@@ -207,6 +207,7 @@ public class CrmDataSeederContributor(
                 f.Date.Past(),
                 f.Date.Future(),
                 f.Random.Decimal(1000, 5000),
+                f.Random.String2(6, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 
                 f.PickRandom(customers),
                 f.PickRandom(projects)
                 ));

@@ -21,6 +21,7 @@ namespace Crm.Configurations
             builder.Property(x => x.OrderDate).HasColumnName(nameof(Order.OrderDate)).IsRequired();
             builder.Property(x => x.DeliveryDate).HasColumnName(nameof(Order.DeliveryDate));
             builder.Property(x => x.TotalAmount).HasColumnName(nameof(Order.TotalAmount)).IsRequired();
+            builder.Property(x => x.OrderCode).HasColumnName(nameof(Order.OrderCode)).IsRequired();
 
             builder.HasOne<Customer>().WithMany().IsRequired().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne<Project>().WithMany().IsRequired().HasForeignKey(x => x.ProjectId).OnDelete(DeleteBehavior.NoAction);
