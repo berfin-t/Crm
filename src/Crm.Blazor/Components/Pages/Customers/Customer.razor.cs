@@ -1,4 +1,5 @@
-﻿using Crm.Blazor.Components.Dialogs.Customers;
+﻿using Blazorise.DataGrid;
+using Crm.Blazor.Components.Dialogs.Customers;
 using Crm.Customers;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
@@ -10,17 +11,14 @@ namespace Crm.Blazor.Components.Pages.Customers
     public partial class Customer
     {
         private CustomerDto CustomerDto { get; set; }
-        private List<CustomerDto> customerList;
-        private CustomerDto selectedCustomer;
-        private CustomerUpdateDto customerUpdateDto = new();
+        private List<CustomerDto> customerList;        
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
-        //private bool isEditModalOpen = false;
 
         protected override async Task OnInitializedAsync()
         {
             customerList = await CustomerAppService.GetListAllAsync();
             await base.OnInitializedAsync();
-        }
+        }        
 
         private CustomerCreateModal customerCreateModal;
         private CustomerEditModal customerEditModal;
@@ -42,6 +40,8 @@ namespace Crm.Blazor.Components.Pages.Customers
             }
         }
 
+        //private CustomerDto selectedCustomer;
+        //private CustomerUpdateDto customerUpdateDto = new();
         //private void EditCustomer(CustomerDto customer)
         //{
         //    customerUpdateDto = new CustomerUpdateDto

@@ -41,7 +41,7 @@
 </Div>
 
 <Row>
-    @foreach (var employee in Employees)
+    @foreach (var employee in FilteredEmployees)
     {
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
@@ -64,3 +64,6 @@
         </Column>
     }
 </Row>
+@* <Div Flex="Flex.JustifyContent.Center">
+    <Button Color="Color.Light" @onclick="LoadMoreEmployees">Load More</Button>
+</Div> *@

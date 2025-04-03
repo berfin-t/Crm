@@ -35,7 +35,7 @@ namespace Crm.Customers
         #region GetListAll
         public async Task<List<CustomerDto>> GetListAllAsync()
         {
-            var items= await customerRepository.GetListAsync();
+            var items = await customerRepository.GetListAsync();
             return ObjectMapper.Map<List<Customer>, List<CustomerDto>>(items);
         }
         #endregion
@@ -60,9 +60,9 @@ namespace Crm.Customers
         #region Update
         public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
         {
-           var customer = await customerManager.UpdateAsync(
-               id, input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
-            
+            var customer = await customerManager.UpdateAsync(
+                id, input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
 
         }
@@ -74,5 +74,6 @@ namespace Crm.Customers
             return await customerRepository.GetCountAsync();
         }
         #endregion
+        
     }
 }

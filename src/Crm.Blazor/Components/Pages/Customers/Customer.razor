@@ -13,11 +13,13 @@
             
         </CardHeader>
         <CardBody>         
-            <DataGrid 
-            TItem="CustomerDto" 
-            Data="@customerList"
-            Editable
-            Responsive="true">
+            <DataGrid TItem="CustomerDto"
+                      Data="@customerList"
+                      Editable
+                      Responsive
+                      ShowPager
+                      PagerPosition="DataGridPagerPosition.Bottom">
+
                 <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable/>
                 <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="Phone" Editable />
                 <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable />

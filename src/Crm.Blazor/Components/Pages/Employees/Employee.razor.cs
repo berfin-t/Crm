@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Positions;
+using Crm.Projects;
 
 namespace Crm.Blazor.Components.Pages.Employees
 {
@@ -18,6 +19,7 @@ namespace Crm.Blazor.Components.Pages.Employees
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
         public int TotalCount { get; set; } = 0;
+
         public string selectedEmployeeName = string.Empty;
         public string selectedEmployeeId = string.Empty;
         
@@ -25,7 +27,10 @@ namespace Crm.Blazor.Components.Pages.Employees
         {
             PositionList = await PositionAppService.GetListAllAsync();
             await LoadMoreEmployees();
+
+            await base.OnInitializedAsync();
         }
+        
         private async Task OnEmployeeSelected(string value)
         {
             selectedEmployeeId = value;
@@ -34,16 +39,18 @@ namespace Crm.Blazor.Components.Pages.Employees
         {
             var input = new GetPagedEmployeesInput
             {
-                Sorting = "StartTime ASC",
+                Sorting = "FirstName ASC",
                 MaxResultCount = PageSize,
                 SkipCount = CurrentPage * PageSize
             };
             var result = await EmployeeAppService.GetListAsync(input);
             if (result?.Items != null)
-            {
+            {              
+
                 Employees.AddRange(result.Items);
                 TotalCount = (int)result.TotalCount;
                 CurrentPage++;
+                ApplyFilters();
             }
         }
         public async Task ApplySearch()
@@ -61,6 +68,13 @@ namespace Crm.Blazor.Components.Pages.Employees
 
             await InvokeAsync(StateHasChanged);
 
+        }
+
+        private void ApplyFilters()
+        {
+            FilteredEmployees = Employees
+                .Where(e => string.IsNullOrEmpty(selectedEmployeeName) || e.FirstName.Contains(selectedEmployeeName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
         
     }

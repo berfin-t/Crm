@@ -72,16 +72,10 @@
                     <Paragraph Margin="Margin.Is3.FromTop">
                         @(project.Description.Length > 80 ? project.Description[..80] + "..." : project.Description)
                     </Paragraph>
-                    <Div Flex="Flex.AlignItems.Center">
-                        <Div class="progress-container">
-                            <Div class="progress-header">
-                                <span>Progress</span>
-                                <span>@GetCompletionPercentage(project.StartTime, project.EndTime)%</span>
-                            </Div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: @GetCompletionPercentage(project.StartTime, project.EndTime)%;"></div>
-                        </div>
-                    </Div>
+                    <Div class="progress-container">
+                        <Div class="progress-bar" style="@($"width: {GetCompletionPercentage(project.StartTime, project.EndTime)}%")">
+                            <Span class="progress-text">@GetCompletionPercentage(project.StartTime, project.EndTime)%</Span>
+                        </Div>
                     </Div>
                     <br />
                     <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">Read More</Anchor>

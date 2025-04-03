@@ -36,6 +36,7 @@ namespace Crm.Blazor.Components.Pages.Projects
             ProjectDto = await ProjectAppService.GetListAllAsync();
             await LoadMoreProjects();
 
+
             await base.OnInitializedAsync();
         }
 
@@ -84,12 +85,7 @@ namespace Crm.Blazor.Components.Pages.Projects
             }
 
             await InvokeAsync(StateHasChanged);
-        }
-
-        public async Task ApplyDateFilter()
-        {
-            ApplyFilters();
-        }
+        }        
 
         private void ApplyFilters()
         {
@@ -103,16 +99,21 @@ namespace Crm.Blazor.Components.Pages.Projects
             Navigation.NavigateTo($"/project-detail/{projectId}");
         }
 
-        public int GetCompletionPercentage(DateTime? start, DateTime? end)
+        private int GetCompletionPercentage(DateTime? start, DateTime? end)
         {
             if (!start.HasValue || !end.HasValue || start >= end)
+            {
                 return 0;
+            }
 
             var totalDuration = (end.Value - start.Value).TotalDays;
             var elapsedDuration = (DateTime.Now - start.Value).TotalDays;
+            var percentage = (elapsedDuration / totalDuration) * 100;
 
-            return Math.Clamp((int)((elapsedDuration / totalDuration) * 100), 0, 100);
+            return Math.Clamp((int)percentage, 0, 100);
         }
+
+
 
         public async Task ShowCreateModal()
         {

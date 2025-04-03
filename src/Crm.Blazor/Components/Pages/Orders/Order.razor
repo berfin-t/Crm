@@ -15,10 +15,12 @@
         <CardBody>
             <DataGrid 
                 TItem="OrderDto"
-            Data="@orderList"
-            @bind-SelectedRow="@selectedOrder"
+            Data="@orderList"            
             Editable
-            Responsive="true">
+            Responsive
+            ShowPager
+            PagerPosition="DataGridPagerPosition.Bottom">
+
                 <DataGridColumn Field="@nameof(OrderDto.OrderCode)" Caption="Order Code" Editable/>
                 <DataGridColumn Caption="Customer">
                     <DisplayTemplate Context="order">
