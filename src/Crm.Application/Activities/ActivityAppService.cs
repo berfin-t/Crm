@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Entities;
 
 namespace Crm.Activities
 {
@@ -69,7 +70,21 @@ namespace Crm.Activities
                 input.Description, input.Date);
 
             return ObjectMapper.Map<Activity, ActivityDto>(avtivity);
-        }       
+        }
+        #endregion
+
+        #region Delete
+        //[Authorize(CrmPermissions.Activities.Delete)]
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var activity = await activityRepository.GetAsync(id);
+            if (activity == null)
+            {
+                throw new EntityNotFoundException(typeof(Activity), id);
+            }
+            activity.IsDeleted = true;
+            await activityRepository.DeleteAsync(activity);
+        }
         #endregion
     }
 }

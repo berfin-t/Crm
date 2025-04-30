@@ -3,10 +3,20 @@
 @using Crm.Tasks
 @using Crm.Common
 @using Blazorise
+@using Blazorise.Bootstrap5
+@using Blazorise.Icons.FontAwesome
+
+
 
 @inject ITaskAppService TaskAppService
 
-<DropContainer TItem="TaskDto" Items="@tasks" ItemsFilter="@((item, dropZone) => item.Status.ToString() == dropZone)" ItemDropped="@TaskDropped" Flex="Flex.Wrap.Grow.Is1">
+<h3 class="mb-4">Görev Yönetimi</h3>
+
+<DropContainer TItem="TaskDto"
+               Items="@items"
+               ItemsFilter="@((item, dropZone) => item.Status.ToString() == dropZone)"
+               ItemDropped="@TaskDropped"
+               Flex="Flex.Wrap.Grow.Is1">
     <ChildContent>
         @foreach (var status in Enum.GetValues<EnumStatus>())
         {
@@ -15,15 +25,15 @@
             </DropZone>
         }
     </ChildContent>
+
     <ItemTemplate>
         <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY">
             <CardBody>
-                <strong>@context.Title</strong> <br />
-                <p>@context.Description</p>
-                <p><strong>Due Date:</strong> @context.DueDate.ToShortDateString()</p>
-                <p><strong>Priority:</strong> @context.Priority</p>
+                <strong>@context.Title</strong> 
             </CardBody>
         </Card>
     </ItemTemplate>
+
+
 </DropContainer>
 

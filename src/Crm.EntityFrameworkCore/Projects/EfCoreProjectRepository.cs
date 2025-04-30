@@ -21,7 +21,7 @@ namespace Crm.Projects
         public async Task<List<Project>> GetListAllAsync(string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null, string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default)
         {
             var query = ApplyDataFilters(await GetQueryableAsync(), name, description, startTime, endTime, statues, revenue, succesRate, employeeId, customerId);
-            query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? OrderConsts.GetDefaultSorting(false) : sorting);
+            query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? ProjectConsts.GetDefaultSorting(false) : sorting);
             return await query.PageBy(skipCount, maxResults).ToListAsync(cancellationToken);
         }
         #endregion
@@ -54,14 +54,7 @@ namespace Crm.Projects
         public async Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null, CancellationToken cancellationToken = default)
         {
             var query = await GetQueryableAsync();
-
-            if (successRate.HasValue)
-            {
-                query = query.Where(p => p.SuccessRate == successRate.Value);
-            }
-
             var average = await query.AverageAsync(p => p.SuccessRate, cancellationToken);
-
             return Math.Round(average, 2);
         }
 

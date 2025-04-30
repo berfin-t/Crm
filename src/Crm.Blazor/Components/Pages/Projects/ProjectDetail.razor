@@ -61,7 +61,7 @@
                         </DropdownToggle>
                         <DropdownMenu>
                             <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem>Delete</DropdownItem>
+                            <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>    
                             <DropdownItem>Invite</DropdownItem>
                             <DropdownItem>Leave</DropdownItem>
                             
@@ -108,10 +108,27 @@ else
     <p>Loading project details...</p>
 }
 
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Onayla</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            Silmek istediğinize emin misiniz?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
 @code {
     [Inject]
     public IProjectAppService ProjectAppService { get; set; }
-
+    [Inject] public NavigationManager NavigationManager { get; set; }
     [Parameter]
     public Guid ProjectId { get; set; }
 
@@ -121,6 +138,14 @@ else
     {
         project = await ProjectAppService.GetAsync(ProjectId);
     }
+    private bool isDeleteModalVisible = false;
+
+    private async Task ConfirmDelete()
+    {
+        await ProjectAppService.DeleteAsync(ProjectId);
+        NavigationManager.NavigateTo("/projects");
+    }
+
 }
 
 <style>

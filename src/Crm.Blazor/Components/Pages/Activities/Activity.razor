@@ -32,3 +32,46 @@
     </div>
 </Container>
 
+<Modal @bind-Visible="isActivityModalVisible" Size="ModalSize.Medium" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Activity Details</ModalTitle>
+            <Button CloseButton @onclick="() => isActivityModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            @if (selectedActivity != null)
+            {
+                <div>
+                    <p><strong>Description:</strong> @selectedActivity.Description</p>
+                    <p><strong>Date:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
+                    <p><strong>Customer ID:</strong> @selectedActivity.CustomerId</p>
+                    <p><strong>Employee ID:</strong> @selectedActivity.EmployeeId</p>
+                    <p><strong>Type:</strong> @selectedActivity.Type.ToString()</p>
+                </div>
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity))">Edit</Button>
+            <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">Delete</Button>
+            <Button Color="Color.Secondary" @onclick="() => isActivityModalVisible = false">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Onayla</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            Silmek istediğinize emin misiniz?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+

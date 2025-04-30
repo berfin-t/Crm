@@ -39,5 +39,9 @@ namespace Crm.Controllers.Activities
         [HttpPut]
         [Route("update/{id}")]
         public virtual Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input) => _activityAppService.UpdateAsync(id, input);
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public virtual Task DeleteAsync(Guid id) => _activityAppService.DeleteAsync(id);
     }
 }

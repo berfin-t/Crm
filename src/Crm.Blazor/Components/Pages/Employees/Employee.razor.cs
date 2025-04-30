@@ -39,7 +39,6 @@ namespace Crm.Blazor.Components.Pages.Employees
         {
             var input = new GetPagedEmployeesInput
             {
-                Sorting = "FirstName ASC",
                 MaxResultCount = PageSize,
                 SkipCount = CurrentPage * PageSize
             };

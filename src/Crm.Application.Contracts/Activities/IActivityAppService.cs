@@ -15,5 +15,6 @@ namespace Crm.Activities
         Task<ActivityDto> GetAsync(Guid id);
         Task<ActivityDto> CreateAsync(ActivityCreateDto input);
         Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input);
+        Task DeleteAsync(Guid id);
     }
 }

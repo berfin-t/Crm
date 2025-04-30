@@ -17,5 +17,6 @@ namespace Crm.Projects
         Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input);
         Task<long> GetTotalProjectCountAsync();
         Task<decimal> GetSuccessRateAverageAsync(decimal? succesRate);
+        Task DeleteAsync(Guid id);
     }
 }

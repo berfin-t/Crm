@@ -47,7 +47,9 @@ namespace Crm.Controllers.Projects
         [Route("success-rate-average")]
         public virtual Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null) => _projectAppService.GetSuccessRateAverageAsync(successRate);
 
-
+        [HttpDelete]
+        [Route("{id}")]
+        public virtual Task DeleteAsync(Guid id) => _projectAppService.DeleteAsync(id);
 
     }
 }

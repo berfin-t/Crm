@@ -90,5 +90,19 @@ namespace Crm.Projects
         }
         #endregion
 
+        #region Delete
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var project = await projectRepository.GetAsync(id);
+            if (project == null)
+            {
+                throw new BusinessException("Project not found.");
+            }
+
+            project.IsDeleted = true;
+
+            await projectRepository.UpdateAsync(project);
+        }
+        #endregion
     }
 }
