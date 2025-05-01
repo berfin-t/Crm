@@ -8,7 +8,6 @@
 @inject IProjectAppService ProjectAppService
 @inject ITaskAppService TasksAppService
 @inject ICustomerAppService CustomersAppService
-@using Blazorise.Charts
 @using Crm.Common
 
 <Card>
@@ -46,7 +45,48 @@
     </CardBody>
 </Card>
 
+<Card class="mt-4">
+    <CardBody>
+        <Div class="progress-info">
+            <Div class="top-label">Project Success Rate</Div>
+            <Progress Class="my-2" Max="100" Value="@(Convert.ToInt32(totalSuccessRate))" Color="Color.Success" />
+            <Div class="field-label">@($"{totalSuccessRate}%")</Div>
+        </Div>
+    </CardBody>
+</Card>
+
+<div class="row">
+    <div class="col-md-6">
+        <Card class="mt-4">
+            <CardBody>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.UserPlus" Class="icon" />
+                    <Div>
+                        <Div class="top-label">New Customers This Month</Div>
+                        <Div class="field-label">@newCustomersThisMonth</Div>
+                    </Div>
+                </Div>
+            </CardBody>
+        </Card>
+    </div>
+
+    <div class="col-md-6">
+        <Card class="mt-4">
+            <CardBody>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Star" Class="icon" />
+                    <Div>
+                        <Div class="top-label">Active Tasks</Div>
+                        <Div class="field-label">@activeTasks</Div>
+                    </Div>
+                </Div>
+            </CardBody>
+        </Card>
+    </div>
+</div>
+
 @code {
+    
     private long totalProjects;
     private long totalTasks;
     private long totalCustomer;
@@ -58,8 +98,21 @@
         totalProjects = await ProjectAppService.GetTotalProjectCountAsync();
         totalTasks = await TasksAppService.GetTotalTaskCountAsync();
         totalCustomer = await CustomersAppService.GetTotalCustomerCountAsync();
-        totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(successRate);  // Yazým hatasý düzeltildi
+        totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(successRate); 
+        
+        var allCustomers = await CustomersAppService.GetListAllAsync();
+        var now = DateTime.Now;
+
+        newCustomersThisMonth = allCustomers
+            .Count(c => c.CreationTime.Month == now.Month && c.CreationTime.Year == now.Year);
+
+        var allTasks = await TasksAppService.GetListAllAsync(); 
+        activeTasks = allTasks.Count(t => t.Status == EnumStatus.Active); 
+
     }
+
+    private int newCustomersThisMonth;  
+    private int activeTasks;
 }
 
 

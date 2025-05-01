@@ -16,5 +16,6 @@ namespace Crm.Customers
         public string Phone { get; set; }
         public string Address { get; set; }
         public string CompanyName { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

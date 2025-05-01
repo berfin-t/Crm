@@ -17,5 +17,6 @@ namespace Crm.Tasks
         public EnumStatus Status { get; set; }
         public Guid EmployeeId { get; set; }
         public Guid CustomerId { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }
