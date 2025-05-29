@@ -66,12 +66,20 @@
 
     private EventCallback EventCallback { get; set; }
 
-    #region reference to the modal component
     private Modal modalRef;
 
     public Task ShowModal(EventCallback eventCallback)
     {
         EventCallback = eventCallback;
+
+        Name = string.Empty;
+        Surname = string.Empty;
+        Email = string.Empty;
+        Phone = string.Empty;
+        Address = string.Empty;
+        CompanyName = string.Empty;
+        CustomerCreateDto = new CustomerCreateDto(); 
+
         return modalRef.Show();
     }
 
@@ -79,7 +87,6 @@
     {
         return modalRef.Hide();
     }
-    #endregion
 
     #region Create Customer
     private CustomerCreateDto CustomerCreateDto { get; set; } = new CustomerCreateDto();

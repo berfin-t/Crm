@@ -9,7 +9,7 @@ namespace Crm.Projects
         public const int MaxDescriptionLength = 2048;
         public const int MinDescriptionLength = 2048;
 
-        public const string DefaultSorting = "{0}StartTime asc";
+        public const string DefaultSorting = "{0}StartTime desc";
 
         public static string GetDefaultSorting(bool withEntityName)
         {

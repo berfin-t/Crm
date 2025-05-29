@@ -8,7 +8,7 @@ namespace Crm.Customers
 {
     public class CustomerConsts
     {
-        public const string DefaultSorting = "{0} Name desc";
+        public const string DefaultSorting = "{0} Name asc";
 
         public static string GetDefaultSorting(bool withEntityName)
         {

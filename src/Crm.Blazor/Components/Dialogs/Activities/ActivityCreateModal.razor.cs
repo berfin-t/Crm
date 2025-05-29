@@ -10,27 +10,30 @@ using Blazorise;
 namespace Crm.Blazor.Components.Dialogs.Activities
 {
     public partial class ActivityCreateModal
-    {     
-
-        protected override async Task OnInitializedAsync()
-        {
-            Employees = await EmployeeAppService.GetListAllAsync();
-            Customers = await CustomerAppService.GetListAllAsync();
-        }
-
+    {
+     
         #region Form Fields
         public string? Description { get; set; }
         private DateTime? ActivityDate { get; set; }
         private EnumType Types { get; set; }
         private string? Employee { get; set; }
         private string? Customer { get; set; }
+        
+        private EventCallback EventCallback { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Employees = await EmployeeAppService.GetListAllAsync();
+            Customers = await CustomerAppService.GetListAllAsync();
+        }
         #endregion
 
         #region reference to the modal component
         private Modal modalRef;
 
-        public Task ShowModal()
+        public Task ShowModal(EventCallback eventCallback)
         {
+            EventCallback = eventCallback.HasDelegate ? eventCallback : EventCallback.Factory.Create(this, () => Task.CompletedTask);
             return modalRef.Show();
         }
 
@@ -40,12 +43,12 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         }
         #endregion
 
-        #region Create Project
+        #region Create Activity
         private ActivityCreateDto ActivityCreateDto { get; set; } = new ActivityCreateDto();
         private Guid SelectedEmployeeId { get; set; }
         private Guid SelectedCustomerId { get; set; }
 
-        private async Task CreateProjectAsync()
+        private async Task CreateActivityAsync()
         {
 
             ActivityCreateDto.Description = Description;

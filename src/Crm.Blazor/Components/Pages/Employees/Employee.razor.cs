@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Crm.Positions;
 using Crm.Projects;
+using Crm.Blazor.Components.Dialogs.Employees;
+using Microsoft.AspNetCore.Components;
 
 namespace Crm.Blazor.Components.Pages.Employees
 {
@@ -13,16 +15,25 @@ namespace Crm.Blazor.Components.Pages.Employees
     {
         public List<EmployeeDto> Employees = new();
         public List<EmployeeDto> FilteredEmployees = new();
-
         public List<PositionDto> PositionList { get; set; } = new();
-
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
         public int TotalCount { get; set; } = 0;
-
         public string selectedEmployeeName = string.Empty;
         public string selectedEmployeeId = string.Empty;
-        
+
+        private EmployeeCreateModal employeeCreateModal;
+        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+
+
+        //private async Task ShowCreateModal()
+        //{
+        //    if (employeeCreateModal != null)
+        //    {
+        //        await employeeCreateModal.ShowModal(EventCallback);
+        //    }
+        //}
+
         protected override async Task OnInitializedAsync()
         {
             PositionList = await PositionAppService.GetListAllAsync();
@@ -30,7 +41,7 @@ namespace Crm.Blazor.Components.Pages.Employees
 
             await base.OnInitializedAsync();
         }
-        
+
         private async Task OnEmployeeSelected(string value)
         {
             selectedEmployeeId = value;
@@ -44,7 +55,7 @@ namespace Crm.Blazor.Components.Pages.Employees
             };
             var result = await EmployeeAppService.GetListAsync(input);
             if (result?.Items != null)
-            {              
+            {
 
                 Employees.AddRange(result.Items);
                 TotalCount = (int)result.TotalCount;
@@ -68,13 +79,12 @@ namespace Crm.Blazor.Components.Pages.Employees
             await InvokeAsync(StateHasChanged);
 
         }
-
         private void ApplyFilters()
         {
             FilteredEmployees = Employees
                 .Where(e => string.IsNullOrEmpty(selectedEmployeeName) || e.FirstName.Contains(selectedEmployeeName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
-        
+
     }
 }

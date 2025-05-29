@@ -54,27 +54,3 @@
 
 <Crm.Blazor.Components.Dialogs.Contacts.ContactCreateModal @ref="contactCreateModal" />
 <Crm.Blazor.Components.Dialogs.Contacts.ContactEditModal @ref="contactEditModal" />
-
-@code {
-    private List<ContactDto> contactList;
-    private ContactDto selectedContact;
-
-    protected override async Task OnInitializedAsync()
-    {
-        contactList = await ContactAppService.GetListAllAsync();
-    }
-
-    private ContactCreateModal contactCreateModal;
-    private ContactEditModal contactEditModal;
-
-    private async Task ShowCreateModal()
-    {        
-        await contactCreateModal.ShowModal();
-    }
-
-    private async Task ShowEditModal(ContactDto contact)
-    {
-        selectedContact = contact;
-        await contactEditModal.ShowModal(contact);
-    }
-}

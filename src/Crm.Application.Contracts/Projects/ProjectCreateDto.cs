@@ -10,10 +10,8 @@ namespace Crm.Projects
         [Required]
         public string Name { get; set; } 
         public string? Description { get; set; }
-        [Required]
-        public DateTime StartTime { get; set; } 
-        [Required]
-        public DateTime EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         [Required]
         public EnumStatus Statues { get; set; }
         [Required]

@@ -28,15 +28,12 @@
                                   TextField="@(( item ) => item.Name)"
                                   ValueField="@((item) => item.Id.ToString())"
                                   @bind-SelectedText="selectedAutoCompleteText"
+                                  @onkeydown="@OnEntered"
                                   Placeholder="Search..."   
                                   FreeTyping>
                         <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                    </Autocomplete>
-                    <FieldBody ColumnSize="ColumnSize.Is12">
-                        Selected text value: @selectedAutoCompleteText
-                    </FieldBody>
+                    </Autocomplete>                    
                 </Field>
-@*                 <Button Color="Color.Primary" @onclick="ApplySearch">Search</Button> *@
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <DatePicker TValue="DateTime?" 
                         @bind-Dates="selectedDates" 

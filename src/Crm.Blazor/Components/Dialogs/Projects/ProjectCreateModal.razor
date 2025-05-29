@@ -22,14 +22,14 @@
                 <Card>
                     <Field>
                         <FieldLabel>Start Time:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="StartTime" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="StartTime"  />
                     </Field>
                 </Card>
 
                 <Card>
                     <Field>
                         <FieldLabel>End Time:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="EndTime" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="EndTime"  />
                     </Field>
                 </Card>
                 <Field>
@@ -87,6 +87,9 @@
     [Inject]
     public ICustomerAppService CustomerAppService { get; set; }
 
+    private EventCallback EventCallback { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
         Employees = await EmployeeAppService.GetListAllAsync();
@@ -96,7 +99,7 @@
     #region Form Fields
     private string? Name { get; set; } 
     private string? Description { get; set; }
-    private DateTime? StartTime { get; set; } 
+    private DateTime? StartTime {get; set; } 
     private DateTime? EndTime { get; set; } 
     private EnumStatus Status { get; set; }
     private decimal Revenue { get; set; }
@@ -108,8 +111,9 @@
     #region reference to the modal component
     private Modal modalRef;
 
-    public Task ShowModal()
+    public Task ShowModal(EventCallback eventCallback)
     {
+        EventCallback = eventCallback;
         return modalRef.Show();
     }
 
@@ -126,11 +130,11 @@
     private Guid SelectedCustomerId { get; set; }
 
     private async Task CreateProjectAsync()  {
-        
+
         ProjectCreateDto.Name = Name;
         ProjectCreateDto.Description = Description;
-        ProjectCreateDto.StartTime = StartTime ?? DateTime.MinValue; 
-        ProjectCreateDto.EndTime = EndTime ?? DateTime.MinValue;     
+        ProjectCreateDto.StartTime = StartTime;
+        ProjectCreateDto.EndTime = EndTime;
         ProjectCreateDto.Statues = Status;
         ProjectCreateDto.Revenue = Revenue;
         ProjectCreateDto.SuccesRate = SuccesRate;
@@ -140,7 +144,7 @@
         try
         {
             await ProjectAppService.CreateAsync(ProjectCreateDto);
-            await HideModal();
+            await HideModal();            
         }
         catch (Exception ex)
         {

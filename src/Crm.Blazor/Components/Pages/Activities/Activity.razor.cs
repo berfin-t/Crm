@@ -11,7 +11,16 @@ namespace Crm.Blazor.Components.Pages.Activities
 {
     public partial class Activity
     {
+        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Parameter]  public Guid ActivityId { get; set; }
+
         private List<ActivityDto> activityList = new();
+        private bool isActivityModalVisible = false;
+        private ActivityDto selectedActivity;
+        private bool isDeleteModalVisible = false;
+        private ActivityCreateModal activityCreateModal;
+
+        private EventCallback reloadActivitiesCallback => EventCallback.Factory.Create(this, ReloadActivities);
 
         protected override async Task OnInitializedAsync()
         {
@@ -21,10 +30,18 @@ namespace Crm.Blazor.Components.Pages.Activities
                 activityList = allActivities.Where(a => a.Date > DateTime.Now).ToList();
             }
         }
-
-        private bool isActivityModalVisible = false;
-        private ActivityDto selectedActivity;
-
+        public async Task ReloadActivities()
+        {
+            activityList.Clear();
+            await InvokeAsync(StateHasChanged);
+        }
+        public async Task ShowCreateModal()
+        {
+            if (activityCreateModal != null)
+            {
+                await activityCreateModal.ShowModal(reloadActivitiesCallback);
+            }
+        }
         private void ShowEditModal(ActivityDto activity)
         {
             selectedActivity = activity;
@@ -35,14 +52,7 @@ namespace Crm.Blazor.Components.Pages.Activities
         {
             Console.WriteLine($"Edit clicked for activity ID: {activity.Id}");
         }
-
-        private bool isDeleteModalVisible = false;
-
-        [Inject] public NavigationManager NavigationManager { get; set; }
-        [Parameter]
-        public Guid ActivityId { get; set; }
-
-        // Silme işlemi
+    
         private async Task ConfirmDelete()
         {
             if (selectedActivity != null && selectedActivity.Id != Guid.Empty)

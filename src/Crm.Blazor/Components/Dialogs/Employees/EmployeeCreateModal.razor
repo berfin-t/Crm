@@ -1,0 +1,85 @@
+﻿@* <CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Add Employee</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Employee Name:</FieldLabel>
+                    <InputText @bind-Value="FirstName" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Employee Surname:</FieldLabel>
+                    <InputText @bind-Value="LastName" class="form-control"/>
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Email:</FieldLabel>
+                        <InputText @bind-Value="Email" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Phone:</FieldLabel>
+                        <InputText @bind-Value="PhoneNumber" class="form-control" />
+                    </Field>
+                </Card> 
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Address:</FieldLabel>
+                        <InputText @bind-Value="Address" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Birth Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="BirthDate" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>
+
+                <Field>
+                    <FieldLabel>Positions:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedPositionId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var position in Positions)
+                        {
+                            <SelectItem Value="@position.Id">@position.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+                <Card>
+    <Field>
+        <FieldLabel>Photo:</FieldLabel>
+        <InputText @bind-Value="PhotoPath" class="form-control" />
+    </Field>
+</Card>
+
+<Field>
+    <FieldLabel>Gender:</FieldLabel>
+    <Select TValue="EnumGender" @bind-SelectedValue="Gender">
+        <SelectItem Value="EnumGender.Male">Male</SelectItem>
+        <SelectItem Value="EnumGender.Female">Female</SelectItem>
+    </Select>
+</Field>
+
+
+
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateCustomerAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>
+
+@code {
+
+}
+ *@

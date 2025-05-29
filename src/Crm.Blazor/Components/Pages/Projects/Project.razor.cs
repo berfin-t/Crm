@@ -7,6 +7,8 @@ using Blazorise.Components;
 using Crm.Blazor.Components.Dialogs.Projects;
 using Crm.Common;
 using Crm.Projects;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Crm.Blazor.Components.Pages.Projects
 {
@@ -14,6 +16,7 @@ namespace Crm.Blazor.Components.Pages.Projects
     {
         public List<ProjectDto> ProjectList = new();
         public List<ProjectDto> FilteredProjects = new();
+        
         public IEnumerable<ProjectDto> ReadDataProjects;
         public IEnumerable<ProjectDto> ProjectDto;
 
@@ -29,13 +32,14 @@ namespace Crm.Blazor.Components.Pages.Projects
         public string selectedAutoCompleteText { get; set; }
         IReadOnlyList<DateTime?> selectedDates;
 
+
+
         private ProjectCreateModal projectCreateModal;        
 
         protected override async Task OnInitializedAsync()
         {
             ProjectDto = await ProjectAppService.GetListAllAsync();
             await LoadMoreProjects();
-
 
             await base.OnInitializedAsync();
         }
@@ -56,7 +60,7 @@ namespace Crm.Blazor.Components.Pages.Projects
         {
             var input = new GetPagedProjectsInput
             {
-                Sorting = "StartTime ASC",
+                Sorting = "StartTime DESC",
                 MaxResultCount = PageSize,
                 SkipCount = CurrentPage * PageSize
             };
@@ -64,34 +68,36 @@ namespace Crm.Blazor.Components.Pages.Projects
             var result = await ProjectAppService.GetListAsync(input);
             if (result?.Items != null)
             {
-                ProjectList.AddRange(result.Items);
+                ProjectList.InsertRange(0, result.Items);
                 TotalCount = (int)result.TotalCount;
                 CurrentPage++;
                 ApplyFilters();
             }
         }
 
-        public async Task ApplySearch()
+        public async Task OnEntered(KeyboardEventArgs args)
         {
-            if (!string.IsNullOrEmpty(selectedProjectId))
+            if(args.Code=="Enter" || args.Code=="NumpadEnter")
             {
-                FilteredProjects = ProjectList
-                    .Where(p => p.Id.ToString() == selectedProjectId)
-                    .ToList();
+                ApplySearch();
             }
-            else
-            {
-                FilteredProjects = ProjectList;
-            }
+        }
+        public async Task ApplySearch()
+        {           
 
-            await InvokeAsync(StateHasChanged);
+            List<ProjectDto> Deneme = ProjectDto.Where(p => string.IsNullOrEmpty(selectedAutoCompleteText) || p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            FilteredProjects = Deneme;
         }        
 
         private void ApplyFilters()
         {
+
             FilteredProjects = ProjectList
-                .Where(p => string.IsNullOrEmpty(selectedProjectName)|| p.Name.Contains(selectedProjectName, StringComparison.OrdinalIgnoreCase))
+                .Where(p => string.IsNullOrEmpty(selectedAutoCompleteText) || p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase))
                 .ToList();
+
+            
         }
 
         public void NavigateToProjectDetail(Guid projectId)
@@ -113,16 +119,15 @@ namespace Crm.Blazor.Components.Pages.Projects
             return Math.Clamp((int)percentage, 0, 100);
         }
 
-
-
         public async Task ShowCreateModal()
         {
             if (projectCreateModal != null)
             {
-                await projectCreateModal.ShowModal();
+                await projectCreateModal.ShowModal(EventCallback);
             }
         }
 
-        
+        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+
     }
 }

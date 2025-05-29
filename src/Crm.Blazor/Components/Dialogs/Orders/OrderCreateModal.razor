@@ -3,8 +3,11 @@
 @code {
     private Modal modalRef;
 
-    public Task ShowModal()
+    private EventCallback EventCallback { get; set; }
+
+    public Task ShowModal(EventCallback eventCallback)
     {
+        EventCallback = eventCallback;
         return modalRef.Show();
     }
 
