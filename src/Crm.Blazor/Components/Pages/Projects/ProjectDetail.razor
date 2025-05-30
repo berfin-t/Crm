@@ -77,11 +77,11 @@
             <Div class="project-dates">
                 <Div>
                     <strong>Start Date</strong>
-                    <p>@project.StartTime.ToString("dd MMMM yyyy h:mm tt")</p>
+                    <p>@(project.StartTime.HasValue ? project.StartTime.Value.ToString("dd MMMM yyyy h:mm tt") : "-")</p>
                 </Div>
                 <Div>
                     <strong>End Date</strong>
-                    <p>@project.EndTime.ToString("dd MMMM yyyy h:mm tt")</p>
+                    <p>@(project.EndTime.HasValue ? project.EndTime.Value.ToString("dd MMMM yyyy h:mm tt") : "-")</p>
                 </Div>
                 @* <Div>
                     <strong>Budget</strong>

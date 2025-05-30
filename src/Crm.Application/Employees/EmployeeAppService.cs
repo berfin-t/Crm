@@ -21,7 +21,7 @@ namespace Crm.Employees
         {
             var employee = await employeeManager.CreateAsync(
                 input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address,
-                input.BirthDate, input.PhotoPath, input.Gender, input.PositionId);
+                input.BirthDate.Value, input.PhotoPath, input.Gender, input.PositionId);
 
             return ObjectMapper.Map<Employee, EmployeeDto>(employee);
         }

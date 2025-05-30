@@ -8,6 +8,8 @@ using Crm.Positions;
 using Crm.Projects;
 using Crm.Blazor.Components.Dialogs.Employees;
 using Microsoft.AspNetCore.Components;
+using Blazorise.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Crm.Blazor.Components.Pages.Employees
 {
@@ -22,17 +24,41 @@ namespace Crm.Blazor.Components.Pages.Employees
         public string selectedEmployeeName = string.Empty;
         public string selectedEmployeeId = string.Empty;
 
-        private EmployeeCreateModal employeeCreateModal;
+        public IEnumerable<EmployeeDto> ReadDataEmployees;
+        public IEnumerable<EmployeeDto> EmployeeDto;
+
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+        public string selectedAutoCompleteText { get; set; }
 
+        private EmployeeCreateModal employeeCreateModal;
 
-        //private async Task ShowCreateModal()
-        //{
-        //    if (employeeCreateModal != null)
-        //    {
-        //        await employeeCreateModal.ShowModal(EventCallback);
-        //    }
-        //}
+        private async Task ShowCreateModal()
+        {
+            if (employeeCreateModal != null)
+            {
+                await employeeCreateModal.ShowModal(EventCallback);
+            }
+        }
+        public async Task OnEntered(KeyboardEventArgs args)
+        {
+            if (args.Code == "Enter" || args.Code == "NumpadEnter")
+            {
+                ApplyFilters();
+            }
+        }
+      
+
+        private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
+        {
+            if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(100);
+                if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
+                {
+                    ReadDataEmployees = EmployeeDto.Where(x => x.FirstName.StartsWith(autocompleteReadDataEventArgs.SearchValue, StringComparison.InvariantCultureIgnoreCase));
+                }
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -62,23 +88,9 @@ namespace Crm.Blazor.Components.Pages.Employees
                 CurrentPage++;
                 ApplyFilters();
             }
-        }
-        public async Task ApplySearch()
-        {
-            if (!string.IsNullOrEmpty(selectedEmployeeId))
-            {
-                FilteredEmployees = Employees
-                    .Where(e => e.Id.ToString() == selectedEmployeeId)
-                    .ToList();
-            }
-            else
-            {
-                FilteredEmployees = Employees;
-            }
+        }             
 
-            await InvokeAsync(StateHasChanged);
-
-        }
+        
         private void ApplyFilters()
         {
             FilteredEmployees = Employees

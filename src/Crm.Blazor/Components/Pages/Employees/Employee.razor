@@ -18,24 +18,25 @@
                     
                     <Autocomplete TItem="EmployeeDto"
                                   TValue="string"
-                                  Data="@Employees"
+                                  Data="@ReadDataEmployees"
+                                  ReadData="@OnHandleReadData"
                                   TextField="@(( item ) => item.FirstName)"
                                   ValueField="@((item) => item.Id.ToString())"
+                                  @bind-SelectedText="selectedAutoCompleteText"
+                                  @onkeydown="@OnEntered"
                                   Placeholder="Search..."
-                                  HighlightSearch
-                                  Value="@selectedEmployeeId"
-                                  ValueChanged="@OnEmployeeSelected"
-                                  ValueExpression="@( () => selectedEmployeeId )">
+                                  FreeTyping>
                         <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
                     </Autocomplete>                    
                 </Field>
-                <Button Color="Color.Primary" @onclick="ApplySearch">Search</Button>                
             </Div>
-            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">                             
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
+
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-@*                     <Button Color="Color.Primary" Clicked="@ShowCreateModal">Add Employee</Button>
- *@                </Field>
-            </Div>            
+                    <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Employee</Button>
+                </Field>               
+
+            </Div>
         </CardBody>
     </Card>
 </Div>

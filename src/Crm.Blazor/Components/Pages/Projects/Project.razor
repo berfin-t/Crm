@@ -14,14 +14,7 @@
         <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
             <Div>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Project</Button>
-                </Field>              
-                
-            </Div>
-            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
-                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-
-                    <Autocomplete TItem="ProjectDto"
+                <Autocomplete TItem="ProjectDto"
                                   TValue="string"
                                   Data="@ReadDataProjects"
                                   ReadData="@OnHandleReadData"
@@ -31,23 +24,30 @@
                                   @onkeydown="@OnEntered"
                                   Placeholder="Search..."   
                                   FreeTyping>
-                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                    </Autocomplete>                    
-                </Field>
+                    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                </Autocomplete>
+                </Field>                          
+                
+            </Div>
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">              
+
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                        <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Project</Button>
+                    </Field>                
+                    @* <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <DatePicker TValue="DateTime?" 
-                        @bind-Dates="selectedDates" 
-                        InputMode="DateInputMode.Date" 
-                        SelectionMode="DateInputSelectionMode.Range" />
-                </Field>
-                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <Select TValue="EnumStatus" @bind-Value="SelectedStatus">
-                        @foreach (var status in Enum.GetValues<EnumStatus>())
-                        {
-                            <SelectItem Value="@status">@status</SelectItem>
-                        }
-                    </Select>
-                </Field>
+                        @bind-Dates="selectedDates"
+                        @onchange="@((_) => ApplyFilters())"
+                        InputMode="DateInputMode.Date"
+                        SelectionMode="DateInputSelectionMode.Range"/>
+                </Field> *@
+                @* <Select TValue="EnumStatus?" @bind-Value="SelectedStatus" @onchange="(_) => ApplyFilters()">
+                    <SelectItem Value="@(null as EnumStatus?)">Tümü</SelectItem>
+                    @foreach (var status in Enum.GetValues<EnumStatus>())
+                    {
+                        <SelectItem Value="@status">@status</SelectItem>
+                    }
+                </Select> *@
                 
             </Div>            
         </CardBody>
@@ -80,6 +80,7 @@
             </Card>
         </Column>
     }
+
 </Row>
 <Div Flex="Flex.JustifyContent.Center">
     <Button Color="Color.Light" @onclick="LoadMoreProjects">Load More</Button>

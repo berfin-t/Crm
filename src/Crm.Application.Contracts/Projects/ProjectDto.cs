@@ -13,8 +13,8 @@ namespace Crm.Projects
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public EnumStatus Status { get; set; } 
         public decimal Revenue { get; set; }
         public decimal SuccessRate { get; set; }

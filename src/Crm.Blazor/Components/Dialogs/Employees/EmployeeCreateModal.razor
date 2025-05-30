@@ -1,4 +1,8 @@
-﻿@* <CascadingValue Value="this">
+﻿@using Crm.Employees
+@using Crm.Positions
+@using Crm.Common
+
+<CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
@@ -31,14 +35,14 @@
                 <Card>
                     <Field>
                         <FieldLabel>Address:</FieldLabel>
-                        <InputText @bind-Value="Address" class="form-control" />
+                        <InputText @bind-Value="EmployeeAddress" class="form-control" />
                     </Field>
                 </Card>
 
                 <Card>
                     <Field>
                         <FieldLabel>Birth Date:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="BirthDate" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="BirthDate" Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
 
@@ -54,32 +58,105 @@
                 </Field>
 
                 <Card>
-    <Field>
-        <FieldLabel>Photo:</FieldLabel>
-        <InputText @bind-Value="PhotoPath" class="form-control" />
-    </Field>
-</Card>
+                    <Field>
+                        <FieldLabel>Photo:</FieldLabel>
+                        <InputText @bind-Value="PhotoPath" class="form-control" />
+                    </Field>
+                </Card>
 
-<Field>
-    <FieldLabel>Gender:</FieldLabel>
-    <Select TValue="EnumGender" @bind-SelectedValue="Gender">
-        <SelectItem Value="EnumGender.Male">Male</SelectItem>
-        <SelectItem Value="EnumGender.Female">Female</SelectItem>
-    </Select>
-</Field>
+                <Field>
+                    <FieldLabel>Gender:</FieldLabel>
+                    <Select @bind-SelectedValue="Gender">
+                        @foreach (var gender in Enum.GetValues(typeof(EnumGender)).Cast<EnumGender>())
+                        {
+                            <SelectItem Value="@gender">@gender</SelectItem>
+                        }
+                    </Select>
+                </Field>
 
 
 
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@CreateCustomerAsync">Save Changes</Button>
+                <Button Color="Color.Primary" Clicked="@CreateEmployeeAsync">Save Changes</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>
 </CascadingValue>
 
-@code {
 
+
+@code {
+    [Inject] 
+    public IPositionAppService PositionAppService { get; set; } 
+    [Inject]
+    public IEmployeeAppService EmployeeAppService { get; set; }
+
+    private EventCallback EventCallback { get; set; }
+
+    private Modal modalRef;
+    private Guid SelectedPositionId { get; set; } 
+
+    #region Form Fields
+    private string? FirstName { get; set; }
+    private string? LastName { get; set; }
+    private string? Email { get; set; }
+    private string? PhoneNumber { get; set; }
+    private string? EmployeeAddress { get; set; }
+    private DateTime? BirthDate { get; set; }
+    private string? Position { get; set; }
+    private string? PhotoPath { get; set; }
+    private EnumGender Gender { get; set; }
+    #endregion
+
+    protected override async Task  OnInitializedAsync()
+    {
+        Positions = await PositionAppService.GetListAllAsync();
+    }
+
+    #region Positions Select
+    private List<PositionDto> Positions { get; set; } = new();
+
+    private async Task PositionSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var positionId))
+        {
+            SelectedPositionId = positionId;
+            await InvokeAsync(StateHasChanged);
+        }
+        
+    }
+    #endregion
+    public Task ShowModal(EventCallback eventCallback)
+    {
+        EventCallback = eventCallback;
+        return modalRef.Show();
+    }
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+    
+    private EmployeeCreateDto EmployeeCreateDto { get; set; } = new EmployeeCreateDto();    
+
+    private async Task CreateEmployeeAsync() {
+        EmployeeCreateDto.FirstName = FirstName;
+        EmployeeCreateDto.LastName = LastName;
+        EmployeeCreateDto.Email = Email;
+        EmployeeCreateDto.PhoneNumber = PhoneNumber;
+        EmployeeCreateDto.Address = EmployeeAddress;
+        EmployeeCreateDto.BirthDate = BirthDate;
+        EmployeeCreateDto.PositionId = SelectedPositionId;
+        EmployeeCreateDto.PhotoPath = PhotoPath;
+
+        try{
+            await EmployeeAppService.CreateAsync(EmployeeCreateDto);
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating employee: {ex.Message}");
+    }
+        }
 }
- *@

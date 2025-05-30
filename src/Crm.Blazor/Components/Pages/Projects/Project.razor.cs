@@ -28,9 +28,9 @@ namespace Crm.Blazor.Components.Pages.Projects
 
         public string selectedProjectName = string.Empty;
         public string selectedProjectId = string.Empty; 
-        public EnumStatus SelectedStatus = EnumStatus.Active;
+        //public EnumStatus SelectedStatus = EnumStatus.Active;
         public string selectedAutoCompleteText { get; set; }
-        IReadOnlyList<DateTime?> selectedDates;
+        //IReadOnlyList<DateTime?> selectedDates;
 
 
 
@@ -79,26 +79,23 @@ namespace Crm.Blazor.Components.Pages.Projects
         {
             if(args.Code=="Enter" || args.Code=="NumpadEnter")
             {
-                ApplySearch();
+                ApplyFilters();
             }
         }
-        public async Task ApplySearch()
-        {           
-
-            List<ProjectDto> Deneme = ProjectDto.Where(p => string.IsNullOrEmpty(selectedAutoCompleteText) || p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase)).ToList();
-
-            FilteredProjects = Deneme;
-        }        
+        //public async Task ApplySearch()
+        //{       
+        //    List<ProjectDto> Deneme = ProjectDto.Where(p => string.IsNullOrEmpty(selectedAutoCompleteText) || p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase)).ToList();
+        //    FilteredProjects = Deneme;
+        //}
+        public EnumStatus? SelectedStatus { get; set; } = null;
 
         private void ApplyFilters()
         {
-
             FilteredProjects = ProjectList
                 .Where(p => string.IsNullOrEmpty(selectedAutoCompleteText) || p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            
+        .ToList();
         }
+
 
         public void NavigateToProjectDetail(Guid projectId)
         {
