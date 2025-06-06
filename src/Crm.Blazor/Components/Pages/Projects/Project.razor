@@ -33,15 +33,16 @@
 
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                         <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Project</Button>
-                    </Field>                
+                    </Field>      
+                    
                     @* <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <DatePicker TValue="DateTime?" 
                         @bind-Dates="selectedDates"
                         @onchange="@((_) => ApplyFilters())"
                         InputMode="DateInputMode.Date"
                         SelectionMode="DateInputSelectionMode.Range"/>
-                </Field> *@
-                @* <Select TValue="EnumStatus?" @bind-Value="SelectedStatus" @onchange="(_) => ApplyFilters()">
+                </Field> 
+                 <Select TValue="EnumStatus?" @bind-Value="SelectedStatus" @onchange="(_) => ApplyFilters()">
                     <SelectItem Value="@(null as EnumStatus?)">Tümü</SelectItem>
                     @foreach (var status in Enum.GetValues<EnumStatus>())
                     {
@@ -70,10 +71,10 @@
                         @(project.Description.Length > 80 ? project.Description[..80] + "..." : project.Description)
                     </Paragraph>
                     <Div class="progress-container">
-                        <Div class="progress-bar" style="@($"width: {GetCompletionPercentage(project.StartTime, project.EndTime)}%")">
-                            <Span class="progress-text">@GetCompletionPercentage(project.StartTime, project.EndTime)%</Span>
-                        </Div>
+                        <Progress value="@GetCompletionPercentage(project.StartTime, project.EndTime)" max="100"></Progress>
+                        <P>%@GetCompletionPercentage(project.StartTime, project.EndTime) tamamlandı</P>
                     </Div>
+
                     <br />
                     <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">Read More</Anchor>
                 </CardBody>

@@ -10,8 +10,8 @@ namespace Crm.Orders
     public class OrderCreateDto
     {
         public EnumStatus Status { get; set; }
-        public DateTime OrderDate { get; set; }
-        public DateTime DeliveryDate { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public DateTime? DeliveryDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string OrderCode { get; set; }
         public Guid CustomerId { get; set; }

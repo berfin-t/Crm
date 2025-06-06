@@ -1,5 +1,151 @@
-﻿<h3>ProjectEditModal</h3>
+﻿@using Crm.Employees
+@using Crm.Customers
+@using Crm.Projects
+@using Crm.Common
+@using System.ComponentModel.DataAnnotations
+
+<Modal Visible="IsEditModalVisible" Size="ModalSize.Large" BackdropClickToClose="false">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Edit Project</ModalTitle>
+            <Button CloseButton @onclick="CloseModal" />
+        </ModalHeader>
+
+        <ModalBody>
+            <Validations @ref="validationsRef" Model="Project">
+                <Fields>
+
+                    <Field>
+                        <Label>Name</Label>
+                        <TextEdit @bind-Text="Project.Name" />
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Description</Label>
+                        <TextEdit @bind-Text="Project.Description" />
+                    </Field>
+
+                    <Field>
+                        <Label>Start Time</Label>
+                        <DateEdit @bind-Date="Project.StartTime" />
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>End Time</Label>
+                        <DateEdit @bind-Date="Project.EndTime" />
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Status</Label>
+                        <div class="d-flex flex-column">
+                            @foreach (var status in Enum.GetValues<EnumStatus>())
+                            {
+                                <Check TValue="bool"
+                                       @bind-Checked="BindStatus[status]"
+                                       Caption="@status.ToString()" />
+                            }
+                        </div>
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Revenue</Label>
+                        <NumericEdit @bind-Value="Project.Revenue" />
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Success Rate (%)</Label>
+                        <NumericEdit @bind-Value="Project.SuccessRate" />
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Employee</Label>
+                        <Select TValue="Guid" @bind-SelectedValue="Project.EmployeeId">
+                            @foreach (var emp in Employees)
+                            {
+                                <SelectItem Value="@emp.Id">@emp.FirstName</SelectItem>
+                            }
+                        </Select>
+                        <Validation />
+                    </Field>
+
+                    <Field>
+                        <Label>Customer</Label>
+                        <Select TValue="Guid" @bind-SelectedValue="Project.CustomerId">
+                            @foreach (var cust in Customers)
+                            {
+                                <SelectItem Value="@cust.Id">@cust.Name</SelectItem>
+                            }
+                        </Select>
+                        <Validation />
+                    </Field>
+
+                </Fields>
+            </Validations>
+        </ModalBody>
+
+        <ModalFooter>
+            <Button Color="Color.Primary" @onclick="SubmitAsync">Save</Button>
+            <Button Color="Color.Secondary" @onclick="CloseModal">Cancel</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
 
 @code {
+    [Parameter]
+    public bool IsEditModalVisible { get; set; }
 
+    [Parameter]
+    public EventCallback<bool> IsEditModalVisibleChanged { get; set; }
+
+    [Parameter]
+    public ProjectUpdateDto Project { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<ProjectUpdateDto> OnProjectUpdated { get; set; }
+
+    [Parameter]
+    public List<EmployeeDto> Employees { get; set; } = new();
+
+    [Parameter]
+    public List<CustomerDto> Customers { get; set; } = new();
+
+    private Validations validationsRef;
+
+    public Dictionary<EnumStatus, bool> BindStatus { get; set; } = new();
+    public ICollection<EnumStatus> Status { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Project != null)
+        {
+            BindStatus = Enum.GetValues<EnumStatus>().ToDictionary(
+                status => status,
+                status => Project.Status == status
+            );
+        }
+    }
+
+
+
+    private async Task SubmitAsync()
+    {
+        if (await validationsRef.ValidateAll())
+        {
+            Project.Status = BindStatus.FirstOrDefault(x => x.Value).Key;
+            await OnProjectUpdated.InvokeAsync(Project);
+            await CloseModal();
+        }
+    }
+
+    private async Task CloseModal()
+    {
+        IsEditModalVisible = false;
+        await IsEditModalVisibleChanged.InvokeAsync(false);
+    }
 }

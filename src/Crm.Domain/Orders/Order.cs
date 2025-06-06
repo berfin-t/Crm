@@ -15,7 +15,7 @@ namespace Crm.Orders
         [NotNull]
         public virtual EnumStatus Status { get; private set; }
         [NotNull]
-        public virtual DateTime OrderDate { get; private set; }
+        public virtual DateTime? OrderDate { get; private set; }
         [NotNull]
         public virtual DateTime? DeliveryDate { get; private set; }
         [NotNull]
@@ -29,12 +29,11 @@ namespace Crm.Orders
         protected Order()
         {
             Status = EnumStatus.Pending;
-            OrderDate = DateTime.Now;
             TotalAmount = 0;
             OrderCode = string.Empty;
         }
 
-        public Order(Guid id, EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
+        public Order(Guid id, EnumStatus status, DateTime? orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
         {
             SetStatus(status);
             SetOrderDate(orderDate);
@@ -46,7 +45,7 @@ namespace Crm.Orders
         }
 
         public void SetStatus(EnumStatus status) => Status = Check.NotNull(status, nameof(status));
-        public void SetOrderDate(DateTime orderDate) => OrderDate = Check.NotNull(orderDate, nameof(orderDate));
+        public void SetOrderDate(DateTime? orderDate) => OrderDate = orderDate;
         public void SetDeliveryDate(DateTime? deliveryDate) => DeliveryDate = deliveryDate;
         public void SetTotalAmount(decimal totalAmount) => TotalAmount = Check.NotNull(totalAmount, nameof(totalAmount));
         public void SetCustomerId(Guid customerId) => CustomerId = Check.NotDefaultOrNull<Guid>(customerId, nameof(customerId));

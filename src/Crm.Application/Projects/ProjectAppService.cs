@@ -40,7 +40,7 @@ namespace Crm.Projects
         #endregion
 
         #region GetListAll
-        public virtual async Task<List<ProjectDto>> GetListAllAsync()
+        public async Task<List<ProjectDto>> GetListAllAsync()
         {
             var items = await projectRepository.GetListAsync();
             return ObjectMapper.Map<List<Project>, List<ProjectDto>>(items);
@@ -69,8 +69,8 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input)
         {
             var project = await projectManager.UpdateAsync(
-                id, input.EmployeeId, input.CustomerId, input.Name, input.StartTime, input.EndTime, input.Statues.FirstOrDefault(),
-                input.Revenue, input.SuccesRate, input.Description);
+                id, input.EmployeeId, input.CustomerId, input.Name, input.StartTime.Value, input.EndTime.Value, input.Status,
+                input.Revenue, input.SuccessRate, input.Description);
 
             return ObjectMapper.Map<Project, ProjectDto>(project);
         }

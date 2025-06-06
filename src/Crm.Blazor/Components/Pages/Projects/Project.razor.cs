@@ -37,7 +37,7 @@ namespace Crm.Blazor.Components.Pages.Projects
         private ProjectCreateModal projectCreateModal;        
 
         protected override async Task OnInitializedAsync()
-        {
+        {            
             ProjectDto = await ProjectAppService.GetListAllAsync();
             await LoadMoreProjects();
 
@@ -100,7 +100,7 @@ namespace Crm.Blazor.Components.Pages.Projects
         public void NavigateToProjectDetail(Guid projectId)
         {
             Navigation.NavigateTo($"/project-detail/{projectId}");
-        }
+        }       
 
         private int GetCompletionPercentage(DateTime? start, DateTime? end)
         {

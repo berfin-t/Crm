@@ -1,9 +1,135 @@
-﻿<h3>OrderCreateModal</h3>
+﻿@using Crm.Orders
+@using Crm.Common
+@using Crm.Customers
+@using Crm.Projects
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Add Order</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Order Status:</FieldLabel>
+                    <Select @bind-SelectedValue="Status">
+                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        {
+                            <SelectItem Value="@status">@status</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Order Date:</FieldLabel>
+                    <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="OrderDate" Format="yyyy-MM-dd" />
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Delivery Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="DeliveryDate" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Total Amount:</FieldLabel>
+                        <InputNumber @bind-Value="TotalAmount" class="form-control" />
+                    </Field>
+                </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>Order Code:</FieldLabel>
+                        <InputNumber @bind-Value="OrderCode" class="form-control" />
+                    </Field>
+                </Card>             
+
+                <Field>
+                    <FieldLabel>Customers:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedCustomerId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var customer in Customers)
+                        {
+                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+                <Field>
+                    <FieldLabel>Projects:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedProjectId">
+                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        @foreach (var project in Projects)
+                        {
+                            <SelectItem Value="@project.Id">@project.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>             
+
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateOrderAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>
+
+
 
 @code {
+    [Inject]
+    public ICustomerAppService CustomerAppService { get; set; }
+    [Inject]
+    public IProjectAppService ProjectAppService { get; set; }
+    [Inject]
+    public IOrderAppService OrderAppService { get; set; }
+
     private Modal modalRef;
 
     private EventCallback EventCallback { get; set; }
+    private Guid SelectedCustomerId { get; set; }
+    private Guid SelectedProjectId { get; set; }
+
+    #region Form Fields
+    private EnumStatus Status { get; set; } = EnumStatus.Pending;
+    private DateTime? OrderDate { get; set; } 
+    private DateTime? DeliveryDate { get; set; }
+    private decimal TotalAmount { get; set; }
+    private string OrderCode { get; set; } 
+    private string Customer  { get; set; } 
+    private string Project { get; set; }
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        Customers = await CustomerAppService.GetListAllAsync();
+        Projects = await ProjectAppService.GetListAllAsync();
+    }
+
+    #region Customers and Projects Select
+    private List<CustomerDto> Customers { get; set; } = new();
+    private List<ProjectDto> Projects { get; set; } = new();
+
+    private async Task CustomerSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var customerId))
+        {
+            SelectedCustomerId = customerId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task ProjectSelect(ChangeEventArgs e)
+    {
+        if (Guid.TryParse(e.Value?.ToString(), out var projectId))
+        {
+            SelectedProjectId = projectId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    #endregion
 
     public Task ShowModal(EventCallback eventCallback)
     {
@@ -14,5 +140,30 @@
     private Task HideModal()
     {
         return modalRef.Hide();
+    }
+
+    private OrderCreateDto OrderCreateDto { get; set; } = new OrderCreateDto();
+
+    private async Task CreateOrderAsync() {
+        OrderCreateDto.Status = Status;
+        OrderCreateDto.OrderDate = OrderDate;
+        OrderCreateDto.DeliveryDate = DeliveryDate;
+        OrderCreateDto.TotalAmount = TotalAmount;
+        OrderCreateDto.OrderCode = OrderCode;
+        OrderCreateDto.CustomerId = SelectedCustomerId;
+        OrderCreateDto.ProjectId = SelectedProjectId;
+
+        try {
+            await OrderAppService.CreateAsync(OrderCreateDto);
+            await HideModal();
+            if (EventCallback.HasDelegate)
+            {
+                await EventCallback.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating order: {ex.Message}");
+        }
     }
 }

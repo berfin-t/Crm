@@ -12,12 +12,11 @@ namespace Crm.Blazor.Components.Pages.Orders
     public partial class Order
     {
         [Parameter]  public EventCallback OnOrderCreated { get; set; }
-        private OrderDto OrderDto { get; set; } 
-        private List<CustomerDto> CustomerList { get; set; } = new();
-        private List<ProjectDto> ProjectList { get; set; } = new();
-        public List<OrderDto> orderList;
+        private OrderDto OrderDto { get; set; }
+        private List<CustomerDto> CustomerList = new();
+        private List<ProjectDto> ProjectList;
         private OrderDto selectedOrder;
-        public List<OrderDto> OrderList { get; set; } = new();
+        public List<OrderDto> orderList { get; set; }
         private OrderCreateModal orderCreateModal;
         private OrderEditModal orderEditModal;
 

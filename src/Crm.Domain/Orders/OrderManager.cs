@@ -11,7 +11,7 @@ namespace Crm.Orders
     public class OrderManager(IOrderRepository orderRepository) : DomainService
     {
         #region Create
-        public virtual async Task<Order> CreateAsync(EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
+        public virtual async Task<Order> CreateAsync(EnumStatus status, DateTime? orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
         {
             var order = new Order(
                 GuidGenerator.Create(),

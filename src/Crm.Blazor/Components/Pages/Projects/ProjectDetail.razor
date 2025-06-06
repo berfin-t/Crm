@@ -1,48 +1,50 @@
 ﻿@page "/project-detail/{ProjectId:guid}"
 
+@using Crm.Employees
+@using Crm.Customers
 @using Crm.Projects
+@using Crm.Common
 @using Blazorise.Icons.FontAwesome
+@using System.ComponentModel.DataAnnotations
 
-
+<PageTitle>Project Detail</PageTitle>
 
 @if (project != null)
 {
-    <PageTitle>Project Detail</PageTitle>
     <Card>
         <CardBody>
             <Div class="project-overview">
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.CheckSquare" Class="icon" />
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Total Tasks</Div>
                         <Div class="field-label">210</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" Class="icon" />
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" /> 
                     <Div>
-                        <Div class="top-label">Total Tasks Completed</Div>
+                        <Div class="top-label">Tasks Completed</Div>
                         <Div class="field-label">121</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />       
                     <Div>
-                        <Div class="top-label">Total Team Size</Div>
+                        <Div class="top-label">Team Size</Div>
                         <Div class="field-label">12</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Clock" Class="icon" />
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />       
                     <Div>
-                        <Div class="top-label">Total Hours Spent</Div>
+                        <Div class="top-label">Hours Spent</Div>
                         <Div class="field-label">2500</Div>
                     </Div>
                 </Div>
             </Div>
         </CardBody>
     </Card>
-
 
     <Card>
         <CardBody>
@@ -54,54 +56,43 @@
                             @project.Status
                         </span>
                     </h4>
-
                     <Dropdown>
                         <DropdownToggle>
                             <span class="menu-icon">⋮</span>
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>    
-                            <DropdownItem>Invite</DropdownItem>
-                            <DropdownItem>Leave</DropdownItem>
-                            
+                            <DropdownItem @onclick="() => ShowEditModal()">Edit</DropdownItem>
+                            <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
                 </Div>
             </CardTitle>
 
-            <p class="project-overview">
-                @project.Description
-            </p>
+            <p class="project-overview">@project.Description</p>
 
             <Div class="project-dates">
                 <Div>
                     <strong>Start Date</strong>
-                    <p>@(project.StartTime.HasValue ? project.StartTime.Value.ToString("dd MMMM yyyy h:mm tt") : "-")</p>
+                    <p>@(project.StartTime?.ToString("dd MMMM yyyy h:mm tt") ?? "-")</p>
                 </Div>
                 <Div>
                     <strong>End Date</strong>
-                    <p>@(project.EndTime.HasValue ? project.EndTime.Value.ToString("dd MMMM yyyy h:mm tt") : "-")</p>
+                    <p>@(project.EndTime?.ToString("dd MMMM yyyy h:mm tt") ?? "-")</p>
                 </Div>
-                @* <Div>
-                    <strong>Budget</strong>
-                    <p>@project.Budget.ToString("C")</p>
-                </Div> *@
             </Div>
 
             <Div class="team-members">
                 <strong>Team Members:</strong>
-                @* <Div class="member-avatars">
-                    @foreach (var member in project.TeamMembers)
-                    {
-                        <img src="@member.ProfileImage" alt="@member.Name" class="member-avatar" />
-                    }
-                </Div> *@
+                <!-- Üye avatarları veya isimleri buraya eklenecek -->
             </Div>
         </CardBody>
     </Card>
 
-    
+    @* <ProjectEditModal Visible="IsEditModalVisible"
+                      Project="selectedProject"
+                      Employees="Employees"
+                      Customers="Customers"
+                      OnProjectUpdated="HandleProjectUpdated" /> *@
 }
 else
 {
@@ -124,21 +115,23 @@ else
     </ModalContent>
 </Modal>
 
-
 @code {
-    [Inject]
-    public IProjectAppService ProjectAppService { get; set; }
+    [Inject] public IProjectAppService ProjectAppService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
-    [Parameter]
-    public Guid ProjectId { get; set; }
 
+    [Parameter] public Guid ProjectId { get; set; }
     private ProjectDto project;
+    private ProjectUpdateDto selectedProject = new();
+    private bool IsEditModalVisible = false;
+    private bool isDeleteModalVisible = false;
+
+    [Parameter] public List<EmployeeDto> Employees { get; set; }
+    [Parameter] public List<CustomerDto> Customers { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         project = await ProjectAppService.GetAsync(ProjectId);
     }
-    private bool isDeleteModalVisible = false;
 
     private async Task ConfirmDelete()
     {
@@ -146,6 +139,31 @@ else
         NavigationManager.NavigateTo("/projects");
     }
 
+    private void ShowEditModal()
+    {
+        selectedProject = new ProjectUpdateDto
+        {
+            Id = project.Id,
+            Name = project.Name,
+            Description = project.Description,
+            StartTime = project.StartTime,
+            EndTime = project.EndTime,
+            Status = project.Status,
+            Revenue = project.Revenue,
+            SuccessRate = project.SuccessRate,
+            EmployeeId = project.EmployeeId,
+            CustomerId = project.CustomerId
+        };
+
+        IsEditModalVisible = true;
+    }
+
+    private async Task HandleProjectUpdated(ProjectUpdateDto updatedProject)
+    {
+        project = await ProjectAppService.GetAsync(ProjectId);
+        IsEditModalVisible = false;
+        StateHasChanged();
+    }
 }
 
 <style>
