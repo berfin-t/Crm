@@ -18,6 +18,11 @@ public class CrmApplicationAutoMapperProfile : Profile
         CreateMap<Activity, ActivityDto>();
         CreateMap<ActivityCreateDto, Activity>();
         CreateMap<ActivityUpdateDto, Activity>();
+        CreateMap<ActivityWithNavigationPropertyDto, Activity>();
+        CreateMap<ActivityWithNavigationPropertyDto, ActivityWithNavigationProperties>()
+        .ForMember(dest => dest.Activity, opt => opt.MapFrom(src => src.Activity))
+        .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
+        .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee)).ReverseMap();
 
         CreateMap<Contact, ContactDto>();
         CreateMap<ContactCreateDto, Contact>();
@@ -27,11 +32,11 @@ public class CrmApplicationAutoMapperProfile : Profile
         CreateMap<CustomerNoteCreateDto, CustomerNote>();
         CreateMap<CustomerNoteUpdateDto, CustomerNote>();
 
-        CreateMap<Customer, CustomerDto>();
+        CreateMap<Customer, CustomerDto>().ReverseMap();
         CreateMap<CustomerCreateDto, Customer>();
         CreateMap<CustomerUpdateDto, Customer>();
 
-        CreateMap<Employee, EmployeeDto>();
+        CreateMap<Employee, EmployeeDto>().ReverseMap();
         CreateMap<EmployeeCreateDto, Employee>();
         CreateMap<EmployeeUpdateDto, Employee>();
 

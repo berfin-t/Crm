@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using Crm.Customers;
 
 
 namespace Crm.Activities
@@ -53,6 +54,34 @@ namespace Crm.Activities
 
             return query;
         }
+        #endregion
+
+        #region GetQueryForNavigationProperties
+        protected virtual async Task<IQueryable<ActivityWithNavigationProperties>> GetQueryForNavigationPropertiesAsync()
+        {
+            var dbContext = await GetDbContextAsync();
+            return from activity in dbContext.Activities
+                   join customer in dbContext.Customers on activity.CustomerId equals customer.Id into customers
+                   from customer in customers.DefaultIfEmpty()
+                   join employee in dbContext.Employees on activity.EmployeeId equals employee.Id into employees
+                   from employee in employees.DefaultIfEmpty()
+
+                   select new ActivityWithNavigationProperties
+                   {
+                       Activity = activity,
+                       Customer = customer,
+                       Employee = employee
+                   };
+        }
+        #endregion
+
+        #region GetWithNavigationProperties
+
+        public virtual async Task<ActivityWithNavigationProperties> GetWithNavigationPropertiesAsync(
+            Guid id,
+            CancellationToken cancellationToken = default
+        ) =>
+            await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.Activity.Id == id);
         #endregion
     }
 }

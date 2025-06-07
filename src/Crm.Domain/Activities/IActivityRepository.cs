@@ -15,5 +15,9 @@ namespace Crm.Activities
         Task<long> GetCountAsync(ICollection<EnumType>? type=null, string? description = null, 
             DateTime? date = null, Guid? customerId = null, Guid? employeeId = null,
             CancellationToken cancellationToken = default);
+
+        Task<ActivityWithNavigationProperties> GetWithNavigationPropertiesAsync(
+            Guid id,
+            CancellationToken cancellationToken = default);
     }
 }

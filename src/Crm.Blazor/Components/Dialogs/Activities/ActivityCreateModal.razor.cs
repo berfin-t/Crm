@@ -18,22 +18,25 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private EnumType Types { get; set; }
         private string? Employee { get; set; }
         private string? Customer { get; set; }
-        
-        private EventCallback EventCallback { get; set; }
-
-        protected override async Task OnInitializedAsync()
-        {
-            Employees = await EmployeeAppService.GetListAllAsync();
-            Customers = await CustomerAppService.GetListAllAsync();
-        }
         #endregion
 
         #region reference to the modal component
         private Modal modalRef;
+        private EventCallback EventCallback { get; set; }
+        #endregion
 
         public Task ShowModal(EventCallback eventCallback)
         {
-            EventCallback = eventCallback.HasDelegate ? eventCallback : EventCallback.Factory.Create(this, () => Task.CompletedTask);
+            //EventCallback = eventCallback.HasDelegate ? eventCallback : EventCallback.Factory.Create(this, () => Task.CompletedTask);
+            EventCallback = eventCallback;
+
+            Description = string.Empty;
+            ActivityDate = DateTime.Now;
+            Types = EnumType.Call; 
+            SelectedEmployeeId = Guid.Empty; 
+            SelectedCustomerId = Guid.Empty;
+            ActivityCreateDto = new ActivityCreateDto();
+
             return modalRef.Show();
         }
 
@@ -41,7 +44,11 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         {
             return modalRef.Hide();
         }
-        #endregion
+        protected override async Task OnInitializedAsync()
+        {
+            Employees = await EmployeeAppService.GetListAllAsync();
+            Customers = await CustomerAppService.GetListAllAsync();
+        }
 
         #region Create Activity
         private ActivityCreateDto ActivityCreateDto { get; set; } = new ActivityCreateDto();
@@ -61,6 +68,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             {
                 await ActivityAppService.CreateAsync(ActivityCreateDto);
                 await HideModal();
+                await EventCallback.InvokeAsync();
             }
             catch (Exception ex)
             {
@@ -73,27 +81,26 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         #region Employee Select
         private List<EmployeeDto> Employees { get; set; } = new();
 
-        private async Task EmployeeSelect(ChangeEventArgs e)
-        {
-            if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
-            {
-                SelectedEmployeeId = employeeId;
-                await InvokeAsync(StateHasChanged);
-            }
-        }
+        //private async Task EmployeeSelect(ChangeEventArgs e)
+        //{
+        //    if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
+        //    {
+        //        SelectedEmployeeId = employeeId;
+        //        await InvokeAsync(StateHasChanged);
+        //    }
+        //}
         #endregion
 
         #region Customer Select
         private List<CustomerDto> Customers { get; set; } = new();
-
-        private async Task CustomerSelect(ChangeEventArgs e)
-        {
-            if (Guid.TryParse(e.Value?.ToString(), out var customerId))
-            {
-                SelectedCustomerId = customerId;
-                await InvokeAsync(StateHasChanged);
-            }
-        }
+        //private async Task CustomerSelect(ChangeEventArgs e)
+        //{
+        //    if (Guid.TryParse(e.Value?.ToString(), out var customerId))
+        //    {
+        //        SelectedCustomerId = customerId;
+        //        await InvokeAsync(StateHasChanged);
+        //    }
+        //}
         #endregion
     }
 }

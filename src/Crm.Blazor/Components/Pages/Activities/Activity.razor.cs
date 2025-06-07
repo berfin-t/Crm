@@ -13,14 +13,16 @@ namespace Crm.Blazor.Components.Pages.Activities
     {
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Parameter]  public Guid ActivityId { get; set; }
+        private string customerName;
 
         private List<ActivityDto> activityList = new();
         private bool isActivityModalVisible = false;
         private ActivityDto selectedActivity;
+        private ActivityWithNavigationPropertyDto selectedActivityWithNav;
         private bool isDeleteModalVisible = false;
         private ActivityCreateModal activityCreateModal;
 
-        private EventCallback reloadActivitiesCallback => EventCallback.Factory.Create(this, ReloadActivities);
+        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
 
         protected override async Task OnInitializedAsync()
         {
@@ -29,6 +31,11 @@ namespace Crm.Blazor.Components.Pages.Activities
             {
                 activityList = allActivities.Where(a => a.Date > DateTime.Now).ToList();
             }
+            //var activityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(ActivityId);
+            //if (activityWithNav != null)
+            //{
+            //    customerName = activityWithNav.Customer?.Name; 
+            //}
         }
         public async Task ReloadActivities()
         {
@@ -39,12 +46,13 @@ namespace Crm.Blazor.Components.Pages.Activities
         {
             if (activityCreateModal != null)
             {
-                await activityCreateModal.ShowModal(reloadActivitiesCallback);
+                await activityCreateModal.ShowModal(EventCallback);
             }
         }
-        private void ShowEditModal(ActivityDto activity)
+        private async Task ShowEditModal(ActivityDto activity)
         {
-            selectedActivity = activity;
+            selectedActivityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(activity.Id);
+            selectedActivity = selectedActivityWithNav.Activity;
             isActivityModalVisible = true;
         }
 

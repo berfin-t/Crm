@@ -86,5 +86,12 @@ namespace Crm.Activities
             await activityRepository.DeleteAsync(activity);
         }
         #endregion
+
+        #region GetWithNavigationProperties
+        public virtual async Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
+        ObjectMapper.Map<ActivityWithNavigationProperties, ActivityWithNavigationPropertyDto>
+            (await activityRepository.GetWithNavigationPropertiesAsync(id));
+
+        #endregion
     }
 }

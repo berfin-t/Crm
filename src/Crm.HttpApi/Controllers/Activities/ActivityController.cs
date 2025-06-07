@@ -43,5 +43,10 @@ namespace Crm.Controllers.Activities
         [HttpDelete]
         [Route("delete/{id}")]
         public virtual Task DeleteAsync(Guid id) => _activityAppService.DeleteAsync(id);
+
+        [HttpGet]
+        [Route("with-navigation-properties/{id}")]
+        public virtual Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id)
+            => _activityAppService.GetWithNavigationPropertiesAsync(id);
     }
 }

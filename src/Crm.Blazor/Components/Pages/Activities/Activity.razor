@@ -32,6 +32,7 @@
     </div>
 </Container>
 
+@* ********** ACTIVITY DETAIL MODAL ********** *@
 <Modal @bind-Visible="isActivityModalVisible" Size="ModalSize.Medium" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
@@ -44,8 +45,8 @@
                 <div>
                     <p><strong>Description:</strong> @selectedActivity.Description</p>
                     <p><strong>Date:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
-                    <p><strong>Customer ID:</strong> @selectedActivity.CustomerId</p>
-                    <p><strong>Employee ID:</strong> @selectedActivity.EmployeeId</p>
+                    <p><strong>Customer ID:</strong> @selectedActivityWithNav.Customer.FullName</p>
+                    <p><strong>Employee ID:</strong> @selectedActivityWithNav.Employee.FullName</p>
                     <p><strong>Type:</strong> @selectedActivity.Type.ToString()</p>
                 </div>
             }
