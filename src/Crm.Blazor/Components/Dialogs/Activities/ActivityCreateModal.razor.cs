@@ -21,13 +21,14 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         #endregion
 
         #region reference to the modal component
-        private Modal modalRef;
+        private Modal? modalRef;
         private EventCallback EventCallback { get; set; }
+        private List<CustomerDto> Customers { get; set; } = new();
+        private List<EmployeeDto> Employees { get; set; } = new();
         #endregion
 
         public Task ShowModal(EventCallback eventCallback)
-        {
-            //EventCallback = eventCallback.HasDelegate ? eventCallback : EventCallback.Factory.Create(this, () => Task.CompletedTask);
+        {            
             EventCallback = eventCallback;
 
             Description = string.Empty;
@@ -37,12 +38,12 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             SelectedCustomerId = Guid.Empty;
             ActivityCreateDto = new ActivityCreateDto();
 
-            return modalRef.Show();
+            return modalRef!.Show();
         }
 
         private Task HideModal()
         {
-            return modalRef.Hide();
+            return modalRef!.Hide();
         }
         protected override async Task OnInitializedAsync()
         {
@@ -58,7 +59,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private async Task CreateActivityAsync()
         {
 
-            ActivityCreateDto.Description = Description;
+            ActivityCreateDto.Description = Description!; 
             ActivityCreateDto.Date = ActivityDate ?? DateTime.MinValue;
             ActivityCreateDto.Type = Types;
             ActivityCreateDto.EmployeeId = SelectedEmployeeId;
@@ -76,31 +77,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             }
 
         }
-        #endregion
+        #endregion            
 
-        #region Employee Select
-        private List<EmployeeDto> Employees { get; set; } = new();
-
-        //private async Task EmployeeSelect(ChangeEventArgs e)
-        //{
-        //    if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
-        //    {
-        //        SelectedEmployeeId = employeeId;
-        //        await InvokeAsync(StateHasChanged);
-        //    }
-        //}
-        #endregion
-
-        #region Customer Select
-        private List<CustomerDto> Customers { get; set; } = new();
-        //private async Task CustomerSelect(ChangeEventArgs e)
-        //{
-        //    if (Guid.TryParse(e.Value?.ToString(), out var customerId))
-        //    {
-        //        SelectedCustomerId = customerId;
-        //        await InvokeAsync(StateHasChanged);
-        //    }
-        //}
-        #endregion
     }
 }

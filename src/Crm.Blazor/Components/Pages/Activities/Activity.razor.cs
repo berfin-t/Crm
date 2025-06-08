@@ -1,6 +1,5 @@
 ﻿using Crm.Activities;
 using Crm.Blazor.Components.Dialogs.Activities;
-using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -11,31 +10,27 @@ namespace Crm.Blazor.Components.Pages.Activities
 {
     public partial class Activity
     {
-        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] public NavigationManager? NavigationManager { get; set; }
         [Parameter]  public Guid ActivityId { get; set; }
-        private string customerName;
 
+        #region reference to the modal component
         private List<ActivityDto> activityList = new();
         private bool isActivityModalVisible = false;
-        private ActivityDto selectedActivity;
-        private ActivityWithNavigationPropertyDto selectedActivityWithNav;
+        private ActivityDto? selectedActivity;
+        private ActivityWithNavigationPropertyDto? selectedActivityWithNav;
         private bool isDeleteModalVisible = false;
-        private ActivityCreateModal activityCreateModal;
-
+        private ActivityCreateModal? activityCreateModal;
+        private ActivityEditModal? activityEditModal;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+        #endregion
 
         protected override async Task OnInitializedAsync()
         {
             var allActivities = await ActivityAppService.GetListAllAsync();
             if (allActivities != null)
             {
-                activityList = allActivities.Where(a => a.Date > DateTime.Now).ToList();
-            }
-            //var activityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(ActivityId);
-            //if (activityWithNav != null)
-            //{
-            //    customerName = activityWithNav.Customer?.Name; 
-            //}
+                activityList = allActivities.Where(a => a.Date > DateTime.Now).OrderBy(a => a.Date).ToList();
+            }            
         }
         public async Task ReloadActivities()
         {
@@ -49,18 +44,23 @@ namespace Crm.Blazor.Components.Pages.Activities
                 await activityCreateModal.ShowModal(EventCallback);
             }
         }
+
+        #region Edit 
         private async Task ShowEditModal(ActivityDto activity)
         {
             selectedActivityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(activity.Id);
             selectedActivity = selectedActivityWithNav.Activity;
             isActivityModalVisible = true;
-        }
+        }        
 
-        private void EditActivity(ActivityDto activity)
+        private async Task EditActivity(ActivityDto activity)
         {
-            Console.WriteLine($"Edit clicked for activity ID: {activity.Id}");
+            isActivityModalVisible = false;
+            await activityEditModal!.ShowModal(activity);
         }
-    
+        #endregion
+
+        #region Delete 
         private async Task ConfirmDelete()
         {
             if (selectedActivity != null && selectedActivity.Id != Guid.Empty)
@@ -69,9 +69,9 @@ namespace Crm.Blazor.Components.Pages.Activities
                 isDeleteModalVisible = false;
                 isActivityModalVisible = false;
 
-                NavigationManager.NavigateTo("/activities", forceLoad: true);
+                NavigationManager?.NavigateTo("/activities", forceLoad: true);
             }
         }
-
+        #endregion
     }
 }

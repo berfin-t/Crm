@@ -47,24 +47,38 @@
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
                 <CardBody>
-                    <Div style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="@employee.PhotoPath" alt="Profile Photo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover;" />
+                    <Div style="position: relative;">
+                        <Div style="position: absolute; top: 10px; right: 10px;">
+                            <button @onclick="() => ToggleDropdown(employee.Id)" style="background: none; border: none; cursor: pointer;">
+                                &#8942; 
+                            </button>
 
-                        <Span Style="font-size: 16px; color:black">@employee.FullName</Span>
-                        <br />
-                        <Span>@PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name</Span>
-                        <br />                        
-                            <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">
-                                @employee.Email
-                            </a> 
-                            <Span Style="color:black;">@employee.PhoneNumber</Span>                                           
+                            @if (ActiveDropdownEmployeeId == employee.Id)
+                            {
+                                <div style="position: absolute; right: 0; top: 25px; background-color: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100;">
+                                    <button @onclick="() => EditEmployee(employee.Id)" style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">Edit</button>
+                                    <button @onclick="() => DeleteEmployee(employee.Id)" style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">Delete</button>
+                                </div>
+                            }
+                        </Div>
 
+                        <!-- Content Centered -->
+                        <Div style="display: flex; flex-direction: column; align-items: center;">
+                            <img src="@employee.PhotoPath" alt="Profile Photo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover;" />
+                            <Span style="font-size: 16px; color:black">@employee.FullName</Span>
+                            <br />
+                            <Span>@PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name</Span>
+                            <br />
+                            <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">@employee.Email</a>
+                            <Span style="color:black;">@employee.PhoneNumber</Span>
+                        </Div>
                     </Div>
                 </CardBody>
             </Card>
         </Column>
     }
 </Row>
+
 @* <Div Flex="Flex.JustifyContent.Center">
     <Button Color="Color.Light" @onclick="LoadMoreEmployees">Load More</Button>
 </Div> *@

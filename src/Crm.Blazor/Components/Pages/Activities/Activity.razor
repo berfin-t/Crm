@@ -45,20 +45,21 @@
                 <div>
                     <p><strong>Description:</strong> @selectedActivity.Description</p>
                     <p><strong>Date:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
-                    <p><strong>Customer ID:</strong> @selectedActivityWithNav.Customer.FullName</p>
+                    <p><strong>Customer ID:</strong> @selectedActivityWithNav!.Customer.FullName</p>
                     <p><strong>Employee ID:</strong> @selectedActivityWithNav.Employee.FullName</p>
                     <p><strong>Type:</strong> @selectedActivity.Type.ToString()</p>
                 </div>
             }
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity))">Edit</Button>
+            <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity!))">Edit</Button>
             <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">Delete</Button>
             <Button Color="Color.Secondary" @onclick="() => isActivityModalVisible = false">Close</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
+@* ********** ACTIVITY DELETE MODAl ********** *@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
@@ -77,3 +78,7 @@
 
 @* ********** CREATE MODAL ********** *@
 <ActivityCreateModal @ref="activityCreateModal"/>
+
+@* ********** EDIT MODAL ********** *@
+<ActivityEditModal @ref="activityEditModal" />
+

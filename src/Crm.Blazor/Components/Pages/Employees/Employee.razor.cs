@@ -98,5 +98,32 @@ namespace Crm.Blazor.Components.Pages.Employees
                 .ToList();
         }
 
+        // sonradan ekledim
+    private Guid? ActiveDropdownEmployeeId { get; set; }
+
+        private void ToggleDropdown(Guid employeeId)
+        {
+            if (ActiveDropdownEmployeeId == employeeId)
+                ActiveDropdownEmployeeId = null;
+            else
+                ActiveDropdownEmployeeId = employeeId;
+        }
+
+        private void EditEmployee(Guid employeeId)
+        {
+            // Edit işlemini burada gerçekleştir
+            Console.WriteLine($"Edit: {employeeId}");
+            ActiveDropdownEmployeeId = null;
+        }
+
+        private void DeleteEmployee(Guid employeeId)
+        {
+            // Delete işlemini burada gerçekleştir
+            Console.WriteLine($"Delete: {employeeId}");
+            ActiveDropdownEmployeeId = null;
+        }
     }
+
+
 }
+

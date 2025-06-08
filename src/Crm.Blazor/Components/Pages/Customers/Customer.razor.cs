@@ -1,7 +1,8 @@
-﻿using Blazorise.DataGrid;
+﻿using Crm.Activities;
 using Crm.Blazor.Components.Dialogs.Customers;
 using Crm.Customers;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,18 +11,23 @@ namespace Crm.Blazor.Components.Pages.Customers
 {
     public partial class Customer
     {
-        private CustomerDto CustomerDto { get; set; }
-        private List<CustomerDto> customerList;        
+        [Inject] public NavigationManager? NavigationManager { get; set; }
+
+        #region reference to the service
+        private CustomerDto? CustomerDto { get; set; }
+        private List<CustomerDto>? customerList;
+        private CustomerCreateModal? customerCreateModal;
+        private CustomerEditModal? customerEditModal;
+        private bool isDeleteModalVisible = false;
+        private CustomerDto? selectedCustomer;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+        #endregion
 
         protected override async Task OnInitializedAsync()
         {
             customerList = await CustomerAppService.GetListAllAsync();
             await base.OnInitializedAsync();
-        }        
-
-        private CustomerCreateModal customerCreateModal;
-        private CustomerEditModal customerEditModal;
+        }           
 
         private async Task ShowCreateModal()
         {
@@ -36,54 +42,27 @@ namespace Crm.Blazor.Components.Pages.Customers
         {
             if (customerEditModal != null)
             {
-                await customerEditModal.ShowModal(customer);
+                await customerEditModal.ShowModal(customer, EventCallback);
             }
         }
 
-        //private CustomerDto selectedCustomer;
-        //private CustomerUpdateDto customerUpdateDto = new();
-        //private void EditCustomer(CustomerDto customer)
-        //{
-        //    customerUpdateDto = new CustomerUpdateDto
-        //    {
-        //        Id = customer.Id, // Güncelleme için ID gerekli olabilir
-        //        Name = customer.Name,
-        //        Surname = customer.Surname,
-        //        Phone = customer.Phone,
-        //        Email = customer.Email,
-        //        Address = customer.Address,
-        //        CompanyName = customer.CompanyName
-        //    };
+        #region Delete 
+        private void OnDeleteClicked(CustomerDto customer)
+        {
+            selectedCustomer = customer;
+            isDeleteModalVisible = true;
+        }
 
-        //    isEditModalOpen = true;
-        //}
+        private async Task ConfirmDelete()
+        {
+            if (selectedCustomer != null && selectedCustomer.Id != Guid.Empty)
+            {
+                await CustomerAppService.DeleteAsync(selectedCustomer.Id);
+                isDeleteModalVisible = false;
+                await OnInitializedAsync();
+            }
+        }
+        #endregion
 
-        //private void CloseModal()
-        //{
-        //    isEditModalOpen = false;
-        //}
-
-        //private async Task SaveCustomer()
-        //{
-        //    await CustomerAppService.UpdateAsync(customerUpdateDto.Id, customerUpdateDto);
-
-        //    var updatedCustomer = customerList.FirstOrDefault(c => c.Id == customerUpdateDto.Id);
-        //    if (updatedCustomer != null)
-        //    {
-        //        updatedCustomer.Name = customerUpdateDto.Name;
-        //        updatedCustomer.Surname = customerUpdateDto.Surname;
-        //        updatedCustomer.Phone = customerUpdateDto.Phone;
-        //        updatedCustomer.Email = customerUpdateDto.Email;
-        //        updatedCustomer.Address = customerUpdateDto.Address;
-        //        updatedCustomer.CompanyName = customerUpdateDto.CompanyName;
-        //    }
-
-        //    isEditModalOpen = false;
-        //}
-
-        //private void DeleteCustomer(CustomerDto customer)
-        //{
-
-        //}
     }
 }

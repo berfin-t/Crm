@@ -12,7 +12,6 @@
         <ModalContent Centered>
             <ModalHeader>
                 <ModalTitle>Edit Activity</ModalTitle>
-                <CloseButton />
             </ModalHeader>
             <ModalBody>
                 <Field>
@@ -31,7 +30,7 @@
                 <Card>
                     <Field>
                         <FieldLabel>Activity Date:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Value="ActivityDate" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-SelectedDate="selectedDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Field>

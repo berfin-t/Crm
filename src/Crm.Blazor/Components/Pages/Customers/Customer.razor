@@ -41,7 +41,7 @@
                     </EditCommandTemplate>
                     <DeleteCommandTemplate>
                         <Field>
-                            <Button Color="Color.Danger">
+                            <Button Color="Color.Danger" @onclick="() => OnDeleteClicked(context.Item)">
                                 <i class="fa-regular fa-trash-can"></i>
                             </Button>
                         </Field>                        
@@ -52,6 +52,23 @@
         </CardBody>
     </Card>
 </Container>
+
+@* ********** ACTIVITY DELETE MODAl ********** *@
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Onayla</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            Silmek istediğinize emin misiniz?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
 
 @* ********** CREATE MODAL ********** *@
 <Crm.Blazor.Components.Dialogs.Customers.CustomerCreateModal @ref="customerCreateModal" />

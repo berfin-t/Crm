@@ -15,7 +15,7 @@ namespace Crm.Controllers.Customers
     [Area("app")]
     [ControllerName("Customer")]
     [Route("api/app/customers")]
-    public class CustomerController:CrmController, ICustomerAppService
+    public class CustomerController : CrmController, ICustomerAppService
     {
         protected ICustomerAppService _customerAppService;
         public CustomerController(ICustomerAppService customerAppService) => _customerAppService = customerAppService;
@@ -43,5 +43,10 @@ namespace Crm.Controllers.Customers
         [HttpGet]
         [Route("count")]
         public virtual Task<long> GetTotalCustomerCountAsync() => _customerAppService.GetTotalCustomerCountAsync();
+
+        [HttpDelete]
+        [Route("{id}")]
+        public virtual Task DeleteAsync(Guid id) => _customerAppService.DeleteAsync(id);
+
     }
 }

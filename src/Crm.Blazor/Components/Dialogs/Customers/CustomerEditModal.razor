@@ -1,5 +1,7 @@
 ﻿@using Crm.Customers
 
+@inject ICustomerAppService CustomerAppService
+
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
@@ -51,47 +53,3 @@
         </ModalContent>
     </Modal>        
 </CascadingValue>
-
-@code {
-    [Inject]
-    ICustomerAppService CustomerAppService { get; set; }   
-
-    private Modal modalRef;
-    private CustomerUpdateDto CustomerUpdateDto { get; set; } = new CustomerUpdateDto();
-
-    public async Task ShowModal(CustomerDto customer)
-    {
-        if (customer != null)
-        {
-            CustomerUpdateDto.Id = customer.Id;
-            CustomerUpdateDto.Name = customer.Name;
-            CustomerUpdateDto.Surname = customer.Surname;
-            CustomerUpdateDto.Email = customer.Email;
-            CustomerUpdateDto.Phone = customer.Phone;
-            CustomerUpdateDto.Address = customer.Address;
-            CustomerUpdateDto.CompanyName = customer.CompanyName;
-        }
-
-        await modalRef.Show();
-    }
-
-    private Task HideModal()
-    {
-        return modalRef.Hide();
-    }
-
-
-    private async Task UpdateCustomerAsync()
-    {
-        try
-        {
-            await CustomerAppService.UpdateAsync(CustomerUpdateDto.Id, CustomerUpdateDto);
-            await HideModal();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-
-}

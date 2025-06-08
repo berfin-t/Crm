@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Crm.Activities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Entities;
 
 namespace Crm.Customers
 {
@@ -74,6 +76,20 @@ namespace Crm.Customers
             return await customerRepository.GetCountAsync();
         }
         #endregion
-        
+
+        #region Delete
+        //[Authorize(CrmPermissions.Customers.Delete)]
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var customer = await customerRepository.GetAsync(id);
+            if (customer == null)
+            {
+                throw new EntityNotFoundException(typeof(Activity), id);
+            }
+            customer.IsDeleted = true;
+            await customerRepository.DeleteAsync(customer);
+        }
+        #endregion
+
     }
 }
