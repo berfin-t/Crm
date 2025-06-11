@@ -42,5 +42,13 @@ namespace Crm.Controllers.Employees
 
         [HttpPost("upload-photo")]
         public virtual Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath) => _employeeAppService.UpdatePhotoAsync(employeeId, photoPath);
+
+        [HttpDelete]
+        [Route("{id}")]
+        public virtual Task DeleteAsync(Guid id) => _employeeAppService.DeleteAsync(id);
+
+        [HttpGet]
+        [Route("with-navigation-properties/{id}")]
+        public virtual Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) => _employeeAppService.GetWithNavigationPropertiesAsync(id);
     }
 }

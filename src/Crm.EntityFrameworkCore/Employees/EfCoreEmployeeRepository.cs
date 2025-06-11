@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using Crm.Activities;
+using Crm.Positions;
 
 namespace Crm.Employees
 {
@@ -46,6 +48,30 @@ namespace Crm.Employees
                 .WhereIf(gender != null && gender.Value != 0, e => e.Gender == gender);
             return query;
         }
+        #endregion
+
+        #region GetQueryForNavigationProperties
+        protected virtual async Task<IQueryable<EmployeeWithNavigationProperties>> GetQueryForNavigationPropertiesAsync()
+        {
+            var dbContext = await GetDbContextAsync();
+            return from employee in dbContext.Employees
+                   join position in dbContext.Positions on employee.PositionId equals position.Id into positions
+                   from position in positions.DefaultIfEmpty()
+
+                   select new EmployeeWithNavigationProperties
+                   {
+                       Employee = employee,
+                       Position = position,
+                   };
+        }
+        #endregion
+
+        #region GetWithNavigationProperties
+        public virtual async Task<EmployeeWithNavigationProperties> GetWithNavigationPropertiesAsync(
+            Guid id,
+            CancellationToken cancellationToken = default
+        ) =>
+            await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.Employee.Id == id);
         #endregion
     }
 }

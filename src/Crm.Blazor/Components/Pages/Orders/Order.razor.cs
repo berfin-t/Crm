@@ -12,14 +12,13 @@ namespace Crm.Blazor.Components.Pages.Orders
     public partial class Order
     {
         [Parameter]  public EventCallback OnOrderCreated { get; set; }
-        private OrderDto OrderDto { get; set; }
-        private List<CustomerDto> CustomerList = new();
-        private List<ProjectDto> ProjectList;
-        private OrderDto selectedOrder;
-        public List<OrderDto> orderList { get; set; }
-        private OrderCreateModal orderCreateModal;
-        private OrderEditModal orderEditModal;
-
+        private OrderDto? OrderDto { get; set; }
+        private List<CustomerDto> CustomerList = new List<CustomerDto>();
+        private List<ProjectDto>? ProjectList = new List<ProjectDto>();
+        public List<OrderDto>? OrderList { get; set; } = new List<OrderDto>();
+        private OrderDto? selectedOrder;
+        private OrderCreateModal? orderCreateModal;
+        private OrderEditModal? orderEditModal;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
 
         //private async Task SaveOrder()
@@ -30,7 +29,7 @@ namespace Crm.Blazor.Components.Pages.Orders
 
         protected override async Task OnInitializedAsync()
         {
-            orderList = await OrderAppService.GetListAllAsync();
+            OrderList = await OrderAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();
             await base.OnInitializedAsync();
@@ -56,10 +55,10 @@ namespace Crm.Blazor.Components.Pages.Orders
         //    await OrderAppService.DeleteAsync(id);
         //    await ReloadOrders();
         //}
-        private async Task ReloadOrders()
-        {
-            orderList = await OrderAppService.GetListAllAsync();
-            StateHasChanged();
-        }
+        //private async Task ReloadOrders()
+        //{
+        //    orderList = await OrderAppService.GetListAllAsync();
+        //    StateHasChanged();
+        //}
     }
 }

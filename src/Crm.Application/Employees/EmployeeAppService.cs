@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Crm.Activities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Entities;
 
 namespace Crm.Employees
 {
@@ -21,7 +21,7 @@ namespace Crm.Employees
         {
             var employee = await employeeManager.CreateAsync(
                 input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address,
-                input.BirthDate.Value, input.PhotoPath, input.Gender, input.PositionId);
+                input.BirthDate!.Value, input.PhotoPath, input.Gender, input.PositionId);
 
             return ObjectMapper.Map<Employee, EmployeeDto>(employee);
         }
@@ -87,7 +87,7 @@ namespace Crm.Employees
 
         public async Task<string> UploadPhotoAsync(Guid employeeId, IFormFile? file)
         {
-            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/profile");
+            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "~/images/profile");
             Directory.CreateDirectory(uploadsFolder); 
 
             string fileName;
@@ -112,11 +112,32 @@ namespace Crm.Employees
                 }
             }
 
-            string photoPath = $"wwwroot/profile/{fileName}";
+            string photoPath = $"~/images/profile/{fileName}";
             await UpdatePhotoAsync(employeeId, photoPath);
 
             return photoPath;
         }
+        #endregion
+
+        #region Delete
+        //[Authorize(CrmPermissions.Employees.Delete)]
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var employee = await employeeRepository.GetAsync(id);
+            if (employee == null)
+            {
+                throw new EntityNotFoundException(typeof(Activity), id);
+            }
+            employee.IsDeleted = true;
+            await employeeRepository.DeleteAsync(employee);
+        }
+        #endregion
+
+        #region GetWithNavigationProperties
+        public virtual async Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
+        ObjectMapper.Map<EmployeeWithNavigationProperties, EmployeeWithNavigationPropertyDto>
+            (await employeeRepository.GetWithNavigationPropertiesAsync(id));
+
         #endregion
     }
 }

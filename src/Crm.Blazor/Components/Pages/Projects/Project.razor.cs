@@ -75,7 +75,7 @@ namespace Crm.Blazor.Components.Pages.Projects
             }
         }
 
-        public async Task OnEntered(KeyboardEventArgs args)
+        public void OnEntered(KeyboardEventArgs args)
         {
             if(args.Code=="Enter" || args.Code=="NumpadEnter")
             {

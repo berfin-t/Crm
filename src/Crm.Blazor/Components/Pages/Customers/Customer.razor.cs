@@ -1,5 +1,4 @@
-﻿using Crm.Activities;
-using Crm.Blazor.Components.Dialogs.Customers;
+﻿using Crm.Blazor.Components.Dialogs.Customers;
 using Crm.Customers;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -33,7 +32,6 @@ namespace Crm.Blazor.Components.Pages.Customers
         {
             if (customerCreateModal != null)
             {
-
                 await customerCreateModal.ShowModal(EventCallback);
             }
         }

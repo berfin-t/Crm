@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Crm.Activities;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
@@ -18,5 +17,9 @@ namespace Crm.Employees
         Task<long> GetCountAsync(string? firstName = null, string? lastName = null,
             string? email = null, string? phoneNumber = null, string? address = null,
             DateTime? birthDate = null, string? photoPath=null, EnumGender? gender = null, Guid? positionId = null, CancellationToken cancellationToken=default);
+        Task<EmployeeWithNavigationProperties> GetWithNavigationPropertiesAsync(
+           Guid id,
+           CancellationToken cancellationToken = default);
+
     }
 }

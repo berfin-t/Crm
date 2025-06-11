@@ -3,16 +3,16 @@
 <h3>OrderEditModal</h3>
 
 @code {
-    private Modal modalRef;
+    private Modal? modalRef;
 
     public async Task ShowModal(OrderDto order)
     {       
 
-        await modalRef.Show();
+        await modalRef!.Show();
     }
 
     private Task HideModal()
     {
-        return modalRef.Hide();
+        return modalRef!.Hide();
     }
 }

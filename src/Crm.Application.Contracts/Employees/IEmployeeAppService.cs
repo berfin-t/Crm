@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -16,5 +14,8 @@ namespace Crm.Employees
         Task<EmployeeDto> CreateAsync(EmployeeCreateDto input);
         Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input);
         Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath);
+        Task DeleteAsync(Guid id);
+        Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id);
+
     }
 }

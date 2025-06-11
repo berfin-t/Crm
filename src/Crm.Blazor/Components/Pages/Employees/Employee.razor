@@ -49,16 +49,22 @@
                 <CardBody>
                     <Div style="position: relative;">
                         <Div style="position: absolute; top: 10px; right: 10px;">
-                            <button @onclick="() => ToggleDropdown(employee.Id)" style="background: none; border: none; cursor: pointer;">
+                            <Button @onclick="() => ToggleDropdown(employee.Id)" style="background: none; border: none; cursor: pointer;">
                                 &#8942; 
-                            </button>
+                            </Button>
 
                             @if (ActiveDropdownEmployeeId == employee.Id)
                             {
-                                <div style="position: absolute; right: 0; top: 25px; background-color: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100;">
-                                    <button @onclick="() => EditEmployee(employee.Id)" style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">Edit</button>
-                                    <button @onclick="() => DeleteEmployee(employee.Id)" style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">Delete</button>
-                                </div>
+                                <Div style="position: absolute; right: 0; top: 25px; background-color: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100; min-width: 100px;">
+                                   <Button @onclick="() => OnSelectEmployeeForEdit(employee)" 
+                                        Style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">
+                                        Edit
+                                    </Button>
+                                    <Button @onclick="() => OnSelectEmployeeForDelete(employee)"
+                                            Style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">
+                                            Delete
+                                    </Button>
+                                </Div>
                             }
                         </Div>
 
@@ -83,5 +89,26 @@
     <Button Color="Color.Light" @onclick="LoadMoreEmployees">Load More</Button>
 </Div> *@
 
+@* ********** Employee DELETE MODAl ********** *@
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Onayla</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            Silmek istediğinize emin misiniz?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
 @* ********** CREATE MODAL ********** *@
 <Crm.Blazor.Components.Dialogs.Employees.EmployeeCreateModal @ref="employeeCreateModal" />
+
+@* ********** EDIT MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Employees.EmployeeEditModal @ref="employeeEditModal" />

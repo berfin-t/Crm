@@ -68,7 +68,7 @@
                         </Div>
                     </CardTitle>
                     <Paragraph Margin="Margin.Is3.FromTop">
-                        @(project.Description.Length > 80 ? project.Description[..80] + "..." : project.Description)
+                        @(project.Description!.Length > 80 ? project.Description[..80] + "..." : project.Description)
                     </Paragraph>
                     <Div class="progress-container">
                         <Progress value="@GetCompletionPercentage(project.StartTime, project.EndTime)" max="100"></Progress>

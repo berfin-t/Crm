@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Crm.Activities;
 using Crm.Common;
 using Crm.Contacts;
@@ -85,7 +86,7 @@ public class CrmDataSeederContributor(
 
         await positionRepository.InsertManyAsync(positions, true);
         return positions;
-    }   
+    }
 
 
     // Employees
@@ -94,13 +95,18 @@ public class CrmDataSeederContributor(
         var faker = new Faker<Employee>("tr")
         .CustomInstantiator(f =>
         {
-            var bogusGender = f.PickRandom(Bogus.DataSets.Name.Gender.Male, Bogus.DataSets.Name.Gender.Female);
+            var bogusGender = f.PickRandom(Name.Gender.Male, Name.Gender.Female);
             EnumGender gender = bogusGender switch
             {
-                Bogus.DataSets.Name.Gender.Male => EnumGender.Male,
-                Bogus.DataSets.Name.Gender.Female => EnumGender.Female,
+                Name.Gender.Male => EnumGender.Male,
+                Name.Gender.Female => EnumGender.Female,
                 _ => throw new InvalidOperationException("Unexpected gender value")
-            }; var photoPath = gender == EnumGender.Male ? "wwwroot/profile/male.jpg" : "wwwroot/profile/female.jpg";
+            };
+
+            
+            var photoPath = gender == EnumGender.Male
+                ? "/images/profile/male.jpg"
+                : "/images/profile/female.jpg";
 
             return new Employee(
                 guidGenerator.Create(),
@@ -121,6 +127,7 @@ public class CrmDataSeederContributor(
         await employeeRepository.InsertManyAsync(employees, true);
         return employees;
     }
+
 
     //Activity
     private async Task<IEnumerable<Activity>> SeedActivitiesAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)

@@ -39,6 +39,10 @@ public class CrmApplicationAutoMapperProfile : Profile
         CreateMap<Employee, EmployeeDto>().ReverseMap();
         CreateMap<EmployeeCreateDto, Employee>();
         CreateMap<EmployeeUpdateDto, Employee>();
+        CreateMap<EmployeeWithNavigationPropertyDto, Employee>();
+        CreateMap<EmployeeWithNavigationPropertyDto, EmployeeWithNavigationProperties>()
+        .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee))
+        .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position)).ReverseMap();
 
         CreateMap<Order, OrderDto>();
         CreateMap<OrderCreateDto, Order>();

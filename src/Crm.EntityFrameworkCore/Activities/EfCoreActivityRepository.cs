@@ -76,7 +76,6 @@ namespace Crm.Activities
         #endregion
 
         #region GetWithNavigationProperties
-
         public virtual async Task<ActivityWithNavigationProperties> GetWithNavigationPropertiesAsync(
             Guid id,
             CancellationToken cancellationToken = default

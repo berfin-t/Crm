@@ -1,11 +1,9 @@
-﻿using Crm.Common;
-using Crm.Employees;
+﻿using Crm.Employees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Crm.Positions;
-using Crm.Projects;
 using Crm.Blazor.Components.Dialogs.Employees;
 using Microsoft.AspNetCore.Components;
 using Blazorise.Components;
@@ -15,6 +13,8 @@ namespace Crm.Blazor.Components.Pages.Employees
 {
     public partial class Employee
     {
+        #region references
+        [Inject] public NavigationManager? NavigationManager { get; set; }
         public List<EmployeeDto> Employees = new();
         public List<EmployeeDto> FilteredEmployees = new();
         public List<PositionDto> PositionList { get; set; } = new();
@@ -23,14 +23,18 @@ namespace Crm.Blazor.Components.Pages.Employees
         public int TotalCount { get; set; } = 0;
         public string selectedEmployeeName = string.Empty;
         public string selectedEmployeeId = string.Empty;
-
-        public IEnumerable<EmployeeDto> ReadDataEmployees;
-        public IEnumerable<EmployeeDto> EmployeeDto;
-
+        public IEnumerable<EmployeeDto>? ReadDataEmployees;
+        public IEnumerable<EmployeeDto>? EmployeeDto;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
-        public string selectedAutoCompleteText { get; set; }
+        public string? selectedAutoCompleteText { get; set; }
+        private EmployeeCreateModal? employeeCreateModal;
+        private EmployeeEditModal? employeeEditModal;
+        private bool isDeleteModalVisible = false;
+        //private EmployeeWithNavigationPropertyDto? selectedEmployeeWithNav;
+        private EmployeeDto? selectedEmployee;
+        private bool isEmployeeModalVisible = false;
 
-        private EmployeeCreateModal employeeCreateModal;
+        #endregion
 
         private async Task ShowCreateModal()
         {
@@ -39,14 +43,13 @@ namespace Crm.Blazor.Components.Pages.Employees
                 await employeeCreateModal.ShowModal(EventCallback);
             }
         }
-        public async Task OnEntered(KeyboardEventArgs args)
+        public void OnEntered(KeyboardEventArgs args)
         {
-            if (args.Code == "Enter" || args.Code == "NumpadEnter")
+             if (args.Code == "Enter" || args.Code == "NumpadEnter")
             {
                 ApplyFilters();
             }
-        }
-      
+        }      
 
         private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
         {
@@ -55,7 +58,7 @@ namespace Crm.Blazor.Components.Pages.Employees
                 await Task.Delay(100);
                 if (!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
                 {
-                    ReadDataEmployees = EmployeeDto.Where(x => x.FirstName.StartsWith(autocompleteReadDataEventArgs.SearchValue, StringComparison.InvariantCultureIgnoreCase));
+                    ReadDataEmployees = EmployeeDto!.Where(x => x.FirstName.StartsWith(autocompleteReadDataEventArgs.SearchValue, StringComparison.InvariantCultureIgnoreCase));
                 }
             }
         }
@@ -67,11 +70,7 @@ namespace Crm.Blazor.Components.Pages.Employees
 
             await base.OnInitializedAsync();
         }
-
-        private async Task OnEmployeeSelected(string value)
-        {
-            selectedEmployeeId = value;
-        }
+        
         public async Task LoadMoreEmployees()
         {
             var input = new GetPagedEmployeesInput
@@ -88,9 +87,8 @@ namespace Crm.Blazor.Components.Pages.Employees
                 CurrentPage++;
                 ApplyFilters();
             }
-        }             
+        }          
 
-        
         private void ApplyFilters()
         {
             FilteredEmployees = Employees
@@ -98,8 +96,39 @@ namespace Crm.Blazor.Components.Pages.Employees
                 .ToList();
         }
 
-        // sonradan ekledim
-    private Guid? ActiveDropdownEmployeeId { get; set; }
+        #region Edit
+        private async Task EditEmployee(EmployeeDto employee)
+        {
+            isEmployeeModalVisible = false;
+            await employeeEditModal!.ShowModal(employee);
+        }
+        private async Task OnSelectEmployeeForEdit(EmployeeDto employee)
+        {
+            selectedEmployee = employee;
+            await EditEmployee(employee);
+        }
+        #endregion
+
+        #region Delete        
+        private async Task ConfirmDelete()
+        {
+            if (selectedEmployee != null && selectedEmployee.Id != Guid.Empty)
+            {
+                await EmployeeAppService.DeleteAsync(selectedEmployee.Id);
+                isDeleteModalVisible = false;
+                await OnInitializedAsync();
+
+                NavigationManager?.NavigateTo("/employees", forceLoad: true);
+            }
+        }
+        private void OnSelectEmployeeForDelete(EmployeeDto employee)
+        {
+            selectedEmployee = employee;
+            isDeleteModalVisible = true;
+        }
+        #endregion
+
+        private Guid? ActiveDropdownEmployeeId { get; set; }
 
         private void ToggleDropdown(Guid employeeId)
         {
@@ -107,23 +136,9 @@ namespace Crm.Blazor.Components.Pages.Employees
                 ActiveDropdownEmployeeId = null;
             else
                 ActiveDropdownEmployeeId = employeeId;
-        }
+        }    
 
-        private void EditEmployee(Guid employeeId)
-        {
-            // Edit işlemini burada gerçekleştir
-            Console.WriteLine($"Edit: {employeeId}");
-            ActiveDropdownEmployeeId = null;
-        }
-
-        private void DeleteEmployee(Guid employeeId)
-        {
-            // Delete işlemini burada gerçekleştir
-            Console.WriteLine($"Delete: {employeeId}");
-            ActiveDropdownEmployeeId = null;
-        }
     }
-
 
 }
 

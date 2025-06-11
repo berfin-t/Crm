@@ -15,7 +15,7 @@
         <CardBody>
             <DataGrid 
                 TItem="OrderDto"
-            Data="@orderList"            
+            Data="@OrderList"            
             Editable
             Responsive
             ShowPager
@@ -29,9 +29,10 @@
                 </DataGridColumn>
                 <DataGridColumn Caption="Project">
                     <DisplayTemplate Context="order">
-                        @((ProjectList.FirstOrDefault(p => p.Id == order.ProjectId)?.Name) ?? "N/A")
+                        @((ProjectList!.FirstOrDefault(p => p.Id == order.ProjectId)?.Name) ?? "N/A")
                     </DisplayTemplate>
                 </DataGridColumn>
+                <DataGridColumn Field="@nameof(OrderDto.OrderDate)" Caption="Order Date" Editable />
                 <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="Delivery Date" Editable />
                 <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="Status" Editable>
                     <DisplayTemplate Context="order">
@@ -49,7 +50,7 @@
                     </NewCommandTemplate>
                     <EditCommandTemplate>
                         <Field>
-                              <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(selectedOrder))">
+                              <Button Color="Color.Primary">
                                  <i class="fa-solid fa-pen-to-square"></i>
                             </Button> 
                         </Field>
@@ -68,7 +69,9 @@
     </Card>
 </Container>
 
+@* ********** CREATE MODAL ********** *@
 <Crm.Blazor.Components.Dialogs.Orders.OrderCreateModal @ref="orderCreateModal" />
-
-@* <OrderEditModal @ref="orderEditModal" OnOrderUpdated="ReloadOrders" />
+ 
+@* ********** EDIT MODAL ********** *@
+@* <Crm.Blazor.Components.Dialogs.Orders.OrderEditModal @ref="orderEditModal" />
  *@

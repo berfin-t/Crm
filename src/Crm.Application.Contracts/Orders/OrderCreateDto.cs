@@ -13,7 +13,7 @@ namespace Crm.Orders
         public DateTime? OrderDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public decimal TotalAmount { get; set; }
-        public string OrderCode { get; set; }
+        public string? OrderCode { get; set; }
         public Guid CustomerId { get; set; }
         public Guid ProjectId { get; set; }
 

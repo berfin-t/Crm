@@ -116,35 +116,35 @@ else
 </Modal>
 
 @code {
-    [Inject] public IProjectAppService ProjectAppService { get; set; }
-    [Inject] public NavigationManager NavigationManager { get; set; }
+    [Inject] public IProjectAppService? ProjectAppService { get; set; }
+    [Inject] public NavigationManager? NavigationManager { get; set; }
 
     [Parameter] public Guid ProjectId { get; set; }
-    private ProjectDto project;
+    private ProjectDto? project;
     private ProjectUpdateDto selectedProject = new();
     private bool IsEditModalVisible = false;
     private bool isDeleteModalVisible = false;
 
-    [Parameter] public List<EmployeeDto> Employees { get; set; }
-    [Parameter] public List<CustomerDto> Customers { get; set; }
+    [Parameter] public List<EmployeeDto>? Employees { get; set; }
+    [Parameter] public List<CustomerDto>? Customers { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        project = await ProjectAppService.GetAsync(ProjectId);
+        project = await ProjectAppService!.GetAsync(ProjectId);
     }
 
     private async Task ConfirmDelete()
     {
-        await ProjectAppService.DeleteAsync(ProjectId);
-        NavigationManager.NavigateTo("/projects");
+        await ProjectAppService!.DeleteAsync(ProjectId);
+        NavigationManager!.NavigateTo("/projects");
     }
 
     private void ShowEditModal()
     {
         selectedProject = new ProjectUpdateDto
         {
-            Id = project.Id,
-            Name = project.Name,
+            Id = project!.Id,
+            Name = project.Name!,
             Description = project.Description,
             StartTime = project.StartTime,
             EndTime = project.EndTime,
@@ -160,7 +160,7 @@ else
 
     private async Task HandleProjectUpdated(ProjectUpdateDto updatedProject)
     {
-        project = await ProjectAppService.GetAsync(ProjectId);
+        project = await ProjectAppService!.GetAsync(ProjectId);
         IsEditModalVisible = false;
         StateHasChanged();
     }
