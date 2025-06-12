@@ -39,5 +39,9 @@ namespace Crm.Controllers.Orders
         [HttpPut]
         [Route("update/{id}")]
         public virtual Task<OrderDto> UpdateAsync(Guid id, OrderUpdateDto input) => _orderAppService.UpdateAsync(id, input);
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public virtual Task DeleteAsync(Guid id) => _orderAppService.DeleteAsync(id);
     }
 }

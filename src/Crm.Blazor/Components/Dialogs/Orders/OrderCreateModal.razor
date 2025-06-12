@@ -24,14 +24,17 @@
                         }
                     </Select>
                 </Field>
-                <Field>
-                    <FieldLabel>Order Date:</FieldLabel>
-                    <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="OrderDate" Format="yyyy-MM-dd" />
-                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Order Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderDate" Format="yyyy-MM-dd" />
+                    </Field>
+                </Card>
+                
                 <Card>
                     <Field>
                         <FieldLabel>Delivery Date:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="DeliveryDate" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="DeliveryDate" Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
 

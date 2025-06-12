@@ -1,18 +1,69 @@
-﻿@using Crm.Orders
+﻿@using Crm.Common
+@using Crm.Customers
+@using Crm.Orders
+@using Crm.Projects
 
-<h3>OrderEditModal</h3>
+@inject IOrderAppService OrderAppService
+@inject ICustomerAppService CustomerAppService
+@inject IProjectAppService ProjectAppService
 
-@code {
-    private Modal? modalRef;
-
-    public async Task ShowModal(OrderDto order)
-    {       
-
-        await modalRef!.Show();
-    }
-
-    private Task HideModal()
-    {
-        return modalRef!.Hide();
-    }
-}
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>Edit Order</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Order Code:</FieldLabel>
+                    <InputText @bind-Value="OrderUpdateDto.OrderCode" class="form-control" />
+                </Field>
+                <Field>
+                    <FieldLabel>Customer:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.CustomerId">
+                        <SelectItem Value="Guid.Empty">Select Customer</SelectItem>
+                        @foreach (var customer in CustomerList)
+                        {
+                            <SelectItem Value="@customer.Id">@customer.FullName</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Project:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.ProjectId">
+                        <SelectItem Value="Guid.Empty">Select Project</SelectItem>
+                        @foreach (var project in ProjectList)
+                        {
+                            <SelectItem Value="@project.Id">@project.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Card>
+                    <Field>
+                        <FieldLabel>Order Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.OrderDate" Format="yyyy-MM-dd HH:mm" />
+                    </Field>
+                </Card>
+                <Card>
+                    <Field>
+                        <FieldLabel>Delivery Date:</FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.DeliveryDate" Format="yyyy-MM-dd HH:mm" />
+                    </Field>
+                </Card>
+                <Field>
+                    <FieldLabel>Status:</FieldLabel>
+                    <Select @bind-SelectedValue="OrderUpdateDto.Status">
+                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        {
+                            <SelectItem Value="@status">@status</SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateOrderAsync">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>

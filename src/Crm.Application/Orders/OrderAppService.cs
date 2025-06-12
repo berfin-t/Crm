@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Crm.Employees;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-        
+using Volo.Abp.Domain.Entities;
+
 namespace Crm.Orders
 {
     [RemoteService(IsEnabled = false)]
@@ -61,6 +63,19 @@ namespace Crm.Orders
                 id, input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
             return ObjectMapper.Map<Order, OrderDto>(order);
+        }
+        #endregion
+
+        #region Delete
+        public virtual async Task DeleteAsync(Guid id)
+        {
+            var order = await orderRepository.GetAsync(id);
+            if (order == null)
+            {
+                throw new EntityNotFoundException(typeof(Order), id);
+            }
+            order.IsDeleted = true;
+            await orderRepository.DeleteAsync(order);
         }
         #endregion
     }

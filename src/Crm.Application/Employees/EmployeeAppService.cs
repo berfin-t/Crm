@@ -126,7 +126,7 @@ namespace Crm.Employees
             var employee = await employeeRepository.GetAsync(id);
             if (employee == null)
             {
-                throw new EntityNotFoundException(typeof(Activity), id);
+                throw new EntityNotFoundException(typeof(Employee), id);
             }
             employee.IsDeleted = true;
             await employeeRepository.DeleteAsync(employee);

@@ -27,7 +27,7 @@ namespace Crm.Orders
         }
         #endregion
         #region Update
-        public virtual async Task<Order> UpdateAsync(Guid id, EnumStatus status, DateTime orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
+        public virtual async Task<Order> UpdateAsync(Guid id, EnumStatus status, DateTime? orderDate, DateTime? deliveryDate, decimal totalAmount, string orderCode, Guid customerId, Guid projectId)
         {
             var order = await orderRepository.GetAsync(id);
             order.SetStatus(status);

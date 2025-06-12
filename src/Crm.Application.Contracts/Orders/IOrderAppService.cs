@@ -15,5 +15,6 @@ namespace Crm.Orders
         Task<OrderDto> GetAsync(Guid id);
         Task<OrderDto> CreateAsync(OrderCreateDto input);
         Task<OrderDto> UpdateAsync(Guid id, OrderUpdateDto input);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -17,7 +17,7 @@
         {
             var activity = activityList[i];
             var isLeft = i % 2 == 0;
-            <div class="timeline-item @(isLeft ? "left" : "right")">
+            <iv class="timeline-item @(isLeft ? "left" : "right")">
                 <div class="timeline-date">@activity.Date.ToString("dd")<br>@activity.Date.ToString("MMM")</div>
                 <div class="timeline-content">
                     <h5 style="font-weight: bold; font-size: 16px; display: flex; justify-content: space-between;">
@@ -27,7 +27,7 @@
                     <p>@activity.Description</p>
                     <Button Color="Color.Primary" Clicked="@(() => ShowEditModal(activity))">Read more</Button>
                 </div>
-            </div>
+            </iv>
         }
     </div>
 </Container>

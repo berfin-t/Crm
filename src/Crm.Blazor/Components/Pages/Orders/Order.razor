@@ -45,23 +45,26 @@
                 <DataGridCommandColumn>
                     <NewCommandTemplate>
                         <Field>
-                             <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Order</Button>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Order</Button>
                         </Field>
                     </NewCommandTemplate>
+
                     <EditCommandTemplate>
                         <Field>
-                              <Button Color="Color.Primary">
-                                 <i class="fa-solid fa-pen-to-square"></i>
-                            </Button> 
+                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(context.Item))">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </Button>
                         </Field>
                     </EditCommandTemplate>
+
                     <DeleteCommandTemplate>
                         <Field>
-                            <Button Color="Color.Danger">
+                            <Button Color="Color.Danger" @onclick="() => OnDeleteClicked(context.Item)">
                                 <i class="fa-regular fa-trash-can"></i>
                             </Button>
                         </Field>
                     </DeleteCommandTemplate>
+
                 </DataGridCommandColumn>
 
             </DataGrid>
@@ -69,9 +72,26 @@
     </Card>
 </Container>
 
+@* ********** Order DELETE MODAl ********** *@
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Onayla</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            Silmek istediğinize emin misiniz?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
 @* ********** CREATE MODAL ********** *@
 <Crm.Blazor.Components.Dialogs.Orders.OrderCreateModal @ref="orderCreateModal" />
  
 @* ********** EDIT MODAL ********** *@
-@* <Crm.Blazor.Components.Dialogs.Orders.OrderEditModal @ref="orderEditModal" />
- *@
+ <Crm.Blazor.Components.Dialogs.Orders.OrderEditModal @ref="orderEditModal" />
+ 

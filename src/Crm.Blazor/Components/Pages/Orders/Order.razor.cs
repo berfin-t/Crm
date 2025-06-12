@@ -6,12 +6,16 @@ using Crm.Customers;
 using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using System;
+using Crm.Employees;
+using Crm.Blazor.Components.Dialogs.Employees;
+using Microsoft.AspNetCore.Components.Web;
+using Crm.Blazor.Components.Dialogs.Customers;
 
 namespace Crm.Blazor.Components.Pages.Orders
 {
     public partial class Order
     {
-        [Parameter]  public EventCallback OnOrderCreated { get; set; }
+        [Inject] public NavigationManager? NavigationManager { get; set; }
         private OrderDto? OrderDto { get; set; }
         private List<CustomerDto> CustomerList = new List<CustomerDto>();
         private List<ProjectDto>? ProjectList = new List<ProjectDto>();
@@ -19,21 +23,17 @@ namespace Crm.Blazor.Components.Pages.Orders
         private OrderDto? selectedOrder;
         private OrderCreateModal? orderCreateModal;
         private OrderEditModal? orderEditModal;
+        private bool isDeleteModalVisible = false;
+        private bool isOrderModalVisible = false;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
-
-        //private async Task SaveOrder()
-        //{
-        //    await OrderAppService.CreateAsync(newOrder);
-        //    await OnOrderCreated.InvokeAsync();
-        //}
-
+        
         protected override async Task OnInitializedAsync()
         {
             OrderList = await OrderAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();
             await base.OnInitializedAsync();
-        }       
+        }
 
         private async Task ShowCreateModal()
         {
@@ -47,18 +47,26 @@ namespace Crm.Blazor.Components.Pages.Orders
         {
             if (orderEditModal != null)
             {
-                await orderEditModal.ShowModal(order);
+                await orderEditModal.ShowModal(order, EventCallback);
             }
         }
-        //private async Task DeleteOrder(Guid id)
-        //{
-        //    await OrderAppService.DeleteAsync(id);
-        //    await ReloadOrders();
-        //}
-        //private async Task ReloadOrders()
-        //{
-        //    orderList = await OrderAppService.GetListAllAsync();
-        //    StateHasChanged();
-        //}
+
+        #region Delete 
+        private void OnDeleteClicked(OrderDto order)
+        {
+            selectedOrder = order;
+            isDeleteModalVisible = true;
+        }
+        private async Task ConfirmDelete()
+        {
+            if (selectedOrder != null && selectedOrder.Id != Guid.Empty)
+            {
+                await OrderAppService.DeleteAsync(selectedOrder.Id);
+                isDeleteModalVisible = false;
+                await OnInitializedAsync();
+            }
+        } 
+        #endregion
+
     }
 }
