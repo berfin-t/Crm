@@ -11,7 +11,7 @@ namespace Crm.Tasks
     public class TaskManager(ITaskRepository taskRepository):DomainService
     {
         #region Create
-        public virtual async Task<Task> CreateAsync(string title, string description, DateTime dueDate, EnumPriority priority,EnumStatus status, Guid customerId, Guid employeeId)     
+        public virtual async Task<Task> CreateAsync(string title, string description, DateTime dueDate, EnumPriority priority,EnumStatus status, Guid projectId, Guid employeeId)     
         {
             var task = new Task(
                 GuidGenerator.Create(),
@@ -20,14 +20,14 @@ namespace Crm.Tasks
                 dueDate,
                 priority,
                 status,
-                customerId,
+                projectId,
                 employeeId
             );
             return await taskRepository.InsertAsync(task);
         }
         #endregion
         #region Update
-        public virtual async Task<Task> UpdateAsync(Guid id, string title,string description, DateTime dueDate, EnumPriority priority, EnumStatus status, Guid customerId, Guid employeeId)
+        public virtual async Task<Task> UpdateAsync(Guid id, string title,string description, DateTime dueDate, EnumPriority priority, EnumStatus status, Guid projectId, Guid employeeId)
         {
             var task = await taskRepository.GetAsync(id);
             task.SetTitle(title);
@@ -35,7 +35,7 @@ namespace Crm.Tasks
             task.SetDueDate(dueDate);
             task.SetPriority(priority);
             task.SetStatus(status);
-            task.SetCustomerId(customerId);
+            task.SetProjectId(projectId);
             task.SetEmployeeId(employeeId);
             return await taskRepository.UpdateAsync(task);
         }

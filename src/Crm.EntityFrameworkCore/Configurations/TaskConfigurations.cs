@@ -1,8 +1,8 @@
-﻿using Crm.Customers;
-using Crm.Employees;
+﻿using Crm.Employees;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Crm.Tasks;
+using Crm.Projects;
 
 namespace Crm.Configurations
 {
@@ -19,7 +19,7 @@ namespace Crm.Configurations
             builder.Property(x => x.Priority).HasColumnName(nameof(Task.Priority)).IsRequired();
 
             builder.HasOne<Employee>().WithMany().IsRequired().HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne<Customer>().WithMany().IsRequired().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<Project>().WithMany().IsRequired().HasForeignKey(x => x.ProjectId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

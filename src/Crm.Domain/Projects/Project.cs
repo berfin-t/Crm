@@ -1,6 +1,7 @@
 ﻿using Crm.Common;
 using JetBrains.Annotations;
 using System;
+using System.Collections.Generic;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
@@ -19,11 +20,11 @@ namespace Crm.Projects
         [NotNull]
         public virtual EnumStatus Status { get; private set; }
         [NotNull]
-        public virtual decimal Revenue { get; private set; } // Tahmini kazanç
+        public virtual decimal Revenue { get; private set; } 
         [NotNull]
-        public virtual decimal SuccessRate { get; private set; } // Başarı oranı
-        public virtual Guid EmployeeId { get; private set; } // Sorumlu çalışan 
+        public virtual decimal SuccessRate { get; private set; }        
         public virtual Guid CustomerId { get; private set; }
+        public virtual Guid EmployeeId { get; private set; }
 
         protected Project()
         {

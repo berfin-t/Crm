@@ -47,7 +47,7 @@ public class CrmDataSeederContributor(
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
         var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
-        var tasks = await SeedTasksAsync(customers.Select(p => p.Id), employees.Select(e => e.Id));
+        var tasks = await SeedTasksAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
     }
 
     // Customers
@@ -225,7 +225,7 @@ public class CrmDataSeederContributor(
     }
 
     //Tasks
-    private async Task<IEnumerable<Task>> SeedTasksAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    private async Task<IEnumerable<Task>> SeedTasksAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
     {
         var faker = new Faker<Task>("tr")
             .CustomInstantiator(f => new Task(
@@ -235,7 +235,7 @@ public class CrmDataSeederContributor(
                 f.Date.Past(),
                 f.PickRandom<EnumPriority>(),
                 f.PickRandom<EnumStatus>(),
-                f.PickRandom(customers),
+                f.PickRandom(projects),
                 f.PickRandom(employees)
                 ));
         var tasks = faker.Generate(50);

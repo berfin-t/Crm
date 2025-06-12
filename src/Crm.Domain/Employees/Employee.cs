@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Tasks;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace Crm.Employees
         [NotNull]
         public virtual DateTime BirthDate { get; private set; }
         public virtual Guid PositionId { get; private set; }
-        
-        
+        //public virtual ICollection<EmployeeTask> EmployeeTasks { get; set; } = new List<EmployeeTask>();
+
         protected Employee()
         {
             FirstName = string.Empty;

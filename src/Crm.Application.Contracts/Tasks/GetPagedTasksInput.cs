@@ -16,6 +16,6 @@ namespace Crm.Tasks
         public ICollection<EnumPriority>? Priorities { get; set; } = null;
         public ICollection<EnumStatus>? Statuses { get; set; } = null;
         public Guid? EmployeeId { get; set; } = null;
-        public Guid? CustomerId { get; set; } = null;
+        public Guid? ProjectId { get; set; } = null;
     }
 }

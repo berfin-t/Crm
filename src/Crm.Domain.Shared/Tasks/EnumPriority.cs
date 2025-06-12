@@ -9,8 +9,8 @@ namespace Crm.Tasks
     public enum EnumPriority
     {
         Low,
-    Medium,
-    High,
-    Critical
+        Medium,
+        High,
+        Critical
     }
 }

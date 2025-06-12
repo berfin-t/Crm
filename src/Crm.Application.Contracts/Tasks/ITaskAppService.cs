@@ -16,5 +16,6 @@ namespace Crm.Tasks
         Task<TaskDto> CreateAsync(TaskCreateDto input);
         Task<TaskDto> UpdateAsync(Guid id, TaskUpdateDto input);
         Task<long> GetTotalTaskCountAsync();
+        Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId);
     }
 }

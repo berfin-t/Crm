@@ -1,6 +1,10 @@
-﻿namespace Crm.Blazor.Pages;
+﻿using Crm.Projects;
+using System;
 
-public partial class Index
+namespace Crm.Blazor.Pages
 {
-
+    public partial class Index
+    {
+        
+    }
 }

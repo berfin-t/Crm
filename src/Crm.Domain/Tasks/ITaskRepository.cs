@@ -14,12 +14,12 @@ namespace Crm.Tasks
         Task<List<Task>> GetListAsync(string? title=null, string? description = null,
             DateTime? dueDate = null, ICollection<EnumPriority>? priorities=null, 
             ICollection<EnumStatus>? statues = null,  Guid? employeeId = null,
-            Guid? customerId = null,  string? sorting = null, 
+            Guid? projectId = null,  string? sorting = null, 
             int maxResults = int.MaxValue, int skipCount = 0,
             CancellationToken cancellationToken=default);
         Task<long> GetCountAsync(string? title = null, string? description = null,
             DateTime? dueDate = null, ICollection<EnumPriority>? priorities = null,
             ICollection<EnumStatus>? statues = null, Guid? employeeId = null,
-            Guid? customerId = null, CancellationToken cancellationToken=default);
+            Guid? projectId = null, CancellationToken cancellationToken=default);
     }
 }

@@ -6,8 +6,10 @@
 @using Crm.Common
 @using Blazorise.Icons.FontAwesome
 @using System.ComponentModel.DataAnnotations
+@using Crm.Tasks
 
 @inject IProjectAppService ProjectAppService
+@inject ITaskAppService TaskAppService
 @inject NavigationManager NavigationManager
 
 @if (project != null)
@@ -19,7 +21,7 @@
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Total Tasks</Div>
-                        <Div class="field-label">210</Div>
+                        <Div class="field-label">@totalTasks</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">

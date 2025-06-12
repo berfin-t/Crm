@@ -21,11 +21,13 @@ namespace Crm.Blazor.Components.Pages.Projects
         private ProjectEditModal? projectEditModal;
         [Parameter] public List<EmployeeDto>? Employees { get; set; }
         [Parameter] public List<CustomerDto>? Customers { get; set; }
+        private long totalTasks;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
+            totalTasks = await TaskAppService.GetTotalTaskCountByProjectIdAsync(ProjectId);
             project = await ProjectAppService!.GetAsync(ProjectId);
             await base.OnInitializedAsync();
         }       

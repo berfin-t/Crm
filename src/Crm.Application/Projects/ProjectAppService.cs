@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Activities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -103,6 +104,7 @@ namespace Crm.Projects
 
             await projectRepository.UpdateAsync(project);
         }
-        #endregion
+        #endregion        
+
     }
 }

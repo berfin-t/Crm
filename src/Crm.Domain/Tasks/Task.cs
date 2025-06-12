@@ -18,7 +18,7 @@ namespace Crm.Tasks
         public virtual EnumPriority Priority { get; private set; }
         [NotNull]
         public virtual EnumStatus Status { get; private set; }
-        public virtual Guid CustomerId { get; private set; }
+        public virtual Guid ProjectId { get; private set; }
         public virtual Guid EmployeeId { get; private set; }
 
         protected Task()
@@ -32,14 +32,14 @@ namespace Crm.Tasks
 
         public Task(Guid id, string title, string description,
             DateTime dueDate, EnumPriority priority, EnumStatus status,
-            Guid customerId, Guid employeeId)
+            Guid projectId, Guid employeeId)
         {
             SetTitle(title);
             SetDescription(description);
             SetDueDate(dueDate);
             SetPriority(priority);
             SetStatus(status);
-            SetCustomerId(customerId);
+            SetProjectId(projectId);
             SetEmployeeId(employeeId);
         }
 
@@ -48,7 +48,7 @@ namespace Crm.Tasks
         public void SetDueDate(DateTime dueDate) => DueDate = Check.NotNull(dueDate, nameof(dueDate));
         public void SetPriority(EnumPriority priority) => Priority = Check.NotNull(priority, nameof(priority));
         public void SetStatus(EnumStatus status) => Status = Check.NotNull(status, nameof(status));
-        public void SetCustomerId(Guid customerId) => CustomerId = Check.NotDefaultOrNull<Guid>(customerId, nameof(customerId));
+        public void SetProjectId(Guid projectId) => ProjectId = Check.NotDefaultOrNull<Guid>(projectId, nameof(projectId));
         public void SetEmployeeId(Guid employeeId) => EmployeeId = Check.NotDefaultOrNull<Guid>(employeeId, nameof(employeeId));
     }
 }
