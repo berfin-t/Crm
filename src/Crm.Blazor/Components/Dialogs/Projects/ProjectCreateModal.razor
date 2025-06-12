@@ -3,6 +3,10 @@
 @using Crm.Common
 @using Crm.Customers
 
+@inject IProjectAppService ProjectAppService
+@inject IEmployeeAppService EmployeeAppService
+@inject ICustomerAppService CustomerAppService
+
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
@@ -79,104 +83,3 @@
     </Modal>
 </CascadingValue>
 
-@code {
-    [Inject]
-    public IProjectAppService ProjectAppService { get; set; }
-    [Inject]
-    public IEmployeeAppService EmployeeAppService { get; set; }
-    [Inject]
-    public ICustomerAppService CustomerAppService { get; set; }
-
-    private EventCallback EventCallback { get; set; }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        Employees = await EmployeeAppService.GetListAllAsync();
-        Customers = await CustomerAppService.GetListAllAsync();
-    }
-
-    #region Form Fields
-    private string? Name { get; set; } 
-    private string? Description { get; set; }
-    private DateTime? StartTime {get; set; } 
-    private DateTime? EndTime { get; set; } 
-    private EnumStatus Status { get; set; }
-    private decimal Revenue { get; set; }
-    private decimal SuccesRate { get; set; }
-    private string? Employee { get; set; }
-    private string? Customer { get; set; }
-    #endregion
-
-    #region reference to the modal component
-    private Modal modalRef;
-
-    public Task ShowModal(EventCallback eventCallback)
-    {
-        EventCallback = eventCallback;
-        return modalRef.Show();
-    }
-
-    private Task HideModal()
-    {
-        return modalRef.Hide();
-    }
-    #endregion   
-
-    #region Create Project
-
-    private ProjectCreateDto ProjectCreateDto { get; set; } = new ProjectCreateDto();
-    private Guid SelectedEmployeeId { get; set; }
-    private Guid SelectedCustomerId { get; set; }
-
-    private async Task CreateProjectAsync()  {
-
-        ProjectCreateDto.Name = Name;
-        ProjectCreateDto.Description = Description;
-        ProjectCreateDto.StartTime = StartTime;
-        ProjectCreateDto.EndTime = EndTime;
-        ProjectCreateDto.Statues = Status;
-        ProjectCreateDto.Revenue = Revenue;
-        ProjectCreateDto.SuccesRate = SuccesRate;
-        ProjectCreateDto.EmployeeId = SelectedEmployeeId;
-        ProjectCreateDto.CustomerId = SelectedCustomerId;
-            
-        try
-        {
-            await ProjectAppService.CreateAsync(ProjectCreateDto);
-            await HideModal();            
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Hata: {ex.Message}");
-        }
-
-    }
-    #endregion
-
-    #region Employee Select
-    private List<EmployeeDto> Employees { get; set; } = new();
-    
-    private async Task EmployeeSelect(ChangeEventArgs e)
-    {
-        if (Guid.TryParse(e.Value?.ToString(), out var employeeId))
-        {
-            SelectedEmployeeId = employeeId;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-    #endregion
-
-    #region Customer Select
-    private List<CustomerDto> Customers { get; set; } = new();
-
-    private async Task CustomerSelect(ChangeEventArgs e)
-    {
-        if (Guid.TryParse(e.Value?.ToString(), out var customerId))
-        {
-            SelectedCustomerId = customerId;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
-    #endregion
-}

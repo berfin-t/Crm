@@ -25,6 +25,9 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private EventCallback EventCallback { get; set; }
         private List<CustomerDto> Customers { get; set; } = new();
         private List<EmployeeDto> Employees { get; set; } = new();
+        private ActivityCreateDto ActivityCreateDto { get; set; } = new ActivityCreateDto();
+        private Guid SelectedEmployeeId { get; set; }
+        private Guid SelectedCustomerId { get; set; }
         #endregion
 
         public Task ShowModal(EventCallback eventCallback)
@@ -51,14 +54,9 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             Customers = await CustomerAppService.GetListAllAsync();
         }
 
-        #region Create Activity
-        private ActivityCreateDto ActivityCreateDto { get; set; } = new ActivityCreateDto();
-        private Guid SelectedEmployeeId { get; set; }
-        private Guid SelectedCustomerId { get; set; }
-
+        #region Create Activity      
         private async Task CreateActivityAsync()
         {
-
             ActivityCreateDto.Description = Description!; 
             ActivityCreateDto.Date = ActivityDate ?? DateTime.MinValue;
             ActivityCreateDto.Type = Types;

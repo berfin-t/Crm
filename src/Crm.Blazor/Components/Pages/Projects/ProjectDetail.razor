@@ -7,7 +7,8 @@
 @using Blazorise.Icons.FontAwesome
 @using System.ComponentModel.DataAnnotations
 
-<PageTitle>Project Detail</PageTitle>
+@inject IProjectAppService ProjectAppService
+@inject NavigationManager NavigationManager
 
 @if (project != null)
 {
@@ -22,21 +23,21 @@
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" /> 
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Tasks Completed</Div>
                         <Div class="field-label">121</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />       
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Team Size</Div>
                         <Div class="field-label">12</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
-                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />       
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Hours Spent</Div>
                         <Div class="field-label">2500</Div>
@@ -50,7 +51,7 @@
         <CardBody>
             <CardTitle Size="5">
                 <Div class="project-header">
-                    <h4 style="color: #000000; font-size: 20px;">
+                    <h4 class="project-title">
                         @project.Name
                         <span class="status-label status-@project.Status.ToString().ToLower()">
                             @project.Status
@@ -61,14 +62,14 @@
                             <span class="menu-icon">⋮</span>
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem @onclick="() => ShowEditModal()">Edit</DropdownItem>
+                            <DropdownItem @onclick="() => OnSelectProjectForEdit(project)">Edit</DropdownItem>
                             <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
                 </Div>
             </CardTitle>
 
-            <p class="project-overview">@project.Description</p>
+            <p class="project-description">@project.Description</p>
 
             <Div class="project-dates">
                 <Div>
@@ -87,18 +88,13 @@
             </Div>
         </CardBody>
     </Card>
-
-    @* <ProjectEditModal Visible="IsEditModalVisible"
-                      Project="selectedProject"
-                      Employees="Employees"
-                      Customers="Customers"
-                      OnProjectUpdated="HandleProjectUpdated" /> *@
 }
 else
 {
     <p>Loading project details...</p>
 }
 
+@* ********** PROJECT DELETE MODAl ********** *@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
@@ -115,65 +111,16 @@ else
     </ModalContent>
 </Modal>
 
-@code {
-    [Inject] public IProjectAppService? ProjectAppService { get; set; }
-    [Inject] public NavigationManager? NavigationManager { get; set; }
-
-    [Parameter] public Guid ProjectId { get; set; }
-    private ProjectDto? project;
-    private ProjectUpdateDto selectedProject = new();
-    private bool IsEditModalVisible = false;
-    private bool isDeleteModalVisible = false;
-
-    [Parameter] public List<EmployeeDto>? Employees { get; set; }
-    [Parameter] public List<CustomerDto>? Customers { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        project = await ProjectAppService!.GetAsync(ProjectId);
-    }
-
-    private async Task ConfirmDelete()
-    {
-        await ProjectAppService!.DeleteAsync(ProjectId);
-        NavigationManager!.NavigateTo("/projects");
-    }
-
-    private void ShowEditModal()
-    {
-        selectedProject = new ProjectUpdateDto
-        {
-            Id = project!.Id,
-            Name = project.Name!,
-            Description = project.Description,
-            StartTime = project.StartTime,
-            EndTime = project.EndTime,
-            Status = project.Status,
-            Revenue = project.Revenue,
-            SuccessRate = project.SuccessRate,
-            EmployeeId = project.EmployeeId,
-            CustomerId = project.CustomerId
-        };
-
-        IsEditModalVisible = true;
-    }
-
-    private async Task HandleProjectUpdated(ProjectUpdateDto updatedProject)
-    {
-        project = await ProjectAppService!.GetAsync(ProjectId);
-        IsEditModalVisible = false;
-        StateHasChanged();
-    }
-}
+@* ********** EDIT MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Projects.ProjectEditModal @ref="projectEditModal" />
 
 <style>
-
     .status-label {
-        color: white; /* Yazı rengi beyaz */
-        padding: 3px 8px; /* İç boşluk */
-        border-radius: 3px; /* Köşeleri yuvarlak yap */
-        font-size: 12px; /* Yazı boyutunu küçült */
-        font-weight: bold; /* Yazıyı kalın yap */
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: bold;
     }
 
     .status-pending {
@@ -204,6 +151,9 @@ else
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         margin-top: 20px;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
     }
 
     .overview-item {
@@ -235,22 +185,14 @@ else
         align-items: center;
     }
 
-    .status-label {
-        padding: 4px 10px;
-        border-radius: 10px;
-        font-size: 12px;
-        margin-left: 10px;
-    }   
+    .project-title {
+        color: #000000;
+        font-size: 20px;
+    }
 
     .menu-icon {
         cursor: pointer;
         font-size: 20px;
-    }
-
-    .project-overview {
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 15px;
     }
 
     .project-dates {
@@ -278,6 +220,12 @@ else
         border-radius: 50%;
         border: 2px solid #fff;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .project-description {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
     }
 
 </style>

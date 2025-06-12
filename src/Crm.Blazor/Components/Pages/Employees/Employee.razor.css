@@ -1,0 +1,76 @@
+﻿/* Card container - dropdown area */
+.employee-card-container {
+    position: relative;
+}
+
+/* Three-dot (options) button wrapper */
+.employee-card-dropdown-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Dots button style */
+.dropdown-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dropdown menu box */
+.employee-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    min-width: 100px;
+}
+
+/* Dropdown item buttons */
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* Employee content block (image + info) */
+.employee-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Employee profile image */
+.employee-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+/* Name */
+.employee-name {
+    font-size: 16px;
+    color: black;
+}
+
+/* Email link */
+.employee-email {
+    font-size: 14px;
+    text-decoration: none;
+    color: blue;
+}
+
+/* Phone text */
+.employee-phone {
+    color: black;
+}

@@ -16,8 +16,8 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private ActivityUpdateDto ActivityUpdateDto { get; set; } = new ActivityUpdateDto();
         private EnumType selectedType = Enum.GetValues(typeof(EnumType)).Cast<EnumType>().FirstOrDefault();
         private DateTime? selectedDate { get; set; }
-        private Guid SelectedEmployeeId { get; set; }
-        private Guid SelectedCustomerId { get; set; }
+        private Guid selectedEmployeeId { get; set; }
+        private Guid selectedCustomerId { get; set; }
         private List<EmployeeDto> EmployeeList { get; set; } = new();
         private List<CustomerDto> CustomerList { get; set; } = new();
         #endregion
@@ -41,8 +41,8 @@ namespace Crm.Blazor.Components.Dialogs.Activities
 
                 selectedType = activity.Type;
                 selectedDate = activity.Date.ToLocalTime();
-                SelectedEmployeeId = activity.EmployeeId;
-                SelectedCustomerId = activity.CustomerId;
+                selectedEmployeeId = activity.EmployeeId;
+                selectedCustomerId = activity.CustomerId;
             }
             await modalRef!.Show();
         }
@@ -59,8 +59,8 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             {
                 ActivityUpdateDto.Type = selectedType;
                 ActivityUpdateDto.Date = selectedDate ?? DateTime.MinValue; ;
-                ActivityUpdateDto.EmployeeId = SelectedEmployeeId;
-                ActivityUpdateDto.CustomerId = SelectedCustomerId;
+                ActivityUpdateDto.EmployeeId = selectedEmployeeId;
+                ActivityUpdateDto.CustomerId = selectedCustomerId;
 
                 await ActivityAppService.UpdateAsync(ActivityUpdateDto.Id, ActivityUpdateDto);
                 await HideModal();

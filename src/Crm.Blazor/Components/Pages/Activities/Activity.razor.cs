@@ -55,7 +55,6 @@ namespace Crm.Blazor.Components.Pages.Activities
 
         private async Task EditActivity(ActivityDto activity)
         {
-            //isActivityModalVisible = false;
             await activityEditModal!.ShowModal(activity);
         }
         #endregion

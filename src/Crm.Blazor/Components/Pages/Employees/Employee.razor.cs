@@ -30,7 +30,6 @@ namespace Crm.Blazor.Components.Pages.Employees
         private EmployeeCreateModal? employeeCreateModal;
         private EmployeeEditModal? employeeEditModal;
         private bool isDeleteModalVisible = false;
-        //private EmployeeWithNavigationPropertyDto? selectedEmployeeWithNav;
         private EmployeeDto? selectedEmployee;
         private bool isEmployeeModalVisible = false;
 

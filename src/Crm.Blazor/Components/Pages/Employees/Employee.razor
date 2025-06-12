@@ -47,36 +47,34 @@
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
                 <CardBody>
-                    <Div style="position: relative;">
-                        <Div style="position: absolute; top: 10px; right: 10px;">
-                            <Button @onclick="() => ToggleDropdown(employee.Id)" style="background: none; border: none; cursor: pointer;">
-                                &#8942; 
+                    <Div style="position: relative;" class="employee-card-container">
+                        <Div class="employee-card-dropdown-toggle">
+                            <Button @onclick="() => ToggleDropdown(employee.Id)" class="dropdown-button">
+                                &#8942;
                             </Button>
 
                             @if (ActiveDropdownEmployeeId == employee.Id)
                             {
-                                <Div style="position: absolute; right: 0; top: 25px; background-color: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100; min-width: 100px;">
-                                   <Button @onclick="() => OnSelectEmployeeForEdit(employee)" 
-                                        Style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">
+                                <Div class="employee-dropdown-menu">
+                                    <Button @onclick="() => OnSelectEmployeeForEdit(employee)" class="dropdown-item">
                                         Edit
                                     </Button>
-                                    <Button @onclick="() => OnSelectEmployeeForDelete(employee)"
-                                            Style="display: block; width: 100%; padding: 8px; background: none; border: none; text-align: left; cursor: pointer;">
-                                            Delete
+                                    <Button @onclick="() => OnSelectEmployeeForDelete(employee)" class="dropdown-item">
+                                        Delete
                                     </Button>
                                 </Div>
                             }
                         </Div>
 
                         <!-- Content Centered -->
-                        <Div style="display: flex; flex-direction: column; align-items: center;">
-                            <img src="@employee.PhotoPath" alt="Profile Photo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; object-fit: cover;" />
-                            <Span style="font-size: 16px; color:black">@employee.FullName</Span>
+                        <Div class="employee-info">
+                            <img src="@employee.PhotoPath" alt="Profile Photo" class="employee-photo" />
+                            <Span class="employee-name">@employee.FullName</Span>
                             <br />
                             <Span>@PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name</Span>
                             <br />
-                            <a href="mailto:@employee.Email" style="font-size: 14px; text-decoration: none; color: blue;">@employee.Email</a>
-                            <Span style="color:black;">@employee.PhoneNumber</Span>
+                            <a href="mailto:@employee.Email" class="employee-email">@employee.Email</a>
+                            <Span class="employee-phone">@employee.PhoneNumber</Span>
                         </Div>
                     </Div>
                 </CardBody>
