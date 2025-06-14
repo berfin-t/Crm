@@ -29,7 +29,6 @@ namespace Crm.Employees
         [NotNull]
         public virtual DateTime BirthDate { get; private set; }
         public virtual Guid PositionId { get; private set; }
-        //public virtual ICollection<EmployeeTask> EmployeeTasks { get; set; } = new List<EmployeeTask>();
 
         protected Employee()
         {

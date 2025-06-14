@@ -1,8 +1,7 @@
-﻿using Crm.Activities;
+﻿using Crm.Employees;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -13,7 +12,7 @@ namespace Crm.Projects
     [RemoteService(IsEnabled = false)]
     //[Authorize(CrmPermissions.Projects.Default)]
     public class ProjectAppService(
-        IProjectRepository projectRepository,
+        IProjectRepository projectRepository,        
         ProjectManager projectManager):CrmAppService, IProjectAppService
     {
         #region GetListPaged
@@ -92,7 +91,7 @@ namespace Crm.Projects
         #endregion
 
         #region Delete
-        public virtual async Task DeleteAsync(Guid id)
+        public virtual async System.Threading.Tasks.Task DeleteAsync(Guid id)
         {
             var project = await projectRepository.GetAsync(id);
             if (project == null)
@@ -105,6 +104,7 @@ namespace Crm.Projects
             await projectRepository.UpdateAsync(project);
         }
         #endregion        
+
 
     }
 }

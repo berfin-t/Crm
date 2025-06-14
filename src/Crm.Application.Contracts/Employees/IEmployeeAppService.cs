@@ -16,6 +16,7 @@ namespace Crm.Employees
         Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath);
         Task DeleteAsync(Guid id);
         Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id);
+        Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId);
 
     }
 }

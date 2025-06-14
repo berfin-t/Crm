@@ -6,6 +6,7 @@ using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Crm.Blazor.Components.Pages.Projects
@@ -22,13 +23,18 @@ namespace Crm.Blazor.Components.Pages.Projects
         [Parameter] public List<EmployeeDto>? Employees { get; set; }
         [Parameter] public List<CustomerDto>? Customers { get; set; }
         private long totalTasks;
+        private long completedTasks;
+        private long teamSize;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
             totalTasks = await TaskAppService.GetTotalTaskCountByProjectIdAsync(ProjectId);
-            project = await ProjectAppService!.GetAsync(ProjectId);
+            completedTasks = await TaskAppService.GetCompletedTasksByProjectId(ProjectId);
+            teamSize = (await EmployeeAppService.GetEmployeesByProjectIdAsync(ProjectId)).Count();
+
+            project = await ProjectAppService.GetAsync(ProjectId);
             await base.OnInitializedAsync();
         }       
 

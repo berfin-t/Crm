@@ -10,6 +10,7 @@
 
 @inject IProjectAppService ProjectAppService
 @inject ITaskAppService TaskAppService
+@inject IEmployeeAppService EmployeeAppService
 @inject NavigationManager NavigationManager
 
 @if (project != null)
@@ -28,14 +29,14 @@
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Tasks Completed</Div>
-                        <Div class="field-label">121</Div>
+                        <Div class="field-label">@completedTasks</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
                         <Div class="top-label">Team Size</Div>
-                        <Div class="field-label">12</Div>
+                        <Div class="field-label">@teamSize</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">

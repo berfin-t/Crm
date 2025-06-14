@@ -3,6 +3,7 @@ using System;
 using Crm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Crm.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    partial class CrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250613132305_AddProjectEmployeeTable")]
+    partial class AddProjectEmployeeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -733,7 +736,7 @@ namespace Crm.Migrations
                     b.HasIndex("ProjectId", "EmployeeId")
                         .IsUnique();
 
-                    b.ToTable("AppProjectEmployees", (string)null);
+                    b.ToTable("ProjectEmployees", (string)null);
                 });
 
             modelBuilder.Entity("Crm.Tasks.Task", b =>

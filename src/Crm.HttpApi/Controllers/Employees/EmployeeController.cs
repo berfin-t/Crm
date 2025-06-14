@@ -50,5 +50,8 @@ namespace Crm.Controllers.Employees
         [HttpGet]
         [Route("with-navigation-properties/{id}")]
         public virtual Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) => _employeeAppService.GetWithNavigationPropertiesAsync(id);
+
+        [HttpGet]
+        public virtual Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId) => _employeeAppService.GetEmployeesByProjectIdAsync(projectId);
     }
 }

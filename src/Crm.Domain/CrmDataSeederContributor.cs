@@ -35,6 +35,7 @@ public class CrmDataSeederContributor(
     ICustomerNoteRepository customerNoteRepository,
     IOrderRepository orderRepository,
     ITaskRepository taskRepository,
+    IProjectEmployeeRepository projectEmployeeRepository,
     IGuidGenerator guidGenerator) : IDataSeedContributor, ITransientDependency
 {
     public async System.Threading.Tasks.Task SeedAsync(DataSeedContext context)
@@ -48,6 +49,7 @@ public class CrmDataSeederContributor(
         var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
         var tasks = await SeedTasksAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
+        var projectEmployees = await SeedProjectEmployeesAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
     }
 
     // Customers
@@ -243,5 +245,37 @@ public class CrmDataSeederContributor(
         await taskRepository.InsertManyAsync(tasks, true);
         return tasks;
     }
+
+    //ProjectEmployees
+    private async Task<IEnumerable<ProjectEmployee>> SeedProjectEmployeesAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
+    {
+        var faker = new Faker("tr");
+
+        var projectEmployeeList = new List<ProjectEmployee>();
+
+        foreach (var projectId in projects)
+        {
+            var assignedEmployees = faker.PickRandom(employees, faker.Random.Int(1, 5)).ToList();
+
+            foreach (var employeeId in assignedEmployees)
+            {
+                var projectEmployee = new ProjectEmployee(
+                    guidGenerator.Create(),
+                    projectId,
+                    employeeId
+                );
+
+                if (!projectEmployeeList.Any(pe => pe.ProjectId == projectId && pe.EmployeeId == employeeId))
+                {
+                    projectEmployeeList.Add(projectEmployee);
+                }
+            }
+        }
+
+        await projectEmployeeRepository.InsertManyAsync(projectEmployeeList, true);
+
+        return projectEmployeeList;
+    }
+
 
 }

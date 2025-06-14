@@ -1,8 +1,10 @@
 ﻿using Crm.Activities;
+using Crm.Projects;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -13,6 +15,7 @@ namespace Crm.Employees
     [RemoteService(IsEnabled = false)]
     //[Authorize(CrmPermissions.Employees.Default)]
     public class EmployeeAppService(IEmployeeRepository employeeRepository,
+        IProjectEmployeeRepository projectEmployeeRepository,
         EmployeeManager employeeManager) : CrmAppService, IEmployeeAppService
     {
         #region Create
@@ -139,5 +142,26 @@ namespace Crm.Employees
             (await employeeRepository.GetWithNavigationPropertiesAsync(id));
 
         #endregion
+
+        public async Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId)
+        {
+            var projectEmployees = await projectEmployeeRepository.GetListAllAsync(projectId);
+
+            var employeeIds = projectEmployees.Select(pe => pe.EmployeeId).ToList();
+            var employees = await employeeRepository.GetListAsync(e => employeeIds.Contains(e.Id));
+
+            var result = (from pe in projectEmployees
+                          join e in employees on pe.EmployeeId equals e.Id
+                          select new ProjectEmployeeDto
+                          {
+                              ProjectId = pe.ProjectId,
+                              EmployeeId = e.Id,
+                              EmployeeName = e.FirstName + " " + e.LastName,
+                          }).ToList();
+
+            return result;
+        }
+
+
     }
 }

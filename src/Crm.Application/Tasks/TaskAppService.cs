@@ -1,4 +1,5 @@
-﻿using Crm.Projects;
+﻿using Crm.Common;
+using Crm.Projects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -71,11 +72,20 @@ namespace Crm.Tasks
         }
         #endregion
 
-        #region GetTotalTaskCountById
+        #region GetTotalTaskCountByProjectId
         public async Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId)
         {
             return await taskRepository.GetCountAsync(projectId: projectId);
         }
         #endregion
+
+        #region GetCompletedTasksByProjectId
+        public async Task<long> GetCompletedTasksByProjectId(Guid projectId)
+        {
+            return await taskRepository.GetCountAsync(
+                statues: new List<EnumStatus> { EnumStatus.Completed }, projectId: projectId);
+        }
+        #endregion
+        
     }
 }

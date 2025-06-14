@@ -43,6 +43,7 @@ public class CrmDbContext :
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Position> Positions { get; set; }
     public DbSet<Task> Tasks { get; set; }
+    public DbSet<ProjectEmployee> ProjectEmployees { get; set; }
 
     #region Entities from the modules
 

@@ -47,6 +47,10 @@ namespace Crm.Controllers.Tasks
         [HttpGet]
         [Route("count/project/{projectId}")]
         public virtual Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId) => _taskAppService.GetTotalTaskCountByProjectIdAsync(projectId);
+
+        [HttpGet]
+        [Route("completed/project/{projectId}")]
+        public virtual Task<long> GetCompletedTasksByProjectId(Guid projectId) => _taskAppService.GetCompletedTasksByProjectId(projectId);
     }
     
 }
