@@ -7,33 +7,3 @@
 @using Blazorise.Icons.FontAwesome
 
 
-
-@inject ITaskAppService TaskAppService
-
-<h3 class="mb-4">Görev Yönetimi</h3>
-
-<DropContainer TItem="TaskDto"
-               Items="@items"
-               ItemsFilter="@((item, dropZone) => item.Status.ToString() == dropZone)"
-               ItemDropped="@TaskDropped"
-               Flex="Flex.Wrap.Grow.Is1">
-    <ChildContent>
-        @foreach (var status in Enum.GetValues<EnumStatus>())
-        {
-            <DropZone TItem="TaskDto" Name="@status.ToString()" Border="Border.Rounded" Background="Background.Light" Padding="Padding.Is3" Margin="Margin.Is3" Flex="Flex.Grow.Is1">
-                <Heading Size="HeadingSize.Is4" Margin="Margin.Is3.FromBottom">@status.ToString()</Heading>
-            </DropZone>
-        }
-    </ChildContent>
-
-    <ItemTemplate>
-        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY">
-            <CardBody>
-                <strong>@context.Title</strong> 
-            </CardBody>
-        </Card>
-    </ItemTemplate>
-
-
-</DropContainer>
-

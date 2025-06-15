@@ -14,6 +14,7 @@ namespace Crm.Blazor.Components.Pages.Projects
     public partial class ProjectDetail
     {
         #region References
+        [Parameter] public string ProjectSlug { get; set; }
         [Parameter] public Guid ProjectId { get; set; }
         private ProjectDto? project;
         private ProjectDto? selectedProject;

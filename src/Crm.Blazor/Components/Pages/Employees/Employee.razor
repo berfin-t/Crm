@@ -15,12 +15,11 @@
         <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
             <Div>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    
                     <Autocomplete TItem="EmployeeDto"
                                   TValue="string"
                                   Data="@ReadDataEmployees"
                                   ReadData="@OnHandleReadData"
-                                  TextField="@(( item ) => item.FirstName)"
+                                  TextField="@((item) => item.FirstName)"
                                   ValueField="@((item) => item.Id.ToString())"
                                   @bind-SelectedText="selectedAutoCompleteText"
                                   @onkeydown="@OnEntered"
@@ -31,11 +30,9 @@
                 </Field>
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
-
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Employee</Button>
                 </Field>               
-
             </Div>
         </CardBody>
     </Card>
@@ -47,35 +44,50 @@
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
                 <CardBody>
-                    <Div style="position: relative;" class="employee-card-container">
-                        <Div class="employee-card-dropdown-toggle">
-                            <Button @onclick="() => ToggleDropdown(employee.Id)" class="dropdown-button">
+                    <Div style="position: relative; padding-top: 10px;">
+
+                        <!-- Dropdown Toggle Button (Sağ Üstte) -->
+                        <Div style="position: absolute; top: 10px; right: 10px;">
+                            <Button @onclick="() => ToggleDropdown(employee.Id)" 
+                                    style="background: none; border: none; cursor: pointer; font-size: 20px; line-height: 1;">
                                 &#8942;
                             </Button>
 
                             @if (ActiveDropdownEmployeeId == employee.Id)
                             {
-                                <Div class="employee-dropdown-menu">
-                                    <Button @onclick="() => OnSelectEmployeeForEdit(employee)" class="dropdown-item">
+                                <Div style="position: absolute; right: 0; top: 25px; background-color: white; 
+                                            border: 1px solid #ccc; border-radius: 4px; 
+                                            box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100; min-width: 100px;">
+                                    <Button @onclick="() => OnSelectEmployeeForEdit(employee)" 
+                                            style="display: block; width: 100%; padding: 8px; background: none; 
+                                                   border: none; text-align: left; cursor: pointer;">
                                         Edit
                                     </Button>
-                                    <Button @onclick="() => OnSelectEmployeeForDelete(employee)" class="dropdown-item">
+                                    <Button @onclick="() => OnSelectEmployeeForDelete(employee)" 
+                                            style="display: block; width: 100%; padding: 8px; background: none; 
+                                                   border: none; text-align: left; cursor: pointer; color: red;">
                                         Delete
                                     </Button>
                                 </Div>
                             }
                         </Div>
 
-                        <!-- Content Centered -->
-                        <Div class="employee-info">
-                            <img src="@employee.PhotoPath" alt="Profile Photo" class="employee-photo" />
-                            <Span class="employee-name">@employee.FullName</Span>
-                            <br />
-                            <Span>@PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name</Span>
-                            <br />
-                            <a href="mailto:@employee.Email" class="employee-email">@employee.Email</a>
-                            <Span class="employee-phone">@employee.PhoneNumber</Span>
+                        <!-- İçerik Ortalanmış -->
+                        <Div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 40px;">
+                            <img src="@employee.PhotoPath" alt="Profile Photo" 
+                                 style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;" />
+                            <Span style="font-weight: bold; font-size: 16px; color: black;">@employee.FullName</Span>
+                            <Span style="font-size: 14px; color: gray;">
+                                @PositionList.FirstOrDefault(p => p.Id == employee.PositionId)?.Name
+                            </Span>
+                            <a href="mailto:@employee.Email" style="font-size: 14px; color: blue; text-decoration: none; margin-top: 5px;">
+                                @employee.Email
+                            </a>
+                            <Span style="font-size: 14px; color: black; margin-top: 5px;">
+                                @employee.PhoneNumber
+                            </Span>
                         </Div>
+
                     </Div>
                 </CardBody>
             </Card>
@@ -83,11 +95,7 @@
     }
 </Row>
 
-@* <Div Flex="Flex.JustifyContent.Center">
-    <Button Color="Color.Light" @onclick="LoadMoreEmployees">Load More</Button>
-</Div> *@
-
-@* ********** Employee DELETE MODAl ********** *@
+@* DELETE MODAL *@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
@@ -104,9 +112,8 @@
     </ModalContent>
 </Modal>
 
-
-@* ********** CREATE MODAL ********** *@
+@* CREATE MODAL *@
 <Crm.Blazor.Components.Dialogs.Employees.EmployeeCreateModal @ref="employeeCreateModal" />
 
-@* ********** EDIT MODAL ********** *@
+@* EDIT MODAL *@
 <Crm.Blazor.Components.Dialogs.Employees.EmployeeEditModal @ref="employeeEditModal" />
