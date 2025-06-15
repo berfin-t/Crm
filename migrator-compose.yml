@@ -1,0 +1,14 @@
+services: 
+  migrator:
+    build:
+      context: .
+      dockerfile: src/Crm.DbMigrator/Dockerfile
+    networks:
+      - crm-backend
+    environment:
+      ConnectionStrings__Default: 'Host=db;Port=5432;Database=Crm;User ID=postgres;Password=*sB2xa'
+    entrypoint: ["dotnet", "Crm.DbMigrator.dll"]
+
+networks:
+  crm-backend:
+    external: true

@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '*sB2xa'
+      POSTGRES_DB: Crm
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - crm-backend
+      - default
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3232:8080"
+    environment:
+      ConnectionStrings__Default: 'Host=db;Port=5432;Database=Crm;User ID=postgres;Password=*sB2xa'
+
+volumes:
+  db_data:
+
+networks:
+  crm-backend:
+    external: true
+
