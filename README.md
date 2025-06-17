@@ -14,7 +14,7 @@ Aşağıdaki araçlar yüklü olmalı
 
 #### 1. Projeyi Klonlayın
 ```sh
-git clone [https://github.com/berfin-t/Crm.git](https://github.com/berfin-t/Crm.git)
+git clone https://github.com/berfin-t/Crm.git
 cd Crm
 ```
 
