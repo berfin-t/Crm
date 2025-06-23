@@ -1,6 +1,6 @@
 # CRM (Customer Relationship Management)  - ABP Framework & Blazor
 
-Bu proje, **ABP Framework** ile geliştirilmiş bir **müşteri ilişkileri yönetimi** uygulamasıdır. **Blazor** tabanlı bir arayüze sahiptir ve ABP Framework'ün  modüler yapısını kullanmaktadır.
+Bu proje, **ABP Framework** ile geliştirilmiş bir **Müşteri İlişkileri Yönetimi** uygulamasıdır. **Blazor** tabanlı bir arayüze sahiptir ve ABP Framework'ün  modüler yapısını kullanmaktadır.
 
 ## Kurulum
 
@@ -47,4 +47,6 @@ Tarayıcınızda aşağıdaki URL'lere giderek projeyi görüntüleyebilirsiniz:
 - **ABP Framework**
 - **Blazor(Blazorise)**
 - **Entity Framework Core**
+- **Postgre SQL**
+- **Docker**
 
