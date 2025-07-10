@@ -1,4 +1,6 @@
 ﻿using Crm.Activities;
+using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ using Volo.Abp.Domain.Entities;
 namespace Crm.Customers
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Customers.Default)]
+    [Authorize(CrmPermissions.Customers.Menu)]
     public class CustomerAppService(ICustomerRepository customerRepository,
         CustomerManager customerManager) : CrmAppService, ICustomerAppService
     {

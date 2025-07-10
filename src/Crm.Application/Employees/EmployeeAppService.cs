@@ -1,5 +1,7 @@
 ﻿using Crm.Activities;
+using Crm.Permissions;
 using Crm.Projects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ using Volo.Abp.Domain.Entities;
 namespace Crm.Employees
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Employees.Default)]
+    [Authorize(CrmPermissions.Employees.Default)]
     public class EmployeeAppService(IEmployeeRepository employeeRepository,
         IProjectEmployeeRepository projectEmployeeRepository,
         EmployeeManager employeeManager) : CrmAppService, IEmployeeAppService

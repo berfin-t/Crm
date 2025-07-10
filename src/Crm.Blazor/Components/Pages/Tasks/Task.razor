@@ -1,9 +1,49 @@
 ﻿@page "/tasks"
 
-@using Crm.Tasks
+@* @using Crm.Tasks
 @using Crm.Common
 @using Blazorise
 @using Blazorise.Bootstrap5
 @using Blazorise.Icons.FontAwesome
 
+@inject ITaskAppService TaskAppService
 
+<DropContainer TItem="TaskDto"> 
+    <ChildContent>
+        <DropZone TItem="TaskDto">
+            <Heading>TaskDto.Status</Heading>
+        </DropZone>
+    </ChildContent>
+
+    <ItemTemplate>
+                <Card>
+            <CardHeader>
+                <Heading>Title</Heading>
+            </CardHeader>
+            <CardBody>
+                <p>Description</p>
+                <p>Due: DueDate</p>
+            </CardBody>
+            <CardFooter>
+                <Button Color="Color.Primary">Edit</Button>
+                <Button Color="Color.Danger">Delete</Button>
+            </CardFooter>
+        </Card
+    </ItemTemplate>
+</DropContainer>
+
+@code{
+    public TaskDto TaskDto { get; set; }
+    public List<TaskDto> tasks { get; set; } = new List<TaskDto>();
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        tasks = await TaskAppService.GetListAllAsync();
+    }
+
+    // private Task ItemDropped( DraggableDroppedEventArgs<TaskDto> dropItem )
+    // {
+    //     dropItem.Item.Priority = dropItem.DropZoneName;
+    //     return TaskAppService.UpdateAsync(dropItem.Item);
+    // }
+} *@

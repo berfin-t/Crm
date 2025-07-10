@@ -1,5 +1,7 @@
 ﻿using Crm.Common;
+using Crm.Permissions;
 using Crm.Projects;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ using Volo.Abp.Application.Dtos;
 namespace Crm.Tasks
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Tasks.Default)]
+    [Authorize(CrmPermissions.Tasks.Menu)]
     public class TaskAppService(ITaskRepository taskRepository,
         TaskManager taskManager) : CrmAppService, ITaskAppService
     {

@@ -18,13 +18,12 @@
                                   TValue="string"
                                   Data="@ReadDataProjects"
                                   ReadData="@OnHandleReadData"
-                                  TextField="@(( item ) => item.Name)"
-                                  ValueField="@((item) => item.Id.ToString())"
+                                  TextField="@getName"
+                                  ValueField="@getId"
                                   @bind-SelectedText="selectedAutoCompleteText"
                                   @onkeydown="@OnEntered"
                                   Placeholder="Search..."   
                                   FreeTyping>
-                    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
                 </Autocomplete>
                 </Field>                          
                 

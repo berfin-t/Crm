@@ -10,6 +10,7 @@ using Crm.Orders;
 using Crm.Positions;
 using Crm.Projects;
 using Crm.Tasks;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
+using Volo.Abp.Identity;
+using Volo.Abp.PermissionManagement;
 using static Bogus.DataSets.Name;
 using Activity = Crm.Activities.Activity;
 using EnumType = Crm.Activities.EnumType;
@@ -36,6 +39,9 @@ public class CrmDataSeederContributor(
     IOrderRepository orderRepository,
     ITaskRepository taskRepository,
     IProjectEmployeeRepository projectEmployeeRepository,
+    UserManager<IdentityUser> userManager,
+    RoleManager<IdentityRole> roleManager,
+    IPermissionManager permissionManager,
     IGuidGenerator guidGenerator) : IDataSeedContributor, ITransientDependency
 {
     public async System.Threading.Tasks.Task SeedAsync(DataSeedContext context)
@@ -276,6 +282,5 @@ public class CrmDataSeederContributor(
 
         return projectEmployeeList;
     }
-
 
 }

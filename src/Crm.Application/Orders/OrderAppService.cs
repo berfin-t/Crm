@@ -1,4 +1,6 @@
 ﻿using Crm.Employees;
+using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ using Volo.Abp.Domain.Entities;
 namespace Crm.Orders
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Orders.Default)]
+    [Authorize(CrmPermissions.Orders.Default)]
     public class OrderAppService(IOrderRepository orderRepository,
         OrderManager orderManager) : CrmAppService, IOrderAppService
     {

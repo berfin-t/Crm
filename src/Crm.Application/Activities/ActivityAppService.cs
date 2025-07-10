@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,7 @@ using Volo.Abp.Domain.Entities;
 namespace Crm.Activities
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Activities.Default)]
+    [Authorize(CrmPermissions.Activities.Default)]
     public class ActivityAppService(IActivityRepository activityRepository,
         ActivityManager activityManager) : CrmAppService, IActivityAppService
     {

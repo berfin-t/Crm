@@ -16,8 +16,8 @@ namespace Crm.Blazor.Components.Pages.Projects
     {
         #region References
         public List<ProjectDto> ProjectList = new();
-        public List<ProjectDto> FilteredProjects = new();        
-        public IEnumerable<ProjectDto>? ReadDataProjects;
+        public List<ProjectDto> FilteredProjects = new();
+        public IEnumerable<ProjectDto>? ReadDataProjects { get; set; } = new List<ProjectDto>();
         public IEnumerable<ProjectDto>? ProjectDto;
         public string selectedProjectName = string.Empty;
         public string selectedProjectId = string.Empty;
@@ -25,33 +25,39 @@ namespace Crm.Blazor.Components.Pages.Projects
         private ProjectCreateModal? projectCreateModal;
         public EnumStatus? SelectedStatus { get; set; } = null;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+        private readonly Func<ProjectDto, string> getName = item => item.Name;
+        private readonly Func<ProjectDto, string> getId = item => item.Id.ToString();
+        public List<ProjectDto> AllProjects = new();
         #endregion
 
         public int CurrentPage { get; set; } = 0;
         public int PageSize { get; set; } = 9;
         public int TotalCount { get; set; } = 0;
         public DateTime? startDate { get; set; }
-        public DateTime? endDate { get; set; }              
+        public DateTime? endDate { get; set; }
 
         protected override async Task OnInitializedAsync()
-        {            
-            ProjectDto = await ProjectAppService.GetListAllAsync();
+        {
+            AllProjects = (await ProjectAppService.GetListAllAsync()).ToList();
             await LoadMoreProjects();
-
-            await base.OnInitializedAsync();
         }
 
         private async Task OnHandleReadData(AutocompleteReadDataEventArgs autocompleteReadDataEventArgs)
         {
             if(!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(100);
+            await Task.Delay(100);
                 if(!autocompleteReadDataEventArgs.CancellationToken.IsCancellationRequested)
                 {
-                    ReadDataProjects = ProjectDto!.Where(x => x.Name!.StartsWith(autocompleteReadDataEventArgs.SearchValue, StringComparison.InvariantCultureIgnoreCase));
+                    var query = autocompleteReadDataEventArgs.SearchValue ?? string.Empty;
+
+                    ReadDataProjects = AllProjects
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Name) &&
+                                    x.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase))
+                        .ToList();
                 }
-            }
-        }       
+            }            
+        }
 
         public async Task LoadMoreProjects()
         {

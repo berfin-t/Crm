@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using Volo.Abp.Application.Dtos;
 namespace Crm.Positions
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Positions.Default)]
+    [Authorize(CrmPermissions.Positions.Default)]
     public class PositionAppService(IPositionRepository positionRepository,
         PositionManager positionManager) : CrmAppService, IPositionAppService
     {

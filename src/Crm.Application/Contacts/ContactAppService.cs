@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +11,7 @@ using Volo.Abp.Application.Dtos;
 namespace Crm.Contacts
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Contacts.Default)]
+    [Authorize(CrmPermissions.Contacts.Default)]
     public class ContactAppService(IContactRepository contactRepository,
         ContactManager contactManager) : CrmAppService, IContactAppService
     {

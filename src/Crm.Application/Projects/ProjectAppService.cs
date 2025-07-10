@@ -1,4 +1,6 @@
 ﻿using Crm.Employees;
+using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using Volo.Abp.Application.Dtos;
 namespace Crm.Projects
 {
     [RemoteService(IsEnabled = false)]
-    //[Authorize(CrmPermissions.Projects.Default)]
+    [Authorize(CrmPermissions.Projects.Menu)]
     public class ProjectAppService(
         IProjectRepository projectRepository,        
         ProjectManager projectManager):CrmAppService, IProjectAppService
