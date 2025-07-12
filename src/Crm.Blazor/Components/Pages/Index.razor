@@ -1,9 +1,11 @@
 @page "/"
+@attribute [Authorize]
 @using Volo.Abp.MultiTenancy
 @using Crm.Projects
 @using Crm.Tasks
 @using Crm.Customers
 @using Crm.Common
+@using Crm.Employees
 
 @inherits CrmComponentBase
 
@@ -11,47 +13,50 @@
 @inject IProjectAppService ProjectAppService
 @inject ITaskAppService TasksAppService
 @inject ICustomerAppService CustomersAppService
+@inject IEmployeeAppService EmployeeAppService
 
-
-<Card>
+<Div class="card-container">
+    <Card class="left-card">
     <CardBody>
         <Div class="project-overview">
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.CheckSquare" Class="icon" />
                 <Div>
-                    <Div class="top-label">Total Projects</Div>
+                    <Div class="top-label">@L["Total Projects"]</Div>
                     <Div class="field-label">@totalProjects</Div>
                 </Div>
             </Div>
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.Check" Class="icon" />
                 <Div>
-                    <Div class="top-label">Total Tasks</Div>
+                    <Div class="top-label">@L["Total Tasks"]</Div>
                     <Div class="field-label">@totalTasks</Div>
                 </Div>
             </Div>
             <Div class="overview-item">
                 <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                 <Div>
-                    <Div class="top-label">Total Customer</Div>
+                    <Div class="top-label">@L["Total Customer"]</Div>
                     <Div class="field-label">@totalCustomer</Div>
-                </Div>
-            </Div>
-            <Div class="overview-item">
-                <Blazorise.Icons.FontAwesome.Icon Name="IconName.Clock" Class="icon" />
-                <Div>
-                    <Div class="top-label">Total Succes Rate</Div>
-                    <Div class="field-label">@totalSuccessRate</Div>
                 </Div>
             </Div>
         </Div>
     </CardBody>
 </Card>
 
+    <Card class="right-card">
+    <CardBody>
+            <Span class="welcome-mesaage">
+                @L["WelcomeMessage", GetCurrentUserName()]
+            </Span>
+    </CardBody>
+</Card>
+</Div>
+
 <Card class="mt-4">
     <CardBody>
         <Div class="progress-info">
-            <Div class="top-label">Project Success Rate</Div>
+            <Div class="top-label">@L["Project Success Rate"]</Div>
             <Progress Class="my-2" Max="100" Value="@(Convert.ToInt32(totalSuccessRate))" Color="Color.Success" />
             <Div class="field-label">@($"{totalSuccessRate}%")</Div>
         </Div>
@@ -65,7 +70,7 @@
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.UserPlus" Class="icon" />
                     <Div>
-                        <Div class="top-label">New Customers This Month</Div>
+                        <Div class="top-label">@L["This Month's New Customers"]</Div>
                         <Div class="field-label">@newCustomersThisMonth</Div>
                     </Div>
                 </Div>
@@ -79,7 +84,7 @@
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Star" Class="icon" />
                     <Div>
-                        <Div class="top-label">Active Tasks</Div>
+                        <Div class="top-label">@L["Active Tasks"]</Div>
                         <Div class="field-label">@activeTasks</Div>
                     </Div>
                 </Div>
@@ -116,6 +121,12 @@
 
     private int newCustomersThisMonth;  
     private int activeTasks;
+
+    private string GetCurrentUserName()
+    {
+        var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
+        return authState.User.Identity?.Name ?? "Guest";
+    }
 }
 
 
@@ -130,6 +141,15 @@
         margin-top: 20px;
     }
 
+    .card-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .left-card, .right-card {
+        flex: 1;
+    }
     .overview-item {
         display: flex;
         align-items: center;
@@ -151,5 +171,11 @@
         font-size: 18px;
         color: #000;
         font-weight: 500;
+    }
+
+    .welcome-mesaage {
+        font-size: 16px;
+        font: bold;
+        color: black;
     }
 </style>

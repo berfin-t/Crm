@@ -5,6 +5,8 @@
 @using Crm.Projects
 @using Crm.Common
 @using Crm.Blazor.Components
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+
 
 @inject NavigationManager Navigation
 @inject IProjectAppService ProjectAppService
@@ -22,7 +24,7 @@
                                   ValueField="@getId"
                                   @bind-SelectedText="selectedAutoCompleteText"
                                   @onkeydown="@OnEntered"
-                                  Placeholder="Search..."   
+                                  Placeholder="@L["Search"]"   
                                   FreeTyping>
                 </Autocomplete>
                 </Field>                          
@@ -31,7 +33,7 @@
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">              
 
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                        <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Project</Button>
+                        <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Project"]</Button>
                     </Field>      
                     
                     @* <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
@@ -63,7 +65,9 @@
                     <CardTitle Size="5">
                         <Div Flex="Flex.JustifyContent.Between">
                             <Span>@project.Name</Span>
-                            <span class="status-label status-@project.Status.ToString().ToLower()">@project.Status</span>
+                            <span class="status-label status-@project.Status.ToString().ToLower()">
+                                @L["ProjectStatus:" + project.Status.ToString()]
+                            </span>
                         </Div>
                     </CardTitle>
                     <Paragraph Margin="Margin.Is3.FromTop">
@@ -71,11 +75,11 @@
                     </Paragraph>
                     <Div class="progress-container">
                         <Progress value="@GetCompletionPercentage(project.StartTime, project.EndTime)" max="100"></Progress>
-                        <p>%@GetCompletionPercentage(project.StartTime, project.EndTime) tamamlandı</p>
+                        <p>%@GetCompletionPercentage(project.StartTime, project.EndTime)  @L["Completed"]</p>
                     </Div>
 
                     <br />
-                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">Read More</Anchor>
+                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">@L["Read More"]</Anchor>
                 </CardBody>
             </Card>
         </Column>
@@ -83,7 +87,7 @@
 
 </Row>
 <Div Flex="Flex.JustifyContent.Center">
-    <Button Color="Color.Light" @onclick="LoadMoreProjects">Load More</Button>
+    <Button Color="Color.Light" @onclick="LoadMoreProjects">@L["Load More"]</Button>
 </Div>
 
 @* ********** CREATE MODAL ********** *@

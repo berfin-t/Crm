@@ -6,8 +6,31 @@
     "Welcome": "Hoşgeldiniz",
     "LongWelcomeMessage": "Uygulamaya hoşgeldiniz. Bu, ABP framework'ü üzerine bina edilmiş bir başlangıç projesidir. Daha fazla bilgi için abp.io adresini ziyaret edebilirsiniz.",
 
-    "Projects": "Projeler",
-    "Customers": "Müşteriler"
-
+    "Menu:Projects": "Projeler",
+    "Add Activity": "Etkinlik Ekle",
+    "Menu:Tasks": "Görevler",
+    "Menu:Reports": "Raporlar",
+    "Menu:Activities": "Etkinlikler",
+    "Menu:CustomerNotes": "Müşteri Notları",
+    "Menu:Employees": "Çalışanlar",
+    "Menu:Orders": "Siparişler",
+    "Menu:Customers": "Müşteriler",
+    "Menu:Positions": "Pozisyonlar",
+    "Menu:Dashboard": "Kontrol Paneli",
+    "Total Projects": "Toplam Projeler",
+    "Total Tasks": "Toplam Görevler",
+    "Total Customer": "Total Customer",
+    "Project Success Rate": "Proje Başarı Oranı",
+    "This Month's New Customers": "Bu Ayın Yeni Müşterileri",
+    "Active Tasks": "Aktif Görevler",
+    "Add Project": "Proje Ekle",
+    "Search": "Ara",
+    "ProjectStatus:Active": "Aktif",
+    "ProjectStatus:Pending": "Bekliyor",
+    "ProjectStatus:Completed": "Tamamlandı",
+    "Load More": "Daha Fazla Yükle",
+    "Read More": "Devamını Oku",
+    "WelcomeMessage": "🌟 Hoş geldiniz, {0}! Sizi tekrar burada görmek harika!",
+    "Completed": "Tamamlandı"
   }
 }

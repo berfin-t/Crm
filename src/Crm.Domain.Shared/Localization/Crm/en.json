@@ -12,11 +12,15 @@
     "Menu:Tasks": "Tasks",
     "Menu:Reports": "Reports",
     "Menu:Activities": "Activities",
-    "Menu:CustomerNotes": "CustomerNotes", 
-    "Menu:Employees": "Employees", 
+    "Menu:CustomerNotes": "CustomerNotes",
+    "Menu:Employees": "Employees",
     "Menu:Orders": "Orders",
-    "Menu:Positions": "Positions", 
-    "Menu:Dashboard": "Dashboard", 
+    "Menu:Positions": "Positions",
+    "Menu:Dashboard": "Dashboard",
+    "WelcomeMessage": "🌟 Welcome, {0}! It's great to see you back here!",
+    "ProjectStatus:Active": "Active",
+    "ProjectStatus:Pending": "Pending",
+    "ProjectStatus:Completed": "Completed"
 
   }
 }

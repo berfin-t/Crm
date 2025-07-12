@@ -48,7 +48,7 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Projects,
                 l["Menu:Projects"],
-                icon: "fas fa-tasks",
+                icon: "fa-regular fa-folder-open",
                 url: "/projects",
                 order: 1
             )
@@ -58,7 +58,7 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Activities,
                 l["Menu:Activities"],
-                icon: "fas fa-tasks",
+                icon: "fa-regular fa-calendar-days",
                 url: "/activities",
                 order: 1
             )
@@ -88,7 +88,7 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Customers,
                 l["Menu:Customers"],
-                icon: "fas fa-tasks",
+                icon: "fa-regular fa-handshake",
                 url: "/customers",
                 order: 1
             )
@@ -98,7 +98,7 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Employees,
                 l["Menu:Employees"],
-                icon: "fas fa-tasks",
+                icon: "fa-regular fa-circle-user",
                 url: "/employees",
                 order: 1
             )
@@ -108,7 +108,7 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Orders,
                 l["Menu:Orders"],
-                icon: "fas fa-tasks",
+                icon: "fa-regular fa-hourglass-half",
                 url: "/orders",
                 order: 1
             )
