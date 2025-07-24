@@ -1,6 +1,7 @@
 ﻿using Crm.Activities;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
@@ -20,6 +21,10 @@ namespace Crm.Employees
         Task<EmployeeWithNavigationProperties> GetWithNavigationPropertiesAsync(
            Guid id,
            CancellationToken cancellationToken = default);
-
+        Task<Employee> GetAsync(
+        Guid? employeeId,
+        Guid? userId,
+        CancellationToken cancellationToken = default
+    );
     }
 }

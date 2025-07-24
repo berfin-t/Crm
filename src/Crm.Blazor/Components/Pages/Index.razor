@@ -47,7 +47,7 @@
     <Card class="right-card">
     <CardBody>
             <Span class="welcome-mesaage">
-                @L["WelcomeMessage", GetCurrentUserName()]
+                @L["WelcomeMessage", GetCurrentUserFullName()]
             </Span>
     </CardBody>
 </Card>
@@ -120,12 +120,22 @@
     }
 
     private int newCustomersThisMonth;  
-    private int activeTasks;
+    private int activeTasks;    
 
-    private string GetCurrentUserName()
+    private string GetCurrentUserFullName()
     {
         var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
-        return authState.User.Identity?.Name ?? "Guest";
+        var user = authState.User;
+
+        var name = user.FindFirst("given_name")?.Value;
+        var surname = user.FindFirst("family_name")?.Value;
+
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(surname))
+        {
+            return "Guest";
+        }
+
+        return $"{name} {surname}";
     }
 }
 

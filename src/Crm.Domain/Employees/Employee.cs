@@ -17,8 +17,6 @@ namespace Crm.Employees
         [NotNull]
         public virtual string LastName { get; private set; }
         [NotNull]
-        public virtual string Email { get; private set; }
-        [NotNull]
         public virtual string PhoneNumber { get; private set; }
         [NotNull]
         public virtual string Address { get; private set; }
@@ -28,24 +26,32 @@ namespace Crm.Employees
         public virtual EnumGender Gender { get; private set; }
         [NotNull]
         public virtual DateTime BirthDate { get; private set; }
+
         public virtual Guid PositionId { get; private set; }
+        public virtual Guid UserId { get; private set; }
 
         protected Employee()
         {
             FirstName = string.Empty;
             LastName = string.Empty;
-            Email = string.Empty;
             PhoneNumber = string.Empty;
             Address = string.Empty;
             BirthDate = DateTime.Now;
             PhotoPath = string.Empty;
             
         }
-        public Employee(Guid id, string firstName, string lastName, string email, string phoneNumber, string address, DateTime birthDate, string photoPath, EnumGender gender, Guid positionId)
+        public Employee(Guid id, 
+            string firstName, 
+            string lastName, 
+            string phoneNumber, 
+            string address,
+            DateTime birthDate, 
+            string photoPath,
+            EnumGender gender, 
+            Guid positionId):base(id)
         {
             SetFirstName(firstName);
             SetLastName(lastName);
-            SetEmail(email);
             SetPhoneNumber(phoneNumber);
             SetAddress(address);
             SetBirthDate(birthDate);
@@ -54,14 +60,26 @@ namespace Crm.Employees
             SetGender(gender);
 
         }
+        public Employee(Guid id,
+            string firstName,
+            string lastName,
+            string email,
+            string phoneNumber,
+            string address,
+            DateTime birthDate,
+            string photoPath,
+            EnumGender gender,
+            Guid positionId,
+            Guid userId) :this(id, firstName, lastName, phoneNumber, address, birthDate, photoPath, gender, positionId) =>
+            SetUserId(userId);
         public void SetFirstName(string firstName) => FirstName = Check.NotNullOrWhiteSpace(firstName, nameof(firstName));
         public void SetLastName(string lastName) => LastName = Check.NotNullOrWhiteSpace(lastName, nameof(lastName));
-        public void SetEmail(string email) => Email = Check.NotNullOrWhiteSpace(email, nameof(email));
         public void SetPhoneNumber(string phoneNumber) => PhoneNumber = Check.NotNullOrWhiteSpace(phoneNumber, nameof(phoneNumber));
         public void SetAddress(string address) => Address = Check.NotNullOrWhiteSpace(address, nameof(address));
         public void SetBirthDate(DateTime birthDate) => BirthDate = Check.NotNull(birthDate, nameof(birthDate));
         public void SetPositionId(Guid positionId) => PositionId = Check.NotDefaultOrNull<Guid>(positionId, nameof(positionId));
         public void SetPhotoPath(string photoPath) => PhotoPath = photoPath;
         public void SetGender(EnumGender gender) => Gender = Check.NotNull(gender, nameof(gender));
+        public void SetUserId(Guid userId) => UserId = Check.NotDefaultOrNull<Guid>(userId, nameof(userId));
     }
 }

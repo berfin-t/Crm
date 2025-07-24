@@ -44,6 +44,7 @@ public static class CrmPermissions
         public const string Edit = Default + ".Edit";
         public const string Create = Default + ".Create";
         public const string Delete = Default + ".Delete";
+        public const string Update = Default + ".Update";
     }
     public static class Orders
     {

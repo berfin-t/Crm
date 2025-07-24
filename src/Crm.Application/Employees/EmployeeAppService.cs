@@ -1,5 +1,4 @@
-﻿using Crm.Activities;
-using Crm.Permissions;
+﻿using Crm.Permissions;
 using Crm.Projects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +10,9 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
+using Crm.Users;
+using Volo.Abp.Identity;
+using Crm.GlobalExceptions;
 
 namespace Crm.Employees
 {
@@ -18,24 +20,39 @@ namespace Crm.Employees
     [Authorize(CrmPermissions.Employees.Default)]
     public class EmployeeAppService(IEmployeeRepository employeeRepository,
         IProjectEmployeeRepository projectEmployeeRepository,
-        EmployeeManager employeeManager) : CrmAppService, IEmployeeAppService
+        EmployeeManager employeeManager,
+        IUserRules userRules,
+        IdentityUserManager userManager) : CrmAppService, IEmployeeAppService
     {
         #region Create
-        //[Authorize(CrmPermissions.Employees.Create)]
+        [Authorize(CrmPermissions.Employees.Create)]
         public async Task<EmployeeDto> CreateAsync(EmployeeCreateDto input)
         {
+            await userRules.EnsureUsernameNotExistAsync(input.User.UserName);
+            await userRules.EnsureEmailNotExistAsync(input.User.Email);
+
             var employee = await employeeManager.CreateAsync(
-                input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address,
-                input.BirthDate!.Value, input.PhotoPath, input.Gender, input.PositionId);
+                input.FirstName, input.LastName,
+                input.Email, input.PhoneNumber,
+                input.Address, input.BirthDate!.Value,
+                input.PhotoPath, input.Gender, input.PositionId,
+                input.User.UserName, input.User.Password);
 
             return ObjectMapper.Map<Employee, EmployeeDto>(employee);
         }
         #endregion
 
         #region Get
-        public async Task<EmployeeDto> GetAsync(Guid id)
+        public virtual async Task<EmployeeDto> GetAsync(GetEmployeeInput input)
         {
-            return ObjectMapper.Map<Employee, EmployeeDto>(await employeeRepository.GetAsync(id));
+            var employee = await employeeRepository.GetAsync(input.EmployeeId, input.UserId);
+            return ObjectMapper.Map<Employee, EmployeeDto>(employee);
+        }
+        public async Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            GlobalException.ThrowIf(user == null, "Employee user not found");
+            return ObjectMapper.Map<IdentityUser, IdentityUserDto>(user!);
         }
         #endregion
 
@@ -65,6 +82,7 @@ namespace Crm.Employees
         #endregion
 
         #region Update
+        [Authorize(CrmPermissions.Employees.Edit)]
         public async Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input)
         {
             var employee = await employeeManager.UpdateAsync(
@@ -164,6 +182,34 @@ namespace Crm.Employees
             return result;
         }
 
+        [Authorize(CrmPermissions.Employees.Edit)]
+        public async Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            GlobalException.ThrowIf(
+            !await userManager.CheckPasswordAsync(user!, input.CurrentPassword), "Current password is incorrect."
+        );
 
+            var result = await userManager.ChangePasswordAsync(user!, input.CurrentPassword, input.NewPassword);
+            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+
+            return result.Succeeded;
+        }
+        [Authorize(CrmPermissions.Employees.Edit)]
+        public async Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+
+            await userRules.EnsureUsernameNotExistForOthersAsync(input.UserName, userId);
+            await userRules.EnsureEmailNotExistForOthersAsync(input.Email, userId);
+
+            var result = await userManager.SetUserNameAsync(user!, input.UserName);
+            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+
+            result = await userManager.SetEmailAsync(user!, input.Email);
+            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+
+            return result.Succeeded;
+        }        
     }
 }

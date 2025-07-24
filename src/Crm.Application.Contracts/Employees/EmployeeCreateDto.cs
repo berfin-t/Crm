@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Identity;
 
 namespace Crm.Employees
 {
@@ -16,6 +18,9 @@ namespace Crm.Employees
         public DateTime? BirthDate { get; set; }
         public Guid PositionId { get; set; }
         public string? PhotoPath { get; set; }
-        public EnumGender Gender { get; set; }    
+        public EnumGender Gender { get; set; }
+
+        [Required]
+        public IdentityUserCreateDto User { get; set; } = new();
     }
 }

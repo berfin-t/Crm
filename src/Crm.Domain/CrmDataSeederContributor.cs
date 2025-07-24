@@ -14,14 +14,15 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.PermissionManagement;
-using static Bogus.DataSets.Name;
 using Activity = Crm.Activities.Activity;
 using EnumType = Crm.Activities.EnumType;
 using Task = Crm.Tasks.Task;
@@ -45,10 +46,11 @@ public class CrmDataSeederContributor(
     IGuidGenerator guidGenerator) : IDataSeedContributor, ITransientDependency
 {
     public async System.Threading.Tasks.Task SeedAsync(DataSeedContext context)
-    {        
+    {
+        await SeedUserAsync("Berfin", "Tek", "employee_berfin", "berfin@gmail.com", "1q2w3E*", "employee");
         var customers = await SeedCustomersAsync();
         var positions = await SeedPositionsAsync();
-        var employees = await SeedEmployeesAsync(positions.Select(p => p.Id)); 
+        var employees = await SeedEmployeesAsync(positions.Select(p => p.Id));        
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
@@ -58,7 +60,75 @@ public class CrmDataSeederContributor(
         var projectEmployees = await SeedProjectEmployeesAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
     }
 
-    // Customers
+    #region User
+    private async Task<IdentityUser> SeedUserAsync(
+    string name,
+    string surname,
+    string userName,
+    string email,
+    string password,
+    string? roleName = null,
+    IEnumerable<string>? permissionGroups = null
+)
+    {
+        var existingUser = await userManager.FindByNameAsync(userName);
+        if (existingUser != null)
+        {
+            return existingUser;
+        }
+
+        var user = new IdentityUser(guidGenerator.Create(), userName, email)
+        {
+            Name = name,
+            Surname = surname
+        };
+
+        var result = await userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+        {
+            var errorList = string.Join("; ", result.Errors.Select(e => e.Description));
+            throw new Exception($"User creation failed for {userName}: {errorList}");
+        }
+
+        if (!roleName.IsNullOrWhiteSpace())
+        {
+            var role = await SeedRoleAsync(roleName, permissionGroups);
+            await userManager.AddToRoleAsync(user, role.Name);
+        }
+
+        return user;
+    }
+    #endregion
+
+    #region Role
+    private async Task<IdentityRole> SeedRoleAsync(string roleName, IEnumerable<string>? permissionGroups)
+    {
+        var role = await roleManager.FindByNameAsync(roleName);
+        if (role != null) return role;
+
+        await roleManager.CreateAsync(new IdentityRole(guidGenerator.Create(), roleName));
+        role = await roleManager.FindByNameAsync(roleName);
+        if (permissionGroups != null)
+        {
+            await SetDefaultPermissionsAsync(role!.Name, permissionGroups);
+        }
+
+        return role!;
+    }
+    #endregion
+
+    #region Default Permissions
+    private async System.Threading.Tasks.Task SetDefaultPermissionsAsync(string role, IEnumerable<string> permissionGroups)
+    {
+        foreach (var permissionGroup in permissionGroups)
+        {
+            await permissionManager.SetForRoleAsync(role, $"Crm.{permissionGroup}", true);
+        }
+    }
+    #endregion
+
+    #region Customers
     private async Task<IEnumerable<Customer>> SeedCustomersAsync()
     {
         
@@ -77,8 +147,9 @@ public class CrmDataSeederContributor(
         await customerRepository.InsertManyAsync(customers, true);
         return customers;
     }
+    #endregion
 
-    // Positions
+    #region Positions
     private async Task<IEnumerable<Position>> SeedPositionsAsync()
     {
         var faker = new Faker<Position>("tr")
@@ -95,52 +166,93 @@ public class CrmDataSeederContributor(
         await positionRepository.InsertManyAsync(positions, true);
         return positions;
     }
+    #endregion
 
-
-    // Employees
-    private async Task<IEnumerable<Employee>> SeedEmployeesAsync(IEnumerable<Guid> positions)
+    #region Employees
+    private async Task<IEnumerable<Employee>> SeedEmployeesAsync(IEnumerable<Guid> positionIds)
     {
-        var faker = new Faker<Employee>("tr")
-        .CustomInstantiator(f =>
+        if (await employeeRepository.AnyAsync())
         {
-            var bogusGender = f.PickRandom(Name.Gender.Male, Name.Gender.Female);
-            EnumGender gender = bogusGender switch
+            return await employeeRepository.GetListAsync();
+        }
+
+        var faker = new Faker("tr");
+        List<Employee> employees = [];
+
+        string[] crmPermissions = ["Activity", "Task", "Meeting", "Note"];
+
+        foreach (var positionId in positionIds)
+        {
+            int employeeCount = faker.Random.Int(2, 3);
+            for (int i = 0; i < employeeCount; i++)
             {
-                Name.Gender.Male => EnumGender.Male,
-                Name.Gender.Female => EnumGender.Female,
-                _ => throw new InvalidOperationException("Unexpected gender value")
-            };
+                var gender = faker.PickRandom<Name.Gender>();
+                var enumGender = gender == Name.Gender.Male ? EnumGender.Male : EnumGender.Female;
+                var firstName = faker.Name.FirstName(gender);
+                var lastName = faker.Name.LastName(gender);
+                var email = faker.Internet.Email(firstName, lastName);
+                var phone = faker.Phone.PhoneNumber();
+                var address = faker.Address.FullAddress();
+                var birthDate = faker.Date.Past(30, DateTime.Now.AddYears(-18));
+                var photoPath = enumGender == EnumGender.Male ? "/images/profile/male.jpg" : "/images/profile/female.jpg";
 
-            
-            var photoPath = gender == EnumGender.Male
-                ? "/images/profile/male.jpg"
-                : "/images/profile/female.jpg";
+            //    var user = await SeedUserAsync(
+            //    firstName,
+            //    lastName,
+            //    faker.Internet.UserName(firstName, lastName),
+            //    email,
+            //    "1q2w3E*",
+            //    "employee",
+            //    crmPermissions
+            //);
 
-            return new Employee(
-                guidGenerator.Create(),
-                f.Person.FirstName,
-                f.Person.LastName,
-                f.Person.Email,
-                f.Phone.PhoneNumber(),
-                f.Address.FullAddress(),
-                f.Date.Past(),
-                photoPath,
-                gender,
-                f.PickRandom(positions)
-            );
-        });
+                var employee = new Employee(
+                    guidGenerator.Create(),
+                    firstName,
+                    lastName,
+                    phone,
+                    address,
+                    birthDate,
+                    photoPath,
+                    enumGender,
+                    positionId
+                );
 
-        var employees = faker.Generate(100);
+                employees.Add(employee);
+            }
+        }
 
-        await employeeRepository.InsertManyAsync(employees, true);
+        foreach (var employee in employees)
+        {
+            var user = await SeedUserAsync(
+                employee.FirstName, employee.LastName,
+                faker.Internet.UserName(employee.FirstName, employee.LastName),
+                faker.Internet.Email(employee.FirstName, employee.LastName), "1q2w3E*", "employee", crmPermissions
+                );
+
+            employee.SetUserId(user.Id);
+        }
+
+        await SeedEntitiesAsync(employees, e => employeeRepository.InsertManyAsync(e, true));
         return employees;
     }
+    #endregion
 
-
-    //Activity
-    private async Task<IEnumerable<Activity>> SeedActivitiesAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    #region Generic Entities 
+    private async Task<IEnumerable<Guid>> SeedEntitiesAsync<T>(
+        IEnumerable<T> entities,
+        Func<IEnumerable<T>, System.Threading.Tasks.Task> insertFunction
+    )
+        where T : AggregateRoot<Guid>
     {
-        
+        await insertFunction(entities);
+        return entities.Select(e => e.Id).ToList();
+    }
+    #endregion
+
+    #region Activity
+    private async Task<IEnumerable<Activity>> SeedActivitiesAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    {        
         var faker = new Faker<Activity>("tr")
             .CustomInstantiator(faker => new Activity(
                 guidGenerator.Create(),
@@ -155,8 +267,9 @@ public class CrmDataSeederContributor(
         await activityRepository.InsertManyAsync(activities, true);
         return activities;
     }
+    #endregion
 
-    // Contacts
+    #region Contacts
     private async Task<IEnumerable<Contact>> SeedContactsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
     {
         var faker = new Faker<Contact>("tr")
@@ -173,8 +286,9 @@ public class CrmDataSeederContributor(
         await contactRepository.InsertManyAsync(contacts, true);
         return contacts;
     }
+    #endregion
 
-    // CustomerNotes
+    #region Customer Notes
     private async Task<IEnumerable<CustomerNote>> SeedCustomerNotesAsync(IEnumerable<Guid> customers)
     {
         var faker = new Faker<CustomerNote>("tr")
@@ -189,8 +303,9 @@ public class CrmDataSeederContributor(
         await customerNoteRepository.InsertManyAsync(customerNotes, true);
         return customerNotes;
     }
+    #endregion
 
-    // Projects
+    #region Projects
     private async Task<IEnumerable<Project>> SeedProjectsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
     {
         var faker = new Faker<Project>("tr")
@@ -211,8 +326,9 @@ public class CrmDataSeederContributor(
         await projectRepository.InsertManyAsync(projects, true);
         return projects;
     }
+    #endregion
 
-    //Orders
+    #region Orders
     private async Task<IEnumerable<Order>> SeedOrdersAsync(IEnumerable<Guid> customers, IEnumerable<Guid> projects)
     {
         var faker = new Faker<Order>("tr")
@@ -231,8 +347,9 @@ public class CrmDataSeederContributor(
         await orderRepository.InsertManyAsync(orders, true);
         return orders;
     }
+    #endregion
 
-    //Tasks
+    #region Tasks
     private async Task<IEnumerable<Task>> SeedTasksAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
     {
         var faker = new Faker<Task>("tr")
@@ -251,8 +368,9 @@ public class CrmDataSeederContributor(
         await taskRepository.InsertManyAsync(tasks, true);
         return tasks;
     }
+    #endregion
 
-    //ProjectEmployees
+    #region Project Employees
     private async Task<IEnumerable<ProjectEmployee>> SeedProjectEmployeesAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
     {
         var faker = new Faker("tr");
@@ -282,5 +400,5 @@ public class CrmDataSeederContributor(
 
         return projectEmployeeList;
     }
-
+    #endregion
 }

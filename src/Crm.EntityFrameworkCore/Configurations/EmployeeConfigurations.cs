@@ -18,7 +18,6 @@ namespace Crm.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.FirstName).HasColumnName(nameof(Employee.FirstName)).IsRequired();
             builder.Property(x => x.LastName).HasColumnName(nameof(Employee.LastName)).IsRequired();
-            builder.Property(x => x.Email).HasColumnName(nameof(Employee.Email)).IsRequired();
             builder.Property(x => x.PhoneNumber).HasColumnName(nameof(Employee.PhoneNumber)).IsRequired();
             builder.Property(x => x.Address).HasColumnName(nameof(Employee.Address)).IsRequired();
             builder.Property(x => x.BirthDate).HasColumnName(nameof(Employee.BirthDate)).IsRequired();

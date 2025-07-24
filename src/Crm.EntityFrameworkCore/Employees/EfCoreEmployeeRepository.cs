@@ -10,6 +10,7 @@ using Volo.Abp.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Crm.Activities;
 using Crm.Positions;
+using System.Numerics;
 
 namespace Crm.Employees
 {
@@ -40,7 +41,6 @@ namespace Crm.Employees
             query
                 .WhereIf(!string.IsNullOrWhiteSpace(firstName), e => e.FirstName.Contains(firstName!))
                 .WhereIf(!string.IsNullOrWhiteSpace(lastName), e => e.LastName.Contains(lastName!))
-                .WhereIf(!string.IsNullOrWhiteSpace(email), e => e.Email.Contains(email!))
                 .WhereIf(!string.IsNullOrWhiteSpace(phoneNumber), e => e.PhoneNumber.Contains(phoneNumber!))
                 .WhereIf(!string.IsNullOrWhiteSpace(address), e => e.Address.Contains(address!))
                 .WhereIf(birthDate.HasValue, e => e.BirthDate == birthDate!.Value)
@@ -73,5 +73,10 @@ namespace Crm.Employees
         ) =>
             await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.Employee.Id == id);
         #endregion
+        public async Task<Employee> GetAsync(Guid? employeeId, Guid? userId, CancellationToken cancellationToken = default) =>
+        await (await GetQueryableAsync())
+              .WhereIf(employeeId.HasValue, x => x.Id == employeeId!.Value)
+              .WhereIf(userId.HasValue, x => x.UserId == userId!.Value)
+              .FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
     }
 }
