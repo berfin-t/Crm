@@ -27,7 +27,7 @@ docker network create crm-backend
 #### 3.Dockerı çalıştırın
 
 ```sh
-cd docker compose up -d 
+docker compose up -d 
 ```
 
 #### 4.Migration için
