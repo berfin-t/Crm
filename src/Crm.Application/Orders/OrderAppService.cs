@@ -27,6 +27,8 @@ namespace Crm.Orders
         #endregion
 
         #region Get
+        [AllowAnonymous]
+
         public async Task<OrderDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Order, OrderDto>(await orderRepository.GetAsync(id));
@@ -34,6 +36,8 @@ namespace Crm.Orders
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
+
         public async Task<List<OrderDto>> GetListAllAsync()
         {
             var items = await orderRepository.GetListAsync();
@@ -42,6 +46,8 @@ namespace Crm.Orders
         #endregion
 
         #region GetListPaged
+        [AllowAnonymous]
+
         public async Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input)
         {
             var totalCount = await orderRepository.GetCountAsync(

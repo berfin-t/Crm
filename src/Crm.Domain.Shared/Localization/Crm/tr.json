@@ -28,6 +28,7 @@
     "ProjectStatus:Active": "Aktif",
     "ProjectStatus:Pending": "Bekliyor",
     "ProjectStatus:Completed": "Tamamlandı",
+    "ProjectStatus:Canceled": "Silindi",
     "Load More": "Daha Fazla Yükle",
     "Read More": "Devamını Oku",
     "WelcomeMessage": "🌟 Hoş geldiniz, {0}! Sizi tekrar burada görmek harika!",

@@ -18,6 +18,7 @@ namespace Crm.Activities
     {
         #region Create
         //[Authorize(CrmPermissions.Activities.Create)]
+        [AllowAnonymous]
         public async Task<ActivityDto> CreateAsync(ActivityCreateDto input)
         {
             var activity = await activityManager.CreateAsync(
@@ -29,6 +30,7 @@ namespace Crm.Activities
         #endregion
 
         #region Get
+        [AllowAnonymous]
         public async Task<ActivityDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Activity, ActivityDto>(await activityRepository.GetAsync(id));
@@ -36,6 +38,7 @@ namespace Crm.Activities
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
         public async Task<List<ActivityDto>> GetListAllAsync()
         {
             var items = await activityRepository.GetListAsync();
@@ -45,6 +48,7 @@ namespace Crm.Activities
         #endregion
 
         #region GetListPaged
+        [AllowAnonymous]
         public virtual async Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input)
         {
             var totalCount = await activityRepository.GetCountAsync(
@@ -65,6 +69,8 @@ namespace Crm.Activities
 
         #region Update
         //[Authorize(CrmPermissions.Activities.Update)]
+        [AllowAnonymous]
+
         public async Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input)
         {
             var avtivity = await activityManager.UpdateAsync(
@@ -77,6 +83,8 @@ namespace Crm.Activities
 
         #region Delete
         //[Authorize(CrmPermissions.Activities.Delete)]
+        [AllowAnonymous]
+
         public virtual async Task DeleteAsync(Guid id)
         {
             var activity = await activityRepository.GetAsync(id);
@@ -90,6 +98,8 @@ namespace Crm.Activities
         #endregion
 
         #region GetWithNavigationProperties
+        [AllowAnonymous]
+
         public virtual async Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
         ObjectMapper.Map<ActivityWithNavigationProperties, ActivityWithNavigationPropertyDto>
             (await activityRepository.GetWithNavigationPropertiesAsync(id));

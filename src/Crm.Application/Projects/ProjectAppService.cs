@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Uow;
+using AutoMapper;
 
 
 namespace Crm.Projects
@@ -14,10 +16,11 @@ namespace Crm.Projects
     [RemoteService(IsEnabled = false)]
     [Authorize(CrmPermissions.Projects.Menu)]
     public class ProjectAppService(
-        IProjectRepository projectRepository,        
+        IProjectRepository projectRepository, IMapper _mapper,
         ProjectManager projectManager):CrmAppService, IProjectAppService
     {
         #region GetListPaged
+        [AllowAnonymous]
         public virtual async Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input)
         {
             var totalCount = await projectRepository.GetCountAsync(
@@ -36,36 +39,43 @@ namespace Crm.Projects
             return new PagedResultDto<ProjectDto>
             {
                 TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Project>, List<ProjectDto>>(items)
+                Items = _mapper.Map<List<ProjectDto>>(items)
             };
         }
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
+        [UnitOfWork]
         public async Task<List<ProjectDto>> GetListAllAsync()
         {
             var items = await projectRepository.GetListAsync();
-            return ObjectMapper.Map<List<Project>, List<ProjectDto>>(items);
+            return _mapper.Map<List<ProjectDto>>(items);
         }
         #endregion
 
         #region Get
-        public virtual async Task<ProjectDto> GetAsync(Guid id) =>  ObjectMapper.Map<Project, ProjectDto>(await projectRepository.GetAsync(id));
+        [AllowAnonymous]
+
+        public virtual async Task<ProjectDto> GetAsync(Guid id) =>  _mapper.Map<ProjectDto>(await projectRepository.GetAsync(id));
         #endregion
 
         #region Create
         //[Authorize(CrmPermissions.Projects.Create)]
+        [AllowAnonymous]
+
         public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await projectManager.CreateAsync(
                 input.EmployeeId, input.CustomerId, input.Name, input.StartTime.Value, input.EndTime.Value, input.Statues,
                 input.Revenue, input.SuccesRate, input.Description);            
 
-            return ObjectMapper.Map<Project, ProjectDto>(project);
+            return _mapper.Map<ProjectDto>(project);
         }
         #endregion
 
         #region Update
+        [AllowAnonymous]
 
         //[Authorize(CrmPermissions.Projects.Edit)]
         public virtual async Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input)
@@ -74,11 +84,12 @@ namespace Crm.Projects
                 id, input.EmployeeId, input.CustomerId, input.Name, input.StartTime.Value, input.EndTime.Value, input.Status,
                 input.Revenue, input.SuccessRate, input.Description);
 
-            return ObjectMapper.Map<Project, ProjectDto>(project);
+            return _mapper.Map<ProjectDto>(project);
         }
         #endregion
 
         #region GetTotalProjectCount
+        [AllowAnonymous]
         public async Task<long> GetTotalProjectCountAsync()
         {
             return await projectRepository.GetCountAsync();
@@ -86,6 +97,7 @@ namespace Crm.Projects
         #endregion
 
         #region GetSuccessRateAverage
+        [AllowAnonymous]
         public async Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null)
         {
             return await projectRepository.GetSuccessRateAverageAsync(successRate);
@@ -93,6 +105,8 @@ namespace Crm.Projects
         #endregion
 
         #region Delete
+        [AllowAnonymous]
+
         public virtual async System.Threading.Tasks.Task DeleteAsync(Guid id)
         {
             var project = await projectRepository.GetAsync(id);
@@ -105,8 +119,17 @@ namespace Crm.Projects
 
             await projectRepository.UpdateAsync(project);
         }
-        #endregion        
+        #endregion
 
+        #region Search By Name
+        public virtual async Task<List<ProjectDto>> SearchByNameAsync(string name)
+        {
+            var query = await projectRepository.GetQueryableAsync();
+            var filteredQuery = projectRepository.ApplyDataFilters(query, name: name);
+            var projects = query.ToList();
+            return _mapper.Map<List<ProjectDto>>(projects);
+        }
+        #endregion
 
     }
 }

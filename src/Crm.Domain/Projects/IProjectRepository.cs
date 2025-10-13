@@ -1,6 +1,7 @@
 ﻿using Crm.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
@@ -24,7 +25,18 @@ namespace Crm.Projects
 
         Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null, CancellationToken cancellationToken = default);
 
-
-
+        IQueryable<Project> ApplyDataFilters(
+            IQueryable<Project> query,
+            string? name = null,
+            string? description = null,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            ICollection<EnumStatus>? statues = null,
+            decimal? revenue = null,
+            decimal? succesRate = null,
+            Guid? employeeId = null,
+            Guid? customerId = null);
     }
+
 }
+

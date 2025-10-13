@@ -33,6 +33,7 @@ namespace Crm.Tasks
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
         public async Task<List<TaskDto>> GetListAllAsync()
         {
             var items = await taskRepository.GetListAsync();
@@ -41,6 +42,7 @@ namespace Crm.Tasks
         #endregion
 
         #region GetListPaged
+        [AllowAnonymous]
         public async Task<PagedResultDto<TaskDto>> GetListAsync(GetPagedTasksInput input)
         {
             var totalCount = await taskRepository.GetCountAsync(
@@ -58,6 +60,7 @@ namespace Crm.Tasks
         #endregion
 
         #region Update
+        [AllowAnonymous]
         public async Task<TaskDto> UpdateAsync(Guid id, TaskUpdateDto input)
         {
             var task = await taskManager.UpdateAsync(
@@ -68,6 +71,7 @@ namespace Crm.Tasks
         #endregion
 
         #region GetTotalTaskCount
+        [AllowAnonymous]
         public async Task<long> GetTotalTaskCountAsync()
         {
             return await taskRepository.GetCountAsync();
@@ -75,6 +79,7 @@ namespace Crm.Tasks
         #endregion
 
         #region GetTotalTaskCountByProjectId
+        [AllowAnonymous]
         public async Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId)
         {
             return await taskRepository.GetCountAsync(projectId: projectId);
@@ -82,6 +87,7 @@ namespace Crm.Tasks
         #endregion
 
         #region GetCompletedTasksByProjectId
+        [AllowAnonymous]
         public async Task<long> GetCompletedTasksByProjectId(Guid projectId)
         {
             return await taskRepository.GetCountAsync(

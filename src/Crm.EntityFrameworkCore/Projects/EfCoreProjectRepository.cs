@@ -36,7 +36,7 @@ namespace Crm.Projects
         #endregion
 
         #region ApplyDataFilters
-        protected virtual IQueryable<Project> ApplyDataFilters(IQueryable<Project> query, string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null)
+        public virtual IQueryable<Project> ApplyDataFilters(IQueryable<Project> query, string? name = null, string? description = null, DateTime? startTime = null, DateTime? endTime = null, ICollection<EnumStatus>? statues = null, decimal? revenue = null, decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null)
         {
             query.WhereIf(!string.IsNullOrWhiteSpace(name), e => e.Name == name)
                  .WhereIf(!string.IsNullOrWhiteSpace(description), e => e.Description == description)

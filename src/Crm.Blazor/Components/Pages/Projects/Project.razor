@@ -14,7 +14,7 @@
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
         <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
-            <Div>
+            @* <Div>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                 <Autocomplete TItem="ProjectDto"
                                   TValue="string"
@@ -29,7 +29,7 @@
                 </Autocomplete>
                 </Field>                          
                 
-            </Div>
+            </Div> *@
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">              
 
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
@@ -57,7 +57,7 @@
 </Div>
 
 <Row>
-    @foreach (var project in FilteredProjects)
+    @foreach (var project in AllProjects)
     {
         <Column ColumnSize="ColumnSize.Is4.OnWidescreen.Is8.OnDesktop.Is10.OnTablet">
             <Card>
@@ -79,8 +79,8 @@
                     </Div>
 
                     <br />
-                    <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">@L["Read More"]</Anchor>
-                </CardBody>
+@*                     <Anchor To="#" @onclick="() => NavigateToProjectDetail(project.Id)">@L["Read More"]</Anchor>
+ *@                </CardBody>
             </Card>
         </Column>
     }

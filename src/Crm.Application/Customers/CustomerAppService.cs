@@ -19,6 +19,8 @@ namespace Crm.Customers
     {
         #region Create
         //[Authorize(CrmPermissions.Customers.Create)]
+        [AllowAnonymous]
+
         public async Task<CustomerDto> CreateAsync(CustomerCreateDto input)
         {
             var customer = await customerManager.CreateAsync(
@@ -30,6 +32,8 @@ namespace Crm.Customers
         #endregion
 
         #region Get
+        [AllowAnonymous]
+
         public async Task<CustomerDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Customer, CustomerDto>(await customerRepository.GetAsync(id));
@@ -37,6 +41,7 @@ namespace Crm.Customers
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
         public async Task<List<CustomerDto>> GetListAllAsync()
         {
             var items = await customerRepository.GetListAsync();
@@ -45,6 +50,8 @@ namespace Crm.Customers
         #endregion
 
         #region GetListPaged
+        [AllowAnonymous]
+
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
         {
             var totalCount = await customerRepository.GetCountAsync(
@@ -62,6 +69,8 @@ namespace Crm.Customers
         #endregion
 
         #region Update
+        [AllowAnonymous]
+
         public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
         {
             var customer = await customerManager.UpdateAsync(
@@ -73,6 +82,7 @@ namespace Crm.Customers
         #endregion
 
         #region GetTotalCustomerCountAsync
+        [AllowAnonymous]
         public async Task<long> GetTotalCustomerCountAsync()
         {
             return await customerRepository.GetCountAsync();
@@ -81,6 +91,8 @@ namespace Crm.Customers
 
         #region Delete
         //[Authorize(CrmPermissions.Customers.Delete)]
+        [AllowAnonymous]
+
         public virtual async Task DeleteAsync(Guid id)
         {
             var customer = await customerRepository.GetAsync(id);

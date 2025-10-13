@@ -18,6 +18,7 @@ namespace Crm.Positions
     {
         #region Create
         //[Authorize(CrmPermissions.Positions.Create)]
+        [AllowAnonymous]
         public async Task<PositionDto> CreateAsync(PositionCreateDto input)
         {
             var position = await positionManager.CreateAsync(
@@ -28,6 +29,8 @@ namespace Crm.Positions
         #endregion
 
         #region Get
+        [AllowAnonymous]
+
         public async Task<PositionDto> GetAsync(Guid id)
         {
            return ObjectMapper.Map<Position, PositionDto>(await positionRepository.GetAsync(id));
@@ -35,6 +38,8 @@ namespace Crm.Positions
         #endregion
 
         #region GetListAll
+        [AllowAnonymous]
+
         public async Task<List<PositionDto>> GetListAllAsync()
         {
            var items = await positionRepository.GetListAsync();
@@ -43,6 +48,8 @@ namespace Crm.Positions
         #endregion
 
         #region GetListPaged
+        [AllowAnonymous]
+
         public async Task<PagedResultDto<PositionDto>> GetListAsync(GetPagedPositionsInput input)
         {
             var totalCount = await positionRepository.GetCountAsync(
@@ -61,6 +68,8 @@ namespace Crm.Positions
         #endregion
 
         #region Update
+        [AllowAnonymous]
+
         public async Task<PositionDto> UpdateAsync(Guid id, PositionUpdateDto input)
         {
             var position = await positionManager.UpdateAsync(
