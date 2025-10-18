@@ -30,8 +30,9 @@ namespace Crm.Blazor.Components.Pages.Activities
             if (allActivities != null)
             {
                 activityList = allActivities.Where(a => a.Date > DateTime.Now).OrderBy(a => a.Date).ToList();
-            }            
+            }
         }
+        
         public async Task ReloadActivities()
         {
             activityList.Clear();
@@ -55,7 +56,7 @@ namespace Crm.Blazor.Components.Pages.Activities
 
         private async Task EditActivity(ActivityDto activity)
         {
-            await activityEditModal!.ShowModal(activity);
+            await activityEditModal!.ShowModal(activity, EventCallback);
         }
         #endregion
 

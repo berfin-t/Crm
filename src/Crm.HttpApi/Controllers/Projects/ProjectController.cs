@@ -51,5 +51,8 @@ namespace Crm.Controllers.Projects
         [Route("{id}")]
         public virtual Task DeleteAsync(Guid id) => _projectAppService.DeleteAsync(id);
 
+        [HttpGet]
+        [Route("search")]
+        public virtual Task<List<ProjectDto>> SearchByNameAsync(string name) => _projectAppService.SearchByNameAsync(name);
     }
 }

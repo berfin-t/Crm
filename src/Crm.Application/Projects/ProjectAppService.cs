@@ -122,11 +122,12 @@ namespace Crm.Projects
         #endregion
 
         #region Search By Name
+        [AllowAnonymous]
         public virtual async Task<List<ProjectDto>> SearchByNameAsync(string name)
         {
             var query = await projectRepository.GetQueryableAsync();
             var filteredQuery = projectRepository.ApplyDataFilters(query, name: name);
-            var projects = query.ToList();
+            var projects = filteredQuery.ToList();
             return _mapper.Map<List<ProjectDto>>(projects);
         }
         #endregion

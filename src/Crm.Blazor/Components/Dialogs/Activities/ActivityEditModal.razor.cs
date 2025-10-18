@@ -6,6 +6,7 @@ using System;
 using Blazorise;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace Crm.Blazor.Components.Dialogs.Activities
 {
@@ -20,6 +21,8 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private Guid selectedCustomerId { get; set; }
         private List<EmployeeDto> EmployeeList { get; set; } = new();
         private List<CustomerDto> CustomerList { get; set; } = new();
+        private EventCallback EventCallback { get; set; }
+
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -28,8 +31,9 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             CustomerList = await CustomerAppService.GetListAllAsync();
         }        
 
-        public async Task ShowModal(ActivityDto activity)
+        public async Task ShowModal(ActivityDto activity, EventCallback eventCallback)
         {
+            EventCallback = eventCallback;
             if (activity != null)
             {
                 ActivityUpdateDto.Id = activity.Id;
@@ -55,6 +59,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         #region Update Activity
         private async Task UpdateActivityAsync()
         {
+            
             try
             {
                 ActivityUpdateDto.Type = selectedType;
@@ -64,6 +69,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
 
                 await ActivityAppService.UpdateAsync(ActivityUpdateDto.Id, ActivityUpdateDto);
                 await HideModal();
+                await EventCallback.InvokeAsync();
             }
             catch (Exception ex)
             {

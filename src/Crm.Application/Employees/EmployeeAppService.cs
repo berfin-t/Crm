@@ -13,6 +13,7 @@ using Volo.Abp.Domain.Entities;
 using Crm.Users;
 using Volo.Abp.Identity;
 using Crm.GlobalExceptions;
+using AutoMapper;
 
 namespace Crm.Employees
 {
@@ -22,7 +23,8 @@ namespace Crm.Employees
         IProjectEmployeeRepository projectEmployeeRepository,
         EmployeeManager employeeManager,
         IUserRules userRules,
-        IdentityUserManager userManager) : CrmAppService, IEmployeeAppService
+        IdentityUserManager userManager,
+        IMapper _mapper) : CrmAppService, IEmployeeAppService
     {
         #region Create
         [Authorize(CrmPermissions.Employees.Create)]
@@ -65,7 +67,7 @@ namespace Crm.Employees
         public async Task<List<EmployeeDto>> GetListAllAsync()
         {
             var items = await employeeRepository.GetListAsync();
-            return ObjectMapper.Map<List<Employee>, List<EmployeeDto>>(items);
+            return _mapper.Map<List<EmployeeDto>>(items);
         }
         #endregion
 
