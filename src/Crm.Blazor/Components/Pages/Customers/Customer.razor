@@ -18,13 +18,15 @@
                       Editable
                       Responsive
                       ShowPager
+                      Filterable
+                      FilterMethod="DataGridFilterMethod.StartsWith"
                       PagerPosition="DataGridPagerPosition.Bottom">
 
-                <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable/>
-                <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="Phone" Editable />
-                <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable />
-                <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable />
-                <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable/> 
+                <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith"/>
+                <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="Phone" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
 
                 <DataGridCommandColumn>  
                     <NewCommandTemplate>

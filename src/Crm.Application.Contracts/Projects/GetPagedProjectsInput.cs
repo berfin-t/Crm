@@ -18,6 +18,7 @@ namespace Crm.Projects
         public decimal? SuccesRate { get; set; } = null;
         public Guid? EmployeeId { get; set; } = null;
         public Guid? CustomerId { get; set; } = null;
+        public string? Filter { get; set; } = null;
 
     }
 }

@@ -16,9 +16,9 @@
         <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
             <Div>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                @* <Autocomplete TItem="ProjectDto"
+                <Autocomplete TItem="ProjectDto"
                                   TValue="string"
-                                  Data="@ProjectList"
+                                  Data="@ReadDataProjects"
                                   TextField="@getName"
                                   ValueField="@getId"
                                   ReadData="@OnHandleReadData"                                  
@@ -26,7 +26,7 @@
                                   @onkeydown="@OnEntered" 
                                   Placeholder="@L["Search"]" 
                                   FreeTyping>
-                </Autocomplete> *@
+                </Autocomplete> 
                 </Field>                          
                 
             </Div>
