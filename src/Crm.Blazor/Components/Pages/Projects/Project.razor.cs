@@ -108,6 +108,7 @@
 
 using Blazorise.Components;
 using Crm.Blazor.Components.Dialogs.Projects;
+using Crm.Common;
 using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -126,6 +127,7 @@ namespace Crm.Blazor.Components.Pages.Projects
         private ProjectCreateModal? projectCreateModal;
 
         private string selectedAutoCompleteText = string.Empty;
+        private EnumStatus? selectedStatus = null;        
         private int CurrentPage { get; set; } = 0;
         private int PageSize { get; set; } = 9;
 
@@ -161,16 +163,27 @@ namespace Crm.Blazor.Components.Pages.Projects
         {
             if (args.Code == "Enter" || args.Code == "NumpadEnter")
                 ApplyFilters();
-        }
-
+        }            
         private void ApplyFilters()
         {
-            var filtered = string.IsNullOrWhiteSpace(selectedAutoCompleteText)
-                ? AllProjects
-                : AllProjects.Where(p => p.Name!.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase));
+            IEnumerable<ProjectDto> filtered = AllProjects;
 
+            // İsim filtresi
+            if (!string.IsNullOrWhiteSpace(selectedAutoCompleteText))
+            {
+                filtered = filtered.Where(p => !string.IsNullOrWhiteSpace(p.Name) &&
+                                               p.Name.Contains(selectedAutoCompleteText, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Status filtresi
+            if (selectedStatus.HasValue)
+            {
+                filtered = filtered.Where(p => p.Status == selectedStatus.Value);
+            }
+
+            // Sayfalama
             int itemsToTake = CurrentPage > 0 ? PageSize * CurrentPage : PageSize;
-            
+
             FilteredProjects = filtered
                 .OrderByDescending(p => p.StartTime)
                 .Take(itemsToTake)
