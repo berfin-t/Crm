@@ -63,7 +63,11 @@
                 <Card>
                     <Field>
                         <FieldLabel>Photo:</FieldLabel>
-                        <InputText @bind-Value="PhotoPath" class="form-control" />
+                        <InputFile OnChange="HandleFileSelected" accept="image/*" />
+                        @if (!string.IsNullOrEmpty(PhotoPath))
+                        {
+                            <img src="@PhotoPath" alt="Profile Photo" style="width:120px; height:120px; margin-top:10px; border-radius:10px;" />
+                        }
                     </Field>
                 </Card>
 

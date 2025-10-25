@@ -54,7 +54,6 @@ namespace Crm.Employees
                 , password
             );
             var user = await userManager.FindByNameAsync(userName);
-            await userManager.AddToRoleAsync(user!, "doctor");
             return user!;
         }
 

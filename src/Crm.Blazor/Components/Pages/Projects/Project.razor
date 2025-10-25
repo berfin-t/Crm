@@ -33,7 +33,7 @@
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">              
                 <Select TValue="EnumStatus?"
                          @bind-SelectedValue="selectedStatus"
-                        @onkeydown="@OnEntered">
+                         @onkeydown="@OnEntered">
                     <SelectItem Value="@(null as EnumStatus?)">Tümü</SelectItem>
                     @foreach (EnumStatus status in Enum.GetValues(typeof(EnumStatus)))
                     {

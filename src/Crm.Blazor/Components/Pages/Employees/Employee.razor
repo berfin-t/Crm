@@ -9,24 +9,25 @@
 @inject NavigationManager Navigation
 @inject IEmployeeAppService EmployeeAppService
 @inject IPositionAppService PositionAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+
 
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
         <CardBody Flex="Flex.JustifyContent.Between.AlignItems.Center">
             <Div>
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    @* <Autocomplete TItem="EmployeeDto"
-                                  TValue="string"
-                                  Data="@ReadDataEmployees"
-                                  ReadData="@OnHandleReadData"
-                                  TextField="@((item) => item.FirstName)"
-                                  ValueField="@((item) => item.Id.ToString())"
-                                  @bind-SelectedText="selectedAutoCompleteText"
-                                  @onkeydown="@OnEntered"
-                                  Placeholder="Search..."
-                                  FreeTyping>
-                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
-                    </Autocomplete> *@                    
+                    <Autocomplete TItem="EmployeeDto"
+                        TValue="string"
+                        Data="@ReadDataEmployees"
+                        TextField="@getName"
+                        ValueField="getId"
+                        ReadData="@OnHandleReadData"
+                        @bind-SelectedText="selectedAutoCompleteText"
+                        @onkeydown="OnEntered"
+                        Placeholder="@L["Search"]"
+                        FreeTyping>
+                    </Autocomplete>                   
                 </Field>
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
@@ -72,7 +73,6 @@
                             }
                         </Div>
 
-                        <!-- İçerik Ortalanmış -->
                         <Div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 40px;">
                             <img src="@employee.PhotoPath" alt="Profile Photo" 
                                  style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;" />
@@ -94,6 +94,10 @@
         </Column>
     }
 </Row>
+
+<Div Flex="Flex.JustifyContent.Center">
+    <Button Color="Color.Light" @onclick="LoadMoreEmployees">@L["Load More"]</Button>
+</Div>
 
 @* DELETE MODAL *@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
