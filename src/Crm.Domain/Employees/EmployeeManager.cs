@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Identity;
 
@@ -25,13 +26,19 @@ namespace Crm.Employees
             string userName,
             string password)
         {
-            var user = await CreateEmployeeUserAsync(userName, email, password);
+            var user = new IdentityUser(GuidGenerator.Create(), userName, email)
+            {
+                Name = name,
+                Surname = surname
+            };
+            await userManager.CreateAsync(user, password);
+
             var employee = new Employee(
                 GuidGenerator.Create(),
                 name,
                 surname,
-                email,
                 phoneNumber,
+                email,
                 address,
                 birthDate,
                 photoPath,
@@ -39,6 +46,7 @@ namespace Crm.Employees
                 positionId,
                 user.Id
             );
+
             return await employeeRepository.InsertAsync(employee);
         }
         #endregion
@@ -49,12 +57,17 @@ namespace Crm.Employees
         string password
     )
         {
-            await userManager.CreateAsync(
-                new IdentityUser(GuidGenerator.Create(), userName, email)
-                , password
-            );
-            var user = await userManager.FindByNameAsync(userName);
-            return user!;
+            var user = new IdentityUser(GuidGenerator.Create(), userName, email);
+
+            var result = await userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new BusinessException($"Kullanıcı oluşturulamadı: {errors}");
+            }
+
+            return user;
         }
 
         #region Update

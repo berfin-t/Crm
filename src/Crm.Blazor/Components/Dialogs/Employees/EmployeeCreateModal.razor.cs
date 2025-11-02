@@ -68,7 +68,7 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             if (!Directory.Exists(uploadFolder))
                 Directory.CreateDirectory(uploadFolder);
 
-            var fileName = $"{Guid.NewGuid()}_{file.Name}";
+            var fileName = $"{DateTime.Now.Ticks}_{file.Name}";
             var filePath = Path.Combine(uploadFolder, fileName);
 
             await using (var stream = File.Create(filePath))
@@ -96,16 +96,14 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             {
                 UserName = $"{FirstName}.{LastName}".ToLower(),
                 Email = EmployeeCreateDto.Email,
-                Name = FirstName ?? string.Empty,
-                Surname = LastName ?? string.Empty,
+                Name = EmployeeCreateDto.FirstName,
+                Surname = EmployeeCreateDto.LastName,
                 Password = "123Qwe!"
             };
 
             await EmployeeAppService.CreateAsync(EmployeeCreateDto);
             await HideModal();
             await EventCallback.InvokeAsync();
-
-
         }
         #endregion
     }

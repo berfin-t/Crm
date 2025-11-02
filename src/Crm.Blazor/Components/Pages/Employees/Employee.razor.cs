@@ -20,8 +20,9 @@ namespace Crm.Blazor.Components.Pages.Employees
         private IEnumerable<EmployeeDto> ReadDataEmployees { get; set; } = new List<EmployeeDto>();
         private EmployeeCreateModal? employeeCreateModal;
 
-        private string selectedAutoCompleteText = string.Empty;  
-        
+        private string selectedAutoCompleteText = string.Empty;
+        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+
         private int CurrentPage { get; set; } = 0;
         private int PageSize { get; set; } = 9;
 
@@ -91,7 +92,7 @@ namespace Crm.Blazor.Components.Pages.Employees
             private async Task EditEmployee(EmployeeDto employee)
             {
                 isEmployeeModalVisible = false;
-                await employeeEditModal!.ShowModal(employee);
+                await employeeEditModal!.ShowModal(employee, EventCallback);
             }
             private async Task OnSelectEmployeeForEdit(EmployeeDto employee)
             {

@@ -1,6 +1,7 @@
 ﻿using Blazorise;
 using Crm.Employees;
 using Crm.Positions;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Crm.Blazor.Components.Dialogs.Employees
         private DateTime? selectedBirthDate { get; set; }
         private Guid SelectedPositionId { get; set; }
         private List<PositionDto> PositionList { get; set; } = new();
+        private EventCallback EventCallback { get; set; }
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -24,11 +26,13 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             PositionList = await PositionAppService.GetListAllAsync();
         }
 
-        public async Task ShowModal(EmployeeDto employee)
+        public async Task ShowModal(EmployeeDto employee, EventCallback eventCallback)
         {
-            if(employee != null)
+            EventCallback = eventCallback;
+            if (employee != null)
             {
                 EmployeeUpdateDto.Id = employee.Id;
+                EmployeeUpdateDto.UserId = employee.UserId;
                 EmployeeUpdateDto.FirstName = employee.FirstName;
                 EmployeeUpdateDto.LastName = employee.LastName;
                 EmployeeUpdateDto.Email = employee.Email;

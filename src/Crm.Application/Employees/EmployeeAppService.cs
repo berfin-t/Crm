@@ -91,7 +91,8 @@ namespace Crm.Employees
         #endregion
 
         #region Update
-        [Authorize(CrmPermissions.Employees.Edit)]
+        //[Authorize(CrmPermissions.Employees.Edit)]
+        [AllowAnonymous]
         public async Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input)
         {
             var employee = await employeeManager.UpdateAsync(
@@ -152,6 +153,7 @@ namespace Crm.Employees
         #endregion
 
         #region Delete
+        [AllowAnonymous]
         //[Authorize(CrmPermissions.Employees.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
