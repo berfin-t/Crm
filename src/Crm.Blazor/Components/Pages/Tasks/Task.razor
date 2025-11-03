@@ -1,49 +1,71 @@
 ﻿@page "/tasks"
-
-@* @using Crm.Tasks
 @using Crm.Common
-@using Blazorise
-@using Blazorise.Bootstrap5
-@using Blazorise.Icons.FontAwesome
-
+@using Crm.Tasks
 @inject ITaskAppService TaskAppService
 
-<DropContainer TItem="TaskDto"> 
-    <ChildContent>
-        <DropZone TItem="TaskDto">
-            <Heading>TaskDto.Status</Heading>
-        </DropZone>
-    </ChildContent>
+@if (items != null && items.Any())
+{
+    <DropContainer TItem="TaskDto"
+                   Items="@items"
+                   ItemsFilter="@((item, dropZone) => item.Group == dropZone)"
+                   ItemDropped="@ItemDropped"
+                   Flex="Flex.Wrap.Grow.Is1"
+                   class="flex justify-between gap-4 w-full">                    
+                  
 
-    <ItemTemplate>
-                <Card>
-            <CardHeader>
-                <Heading>Title</Heading>
-            </CardHeader>
-            <CardBody>
-                <p>Description</p>
-                <p>Due: DueDate</p>
-            </CardBody>
-            <CardFooter>
-                <Button Color="Color.Primary">Edit</Button>
-                <Button Color="Color.Danger">Delete</Button>
-            </CardFooter>
-        </Card
-    </ItemTemplate>
-</DropContainer>
+        <ChildContent>
+             @foreach (var zone in new[] { "Active", "Pending", "Completed" })
+            {
+                var zoneStyle = zone switch
+                {
+                    "Active" => "background-color:#D1FAE5; border:2px solid #34D399;",     // yeşil
+                    "Pending" => "background-color:#FEF3C7; border:2px solid #FBBF24;",    // sarı
+                    "Completed" => "background-color:#FEE2E2; border:2px solid #EF4444;",  // kırmızı
+                    _ => "background-color:#F3F4F6; border:2px solid #D1D5DB;"
+                };
 
-@code{
-    public TaskDto TaskDto { get; set; }
-    public List<TaskDto> tasks { get; set; } = new List<TaskDto>();
+                <DropZone TItem="TaskDto"
+                          Name="@zone"
+                          style="@zoneStyle"
+                          class="flex-1 min-w-[200px] max-w-xs rounded-lg p-3 m-3">
+                    
+                    <ChildContent>
+                        <Heading Size="HeadingSize.Is4"
+                                 Margin="Margin.Is3.FromBottom"
+                                 class="overflow-hidden text-ellipsis">
+                            @zone
+                        </Heading>
+                    </ChildContent>  
+
+                    
+                    <ItemTemplate Context="task">
+                        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" class="overflow-hidden whitespace-nowrap text-ellipsis">
+                            <CardBody class="overflow-hidden text-ellipsis">
+                                @(task.Name!.Length > 25 ? task.Name.Substring(0, 25) + "..." : task.Name)
+                            </CardBody>
+                        </Card>
+                    </ItemTemplate>
+
+                </DropZone>
+            }
+        </ChildContent>
+
+    </DropContainer>
+}
+
+
+@code {
+    private List<TaskDto> items = new List<TaskDto>{};
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        tasks = await TaskAppService.GetListAllAsync();
+        items = (await TaskAppService.GetListAllAsync()).ToList();
+        StateHasChanged();
     }
 
-    // private Task ItemDropped( DraggableDroppedEventArgs<TaskDto> dropItem )
-    // {
-    //     dropItem.Item.Priority = dropItem.DropZoneName;
-    //     return TaskAppService.UpdateAsync(dropItem.Item);
-    // }
-} *@
+    private System.Threading.Tasks.Task ItemDropped(DraggableDroppedEventArgs<TaskDto> dropItem)
+    {
+        dropItem.Item.Group = dropItem.DropZoneName;
+        return System.Threading.Tasks.Task.CompletedTask;
+    }
+}

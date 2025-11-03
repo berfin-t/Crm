@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crm.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace Crm.Tasks
         Task<long> GetTotalTaskCountAsync();
         Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId);
         Task<long> GetCompletedTasksByProjectId(Guid projectId);
+        Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus);
     }
 }

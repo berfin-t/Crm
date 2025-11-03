@@ -1,4 +1,5 @@
-﻿using Crm.Common;
+﻿using AutoMapper;
+using Crm.Common;
 using Crm.Permissions;
 using Crm.Projects;
 using Microsoft.AspNetCore.Authorization;
@@ -12,16 +13,16 @@ namespace Crm.Tasks
 {
     [RemoteService(IsEnabled = false)]
     [Authorize(CrmPermissions.Tasks.Menu)]
-    public class TaskAppService(ITaskRepository taskRepository,
+    public class TaskAppService(ITaskRepository taskRepository, IMapper _mapper,
         TaskManager taskManager) : CrmAppService, ITaskAppService
     {
         #region Create
         public async Task<TaskDto> CreateAsync(TaskCreateDto input)
         {
             var task = await taskManager.CreateAsync(
-                input.Title, input.Description, input.DueDate, input.Priority, input.Status, input.ProjectId, input.EmployeeId);
+                input.Name, input.Description, input.DueDate, input.Priority, input.Status, input.ProjectId, input.EmployeeId);
 
-            return ObjectMapper.Map<Task, TaskDto>(task);
+            return _mapper.Map<TaskDto>(task);
         }
         #endregion
 
@@ -36,8 +37,8 @@ namespace Crm.Tasks
         [AllowAnonymous]
         public async Task<List<TaskDto>> GetListAllAsync()
         {
-            var items = await taskRepository.GetListAsync();
-            return ObjectMapper.Map<List<Task>, List<TaskDto>>(items);
+            var items = await taskRepository.GetListAsync();            
+            return _mapper.Map<List<TaskDto>>(items);
         }
         #endregion
 
@@ -64,7 +65,7 @@ namespace Crm.Tasks
         public async Task<TaskDto> UpdateAsync(Guid id, TaskUpdateDto input)
         {
             var task = await taskManager.UpdateAsync(
-                id, input.Title, input.Description, input.DueDate, input.Priority, input.Status, input.ProjectId, input.EmployeeId);
+                id, input.Name, input.Description, input.DueDate, input.Priority, input.Status, input.ProjectId, input.EmployeeId);
 
             return ObjectMapper.Map<Task, TaskDto>(task);
         }
@@ -94,6 +95,17 @@ namespace Crm.Tasks
                 statues: new List<EnumStatus> { EnumStatus.Completed }, projectId: projectId);
         }
         #endregion
-        
+
+        #region UpdateStatus
+        [AllowAnonymous]
+        public async Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus)
+        {
+            var task = await taskRepository.GetAsync(id);
+            task.SetStatus(newStatus);
+
+            await taskRepository.UpdateAsync(task);
+            return _mapper.Map<TaskDto>(task);
+        }
+        #endregion
     }
 }

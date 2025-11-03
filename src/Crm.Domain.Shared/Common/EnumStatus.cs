@@ -2,9 +2,9 @@
 {
     public enum EnumStatus
     {
-        Pending, //Bekliyor,
-        Active, //Aktif,
-        Completed, //Tamamlandı,
-        Canceled  //İptal edildi
+        Pending = 1,
+        Active = 2,
+        Completed = 3,
+        Canceled = 4
     }
 }

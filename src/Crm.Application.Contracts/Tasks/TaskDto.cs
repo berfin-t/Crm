@@ -10,8 +10,11 @@ namespace Crm.Tasks
     public class TaskDto
     {
         public Guid Id { get; set; }
-        public string Title { get; init; }
-        public string Description { get; set; }
+
+        public string? Name { get; init; }
+        public string? Group { get; set; }
+
+        public string? Description { get; set; }
         public DateTime DueDate { get; set; }
         public EnumPriority Priority { get; set; }
         public EnumStatus Status { get; set; }

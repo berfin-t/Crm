@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Crm.Activities;
+using Crm.Common;
 using Crm.Contacts;
 using Crm.CustomerNotes;
 using Crm.Customers;
@@ -8,6 +9,7 @@ using Crm.Orders;
 using Crm.Positions;
 using Crm.Projects;
 using Crm.Tasks;
+using System;
 
 namespace Crm;
 
@@ -59,8 +61,28 @@ public class CrmApplicationAutoMapperProfile : Profile
         CreateMap<ProjectEmployee, ProjectEmployeeDto>().ReverseMap();
         CreateMap<Employee, ProjectEmployeeDto>().ReverseMap();
 
-        CreateMap<Task, TaskDto>();
-        CreateMap<TaskCreateDto, Task>();
-        CreateMap<TaskUpdateDto, Task>();
+        //CreateMap<Task, TaskDto>();
+        //CreateMap<TaskCreateDto, Task>();
+        //CreateMap<TaskUpdateDto, Task>();
+
+        CreateMap<Task, TaskDto>()
+    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Title))
+    .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.Status.ToString()))
+    .ReverseMap();
+
+
+        CreateMap<TaskCreateDto, Task>()
+    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
+    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<EnumStatus>(src.Group)))
+    .ReverseMap();
+
+
+        CreateMap<TaskUpdateDto, Task>()
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
+                    Enum.IsDefined(typeof(EnumStatus), int.Parse(src.Group))
+                        ? (EnumStatus)int.Parse(src.Group)
+                        : EnumStatus.Pending))
+                .ReverseMap();
     }
 }

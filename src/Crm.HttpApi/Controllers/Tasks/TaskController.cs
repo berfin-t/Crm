@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Crm.Common;
 using Crm.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -51,6 +52,10 @@ namespace Crm.Controllers.Tasks
         [HttpGet]
         [Route("completed/project/{projectId}")]
         public virtual Task<long> GetCompletedTasksByProjectId(Guid projectId) => _taskAppService.GetCompletedTasksByProjectId(projectId);
+    
+        [HttpPut]
+        [Route("update-status/{id}")]
+        public virtual Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus) => _taskAppService.UpdateStatusAsync(id, newStatus);
     }
     
 }
