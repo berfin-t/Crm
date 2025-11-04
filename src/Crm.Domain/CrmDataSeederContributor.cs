@@ -315,7 +315,8 @@ public class CrmDataSeederContributor(
                 f.Lorem.Paragraph(),
                 f.Date.Past(),
                 f.Date.Future(),
-                f.PickRandom<EnumStatus>(),
+                f.PickRandom<EnumStatus>(Enum.GetValues(typeof(EnumStatus))
+                .Cast<EnumStatus>().Where(x => x != 0)),
                 f.Random.Decimal(1000, 5000),
                 f.Random.Decimal(0, 100),
                 f.PickRandom(employees),
@@ -334,7 +335,8 @@ public class CrmDataSeederContributor(
         var faker = new Faker<Order>("tr")
             .CustomInstantiator(f => new Order(
                 guidGenerator.Create(),
-                f.PickRandom<EnumStatus>(),
+                f.PickRandom<EnumStatus>(Enum.GetValues(typeof(EnumStatus))
+                .Cast<EnumStatus>().Where(x => x != 0)),
                 f.Date.Past(),
                 f.Date.Future(),
                 f.Random.Decimal(1000, 5000),

@@ -1,4 +1,5 @@
 ﻿@page "/tasks"
+@using Crm.Blazor.Components.Dialogs.Tasks
 @using Crm.Common
 @using Crm.Tasks
 @inject ITaskAppService TaskAppService
@@ -35,16 +36,20 @@
                                  class="overflow-hidden text-ellipsis">
                             @zone
                         </Heading>
-                    </ChildContent>  
+                    </ChildContent>
 
-                    
                     <ItemTemplate Context="task">
-                        <Card Shadow="Shadow.Default" Margin="Margin.Is3.OnY" class="overflow-hidden whitespace-nowrap text-ellipsis">
+                        <Card Shadow="Shadow.Default"
+                              Margin="Margin.Is3.OnY"
+                              @onclick="() => OnCardClick(task)"
+                              style="@GetPriorityBorderStyle(task)"
+                              class="overflow-hidden whitespace-nowrap text-ellipsis transition-transform transform hover:scale-105 cursor-pointer">
                             <CardBody class="overflow-hidden text-ellipsis">
                                 @(task.Name!.Length > 25 ? task.Name.Substring(0, 25) + "..." : task.Name)
                             </CardBody>
                         </Card>
                     </ItemTemplate>
+
 
                 </DropZone>
             }
@@ -53,9 +58,13 @@
     </DropContainer>
 }
 
+<TaskDetailModal @ref="taskDetailModal" Task="@selectedTask" />
 
 @code {
     private List<TaskDto> items = new List<TaskDto>{};
+    private TaskDto? selectedTask;
+    private TaskDetailModal? taskDetailModal;
+    [Parameter] public TaskDto? TaskPriority { get; set; }
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
@@ -68,4 +77,26 @@
         dropItem.Item.Group = dropItem.DropZoneName;
         return System.Threading.Tasks.Task.CompletedTask;
     }
+    
+    private void OnCardClick(TaskDto task)
+    {
+        selectedTask = task;
+        taskDetailModal?.Show();  
+    }   
+
+    private string GetPriorityBorderStyle(TaskDto task)
+    {
+        if (task == null)
+            return "border-left: 5px solid #D1D5DB; background-color: #FFFFFF;"; 
+
+        return task.Priority switch
+        {
+            EnumPriority.Low => "border-left: 5px solid #22C55E; background-color: #FFFFFF;",      // Yeşil
+            EnumPriority.Medium => "border-left: 5px solid #FACC15; background-color: #FFFFFF;",   // Sarı
+            EnumPriority.High => "border-left: 5px solid #F97316; background-color: #FFFFFF;",     // Turuncu
+            EnumPriority.Critical => "border-left: 5px solid #EF4444; background-color: #FFFFFF;", // Kırmızı
+            _ => "border-left: 5px solid #D1D5DB; background-color: #FFFFFF;"
+        };
+    }
+
 }
