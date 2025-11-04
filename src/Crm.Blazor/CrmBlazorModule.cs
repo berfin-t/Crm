@@ -1,7 +1,11 @@
-using System;
-using System.IO;
+﻿using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Crm.Blazor.Components;
+using Crm.Blazor.Menus;
+using Crm.EntityFrameworkCore;
+using Crm.Localization;
+using Crm.MultiTenancy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -10,19 +14,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Crm.Blazor.Components;
-using Crm.Blazor.Menus;
-using Crm.EntityFrameworkCore;
-using Crm.Localization;
-using Crm.MultiTenancy;
 using OpenIddict.Validation.AspNetCore;
+using System;
+using System.IO;
 using Volo.Abp;
 using Volo.Abp.Account.Web;
-using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme;
 using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
+using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
@@ -30,16 +29,18 @@ using Volo.Abp.AspNetCore.Mvc.UI;
 using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Identity.Blazor.Server;
 using Volo.Abp.Modularity;
+using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.SettingManagement.Blazor.Server;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement.Blazor.Server;
-using Volo.Abp.OpenIddict;
 using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
@@ -47,11 +48,11 @@ using Volo.Abp.VirtualFileSystem;
 
 namespace Crm.Blazor;
 
-[DependsOn(
+    [DependsOn(
     typeof(CrmApplicationModule),
     typeof(CrmEntityFrameworkCoreModule),
     typeof(CrmHttpApiModule),
-    typeof(AbpAutofacModule),
+        typeof(AbpAutofacModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAccountWebOpenIddictModule),
@@ -60,9 +61,9 @@ namespace Crm.Blazor;
     typeof(AbpIdentityBlazorServerModule),
     typeof(AbpTenantManagementBlazorServerModule),
     typeof(AbpSettingManagementBlazorServerModule)
-   )]
-public class CrmBlazorModule : AbpModule
-{
+    )]
+    public class CrmBlazorModule : AbpModule
+    {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
@@ -90,29 +91,22 @@ public class CrmBlazorModule : AbpModule
             });
         });
 
-        if (!hostingEnvironment.IsDevelopment())
+        PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
         {
-            PreConfigure<AbpOpenIddictAspNetCoreOptions>(options =>
-            {
-                options.AddDevelopmentEncryptionAndSigningCertificate = false;
-            });
-
-            PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
-            {
-                serverBuilder.AddProductionEncryptionAndSigningCertificate("openiddict.pfx", "9285b9bc-49f0-441c-a2c4-a7655c0e01ad");
-            });
-        }
+            serverBuilder.AddEphemeralEncryptionKey()
+                         .AddEphemeralSigningKey();
+        });
 
         PreConfigure<AbpAspNetCoreComponentsWebOptions>(options =>
         {
             options.IsBlazorWebApp = true;
         });
-    }
 
-    public override void ConfigureServices(ServiceConfigurationContext context)
-    {
+    }
+        public override void ConfigureServices(ServiceConfigurationContext context)
+        {
         var hostingEnvironment = context.Services.GetHostingEnvironment();
-        var configuration = context.Services.GetConfiguration();
+            var configuration = context.Services.GetConfiguration();
 
         // Add services to the container.
         context.Services.AddRazorComponents()
@@ -211,9 +205,9 @@ public class CrmBlazorModule : AbpModule
     private void ConfigureMenu(ServiceConfigurationContext context)
     {
         Configure<AbpNavigationOptions>(options =>
-        {
-            options.MenuContributors.Add(new CrmMenuContributor());
-        });
+            {
+                options.MenuContributors.Add(new CrmMenuContributor());
+            });
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
@@ -227,7 +221,7 @@ public class CrmBlazorModule : AbpModule
     private void ConfigureAutoApiControllers()
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
+            {
             options.ConventionalControllers.Create(typeof(CrmApplicationModule).Assembly);
         });
     }
@@ -237,20 +231,20 @@ public class CrmBlazorModule : AbpModule
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<CrmBlazorModule>();
-        });
-    }
+            });
+        }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
-    {
-        var env = context.GetEnvironment();
+        public override void OnApplicationInitialization(ApplicationInitializationContext context)
+        {
+            var env = context.GetEnvironment();
         var app = context.GetApplicationBuilder();
 
         app.UseAbpRequestLocalization();
 
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
         else
         {
             app.UseExceptionHandler("/Error");
@@ -260,9 +254,9 @@ public class CrmBlazorModule : AbpModule
         app.UseHttpsRedirection();
         app.UseCorrelationId();
         app.MapAbpStaticAssets();
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAbpOpenIddictValidation();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAbpOpenIddictValidation();
 
         if (MultiTenancyConsts.IsEnabled)
         {
