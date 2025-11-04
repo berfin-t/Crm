@@ -38,7 +38,7 @@ docker compose -f migrator-compose.yml run --rm -d migrator
 
 #### 6. Uygulamayı Açın
 Tarayıcınızda aşağıdaki URL'lere giderek projeyi görüntüleyebilirsiniz:
-- **Blazor UI:** [https://localhost:44376](https://localhost:44376)
+- **Blazor UI:** [http://localhost:3232/](http://localhost:3232/)
 
 ---
 
