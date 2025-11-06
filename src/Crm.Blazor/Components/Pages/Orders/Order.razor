@@ -5,10 +5,23 @@
 @using Blazorise.DataGrid
 @using Crm.Customers
 @using Crm.Projects
+@using Microsoft.AspNetCore.SignalR.Client
 
 @inject IOrderAppService OrderAppService
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
+
+    <Alert Color="Color.Success"
+           Visible="@showAlert"
+           Dismissible
+           Dismissed="@OnAlertDismissed">
+        <div Class="d-flex justify-content-between align-items-center">
+            <div>
+                📦 Yeni bir sipariş eklendi: <strong>@latestOrderCode</strong>
+            </div>
+            <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
+        </div>
+    </Alert>
 
 <Container>
     <Card>

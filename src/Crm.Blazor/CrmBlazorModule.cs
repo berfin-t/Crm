@@ -45,6 +45,8 @@ using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.AspNetCore.SignalR;
+using Crm.Blazor.Hubs;
 
 namespace Crm.Blazor;
 
@@ -60,7 +62,8 @@ namespace Crm.Blazor;
     typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(AbpIdentityBlazorServerModule),
     typeof(AbpTenantManagementBlazorServerModule),
-    typeof(AbpSettingManagementBlazorServerModule)
+    typeof(AbpSettingManagementBlazorServerModule),
+    typeof(AbpAspNetCoreSignalRModule)
     )]
     public class CrmBlazorModule : AbpModule
     {
@@ -255,7 +258,16 @@ namespace Crm.Blazor;
         app.UseCorrelationId();
         app.MapAbpStaticAssets();
             app.UseRouting();
-            app.UseAuthentication();
+        app.UseCors(options =>
+        {
+            options
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .SetIsOriginAllowed(_ => true);
+        });
+
+        app.UseAuthentication();
             app.UseAbpOpenIddictValidation();
 
         if (MultiTenancyConsts.IsEnabled)
@@ -278,6 +290,8 @@ namespace Crm.Blazor;
             builder.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddAdditionalAssemblies(builder.ServiceProvider.GetRequiredService<IOptions<AbpRouterOptions>>().Value.AdditionalAssemblies.ToArray());
+
+            builder.MapHub<CrmHub>("/crmhub");
         });
     }
 }

@@ -6,10 +6,8 @@ using Crm.Customers;
 using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using System;
-using Crm.Employees;
-using Crm.Blazor.Components.Dialogs.Employees;
-using Microsoft.AspNetCore.Components.Web;
-using Crm.Blazor.Components.Dialogs.Customers;
+using Microsoft.AspNetCore.SignalR.Client;
+using Blazorise;
 
 namespace Crm.Blazor.Components.Pages.Orders
 {
@@ -26,13 +24,36 @@ namespace Crm.Blazor.Components.Pages.Orders
         private bool isDeleteModalVisible = false;
         private bool isOrderModalVisible = false;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
-        
+        private HubConnection? hubConnection;
+
+        private bool showAlert = false;
+        private string latestOrderCode = string.Empty;
+
         protected override async Task OnInitializedAsync()
         {
             OrderList = await OrderAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();
-            await base.OnInitializedAsync();
+            await base.OnInitializedAsync();            
+
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl($"{NavigationManager!.BaseUri}crmhub")
+                .WithAutomaticReconnect()
+                .Build();
+
+            hubConnection.On<OrderDto>("OrderCreated", async (order) =>
+            {
+                OrderList?.Add(order);
+                latestOrderCode = order.OrderCode ?? "Yeni Sipariş";
+                showAlert = true;
+                await InvokeAsync(StateHasChanged);
+            });
+
+            await hubConnection.StartAsync();
+        }
+        private void OnAlertDismissed()
+        {
+            showAlert = false;
         }
 
         private async Task ShowCreateModal()

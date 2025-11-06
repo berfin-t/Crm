@@ -1,4 +1,5 @@
 ﻿using Crm.Employees;
+using Crm.Orders.Events;
 using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -7,13 +8,15 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
-
+using Volo.Abp.EventBus.Distributed;
 namespace Crm.Orders
+
 {
     [RemoteService(IsEnabled = false)]
     [Authorize(CrmPermissions.Orders.Default)]
     public class OrderAppService(IOrderRepository orderRepository,
-        OrderManager orderManager) : CrmAppService, IOrderAppService
+        OrderManager orderManager,                 
+        IDistributedEventBus distributedEventBus) : CrmAppService, IOrderAppService
     {
         #region Create
         //[Authorize(CrmPermissions.Orders.Create)]
@@ -21,6 +24,12 @@ namespace Crm.Orders
         {
             var order = await orderManager.CreateAsync(
                 input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
+
+            await distributedEventBus.PublishAsync(new OrderCreatedEto
+            {
+                Id = order.Id,
+                OrderCode = order.OrderCode,
+            });
 
             return ObjectMapper.Map<Order, OrderDto>(order);
         }
