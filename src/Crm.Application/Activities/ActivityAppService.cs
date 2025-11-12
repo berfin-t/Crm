@@ -7,23 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Authorization;
 using Volo.Abp.Domain.Entities;
 
 namespace Crm.Activities
 {
     [RemoteService(IsEnabled = false)]
-    [Authorize(CrmPermissions.Activities.Default)]
     public class ActivityAppService(IActivityRepository activityRepository,
         ActivityManager activityManager) : CrmAppService, IActivityAppService
     {
         #region Create
-        //[Authorize(CrmPermissions.Activities.Create)]
-        [AllowAnonymous]
+        [Authorize(CrmPermissions.Activities.Create)]
         public async Task<ActivityDto> CreateAsync(ActivityCreateDto input)
         {
             var activity = await activityManager.CreateAsync(
                 input.CustomerId, input.EmployeeId, input.Type,
-                input.Description, input.Date);
+                input.Description!, input.Date);
 
             return ObjectMapper.Map<Activity, ActivityDto>(activity);
         }
@@ -68,23 +67,19 @@ namespace Crm.Activities
         #endregion
 
         #region Update
-        //[Authorize(CrmPermissions.Activities.Update)]
-        [AllowAnonymous]
-
+        [Authorize(CrmPermissions.Activities.Edit)]
         public async Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input)
         {
             var avtivity = await activityManager.UpdateAsync(
                 id, input.CustomerId, input.EmployeeId, input.Type,
-                input.Description, input.Date);
+                input.Description!, input.Date);
 
             return ObjectMapper.Map<Activity, ActivityDto>(avtivity);
         }
         #endregion
 
         #region Delete
-        //[Authorize(CrmPermissions.Activities.Delete)]
-        [AllowAnonymous]
-
+        [Authorize(CrmPermissions.Activities.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             var activity = await activityRepository.GetAsync(id);
@@ -99,7 +94,6 @@ namespace Crm.Activities
 
         #region GetWithNavigationProperties
         [AllowAnonymous]
-
         public virtual async Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
         ObjectMapper.Map<ActivityWithNavigationProperties, ActivityWithNavigationPropertyDto>
             (await activityRepository.GetWithNavigationPropertiesAsync(id));

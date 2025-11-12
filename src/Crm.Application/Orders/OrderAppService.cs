@@ -13,17 +13,16 @@ namespace Crm.Orders
 
 {
     [RemoteService(IsEnabled = false)]
-    [Authorize(CrmPermissions.Orders.Default)]
     public class OrderAppService(IOrderRepository orderRepository,
         OrderManager orderManager,                 
         IDistributedEventBus distributedEventBus) : CrmAppService, IOrderAppService
     {
         #region Create
-        //[Authorize(CrmPermissions.Orders.Create)]
+        [Authorize(CrmPermissions.Orders.Create)]
         public async Task<OrderDto> CreateAsync(OrderCreateDto input)
         {
             var order = await orderManager.CreateAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
+                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode!, input.CustomerId, input.ProjectId);
 
             await distributedEventBus.PublishAsync(new OrderCreatedEto
             {
@@ -37,7 +36,6 @@ namespace Crm.Orders
 
         #region Get
         [AllowAnonymous]
-
         public async Task<OrderDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Order, OrderDto>(await orderRepository.GetAsync(id));
@@ -46,7 +44,6 @@ namespace Crm.Orders
 
         #region GetListAll
         [AllowAnonymous]
-
         public async Task<List<OrderDto>> GetListAllAsync()
         {
             var items = await orderRepository.GetListAsync();
@@ -56,7 +53,6 @@ namespace Crm.Orders
 
         #region GetListPaged
         [AllowAnonymous]
-
         public async Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input)
         {
             var totalCount = await orderRepository.GetCountAsync(
@@ -74,16 +70,18 @@ namespace Crm.Orders
         #endregion
 
         #region Update
+        [Authorize(CrmPermissions.Orders.Edit)]
         public async Task<OrderDto> UpdateAsync(Guid id, OrderUpdateDto input)
         {
             var order = await orderManager.UpdateAsync(
-                id, input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
+                id, input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode!, input.CustomerId, input.ProjectId);
 
             return ObjectMapper.Map<Order, OrderDto>(order);
         }
         #endregion
 
         #region Delete
+        [Authorize(CrmPermissions.Orders.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             var order = await orderRepository.GetAsync(id);

@@ -11,7 +11,7 @@ namespace Crm.Blazor.Components.Dialogs.Activities
 {
     public partial class ActivityCreateModal
     {
-     
+
         #region Form Fields
         public string? Description { get; set; }
         private DateTime? ActivityDate { get; set; }

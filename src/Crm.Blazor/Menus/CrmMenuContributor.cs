@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using Crm.Localization;
+﻿using Crm.Localization;
 using Crm.MultiTenancy;
+using Crm.Permissions;
+using System.Threading.Tasks;
 using Volo.Abp.Identity.Blazor;
 using Volo.Abp.SettingManagement.Blazor.Menus;
 using Volo.Abp.TenantManagement.Blazor.Navigation;
@@ -90,7 +91,8 @@ public class CrmMenuContributor : IMenuContributor
                 l["Menu:Customers"],
                 icon: "fa-regular fa-handshake",
                 url: "/customers",
-                order: 1
+                order: 1,
+                requiredPermissionName: CrmPermissions.Customers.Default
             )
         );
 

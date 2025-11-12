@@ -1,7 +1,9 @@
 ﻿using Blazorise.Components;
 using Crm.Blazor.Components.Dialogs.Projects;
 using Crm.Common;
+using Crm.Permissions;
 using Crm.Projects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
@@ -26,8 +28,12 @@ namespace Crm.Blazor.Components.Pages.Projects
         private readonly Func<ProjectDto, string> getName = item => item.Name!;
         private readonly Func<ProjectDto, string> getId = item => item.Id.ToString();
 
+        private bool canCreateProject;
+
         protected override async Task OnInitializedAsync()
         {
+            canCreateProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Create);
+
             AllProjects = (await ProjectAppService.GetListAllAsync()).OrderByDescending(p => p.StartTime).ToList();
             ApplyFilters();
         }

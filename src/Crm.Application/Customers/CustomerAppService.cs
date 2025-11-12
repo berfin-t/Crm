@@ -12,20 +12,16 @@ using Volo.Abp.Domain.Entities;
 
 namespace Crm.Customers
 {
-    [RemoteService(IsEnabled = false)]
-    [Authorize(CrmPermissions.Customers.Menu)]
+    [RemoteService(IsEnabled = true)]
     public class CustomerAppService(ICustomerRepository customerRepository,
         CustomerManager customerManager) : CrmAppService, ICustomerAppService
     {
         #region Create
-        //[Authorize(CrmPermissions.Customers.Create)]
-        [AllowAnonymous]
-
         public async Task<CustomerDto> CreateAsync(CustomerCreateDto input)
         {
             var customer = await customerManager.CreateAsync(
-                input.Name, input.Surname, input.Email, input.Phone, input.Address,
-                input.CompanyName);
+                input.Name, input.Surname, input.Email, input.Phone, input.Address!,
+                input.CompanyName!);
 
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }
@@ -33,7 +29,6 @@ namespace Crm.Customers
 
         #region Get
         [AllowAnonymous]
-
         public async Task<CustomerDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Customer, CustomerDto>(await customerRepository.GetAsync(id));
@@ -51,7 +46,6 @@ namespace Crm.Customers
 
         #region GetListPaged
         [AllowAnonymous]
-
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
         {
             var totalCount = await customerRepository.GetCountAsync(
@@ -69,8 +63,6 @@ namespace Crm.Customers
         #endregion
 
         #region Update
-        [AllowAnonymous]
-
         public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
         {
             var customer = await customerManager.UpdateAsync(
@@ -82,7 +74,6 @@ namespace Crm.Customers
         #endregion
 
         #region GetTotalCustomerCountAsync
-        [AllowAnonymous]
         public async Task<long> GetTotalCustomerCountAsync()
         {
             return await customerRepository.GetCountAsync();
@@ -90,9 +81,6 @@ namespace Crm.Customers
         #endregion
 
         #region Delete
-        //[Authorize(CrmPermissions.Customers.Delete)]
-        [AllowAnonymous]
-
         public virtual async Task DeleteAsync(Guid id)
         {
             var customer = await customerRepository.GetAsync(id);

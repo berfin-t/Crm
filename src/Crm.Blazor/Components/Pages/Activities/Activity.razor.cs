@@ -1,17 +1,24 @@
 ﻿using Crm.Activities;
 using Crm.Blazor.Components.Dialogs.Activities;
+using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Users;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Crm.Blazor.Components.Pages.Activities
 {
     public partial class Activity
     {
         [Inject] public NavigationManager? NavigationManager { get; set; }
-        [Parameter]  public Guid ActivityId { get; set; }
+        [Parameter] public Guid ActivityId { get; set; }
+        
+
+
 
         #region reference to the modal component
         private List<ActivityDto> activityList = new();
@@ -22,10 +29,18 @@ namespace Crm.Blazor.Components.Pages.Activities
         private ActivityCreateModal? activityCreateModal;
         private ActivityEditModal? activityEditModal;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+
+        private bool canCreateActivity;
+        private bool canEditActivity;
+        private bool canDeleteActivity;
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
+            canCreateActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Create);
+            canEditActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Edit);
+            canDeleteActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Delete);
+
             var allActivities = await ActivityAppService.GetListAllAsync();
             if (allActivities != null)
             {

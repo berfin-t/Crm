@@ -14,7 +14,6 @@ using AutoMapper;
 namespace Crm.Projects
 {
     [RemoteService(IsEnabled = false)]
-    [Authorize(CrmPermissions.Projects.Menu)]
     public class ProjectAppService(
         IProjectRepository projectRepository, IMapper _mapper,
         ProjectManager projectManager):CrmAppService, IProjectAppService
@@ -56,18 +55,15 @@ namespace Crm.Projects
 
         #region Get
         [AllowAnonymous]
-
         public virtual async Task<ProjectDto> GetAsync(Guid id) =>  _mapper.Map<ProjectDto>(await projectRepository.GetAsync(id));
         #endregion
 
         #region Create
-        //[Authorize(CrmPermissions.Projects.Create)]
-        [AllowAnonymous]
-
+        [Authorize(CrmPermissions.Projects.Create)]
         public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await projectManager.CreateAsync(
-                input.EmployeeId, input.CustomerId, input.Name, input.StartTime.Value, input.EndTime.Value, input.Statues,
+                input.EmployeeId, input.CustomerId, input.Name, input.StartTime!.Value, input.EndTime!.Value, input.Statues,
                 input.Revenue, input.SuccesRate, input.Description);            
 
             return _mapper.Map<ProjectDto>(project);
@@ -75,13 +71,11 @@ namespace Crm.Projects
         #endregion
 
         #region Update
-        [AllowAnonymous]
-
-        //[Authorize(CrmPermissions.Projects.Edit)]
+        [Authorize(CrmPermissions.Projects.Edit)]
         public virtual async Task<ProjectDto> UpdateAsync(Guid id, ProjectUpdateDto input)
         {
             var project = await projectManager.UpdateAsync(
-                id, input.EmployeeId, input.CustomerId, input.Name, input.StartTime.Value, input.EndTime.Value, input.Status,
+                id, input.EmployeeId, input.CustomerId, input.Name!, input.StartTime!.Value, input.EndTime!.Value, input.Status,
                 input.Revenue, input.SuccessRate, input.Description);
 
             return _mapper.Map<ProjectDto>(project);
@@ -105,8 +99,7 @@ namespace Crm.Projects
         #endregion
 
         #region Delete
-        [AllowAnonymous]
-
+        [Authorize(CrmPermissions.Projects.Delete)]
         public virtual async System.Threading.Tasks.Task DeleteAsync(Guid id)
         {
             var project = await projectRepository.GetAsync(id);

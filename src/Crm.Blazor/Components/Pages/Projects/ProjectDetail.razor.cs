@@ -2,19 +2,21 @@
 using Crm.Blazor.Components.Dialogs.Projects;
 using Crm.Customers;
 using Crm.Employees;
+using Crm.Permissions;
 using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Crm.Blazor.Components.Pages.Projects
 {
     public partial class ProjectDetail
     {
         #region References
-        [Parameter] public string ProjectSlug { get; set; }
+        [Parameter] public string? ProjectSlug { get; set; }
         [Parameter] public Guid ProjectId { get; set; }
         private ProjectDto? project;
         private ProjectDto? selectedProject;
@@ -27,6 +29,9 @@ namespace Crm.Blazor.Components.Pages.Projects
         private long completedTasks;
         private long teamSize;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
+
+        private bool canEditProject;
+        private bool canDeleteProject;
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -34,6 +39,9 @@ namespace Crm.Blazor.Components.Pages.Projects
             totalTasks = await TaskAppService.GetTotalTaskCountByProjectIdAsync(ProjectId);
             completedTasks = await TaskAppService.GetCompletedTasksByProjectId(ProjectId);
             teamSize = (await EmployeeAppService.GetEmployeesByProjectIdAsync(ProjectId)).Count();
+
+            canEditProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Edit);
+            canDeleteProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Delete);
 
             project = await ProjectAppService.GetAsync(ProjectId);
             await base.OnInitializedAsync();

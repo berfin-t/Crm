@@ -1,5 +1,6 @@
 @page "/"
 @attribute [Authorize]
+@using Crm.Permissions
 @using Volo.Abp.MultiTenancy
 @using Crm.Projects
 @using Crm.Tasks
@@ -14,9 +15,10 @@
 @inject ITaskAppService TasksAppService
 @inject ICustomerAppService CustomersAppService
 @inject IEmployeeAppService EmployeeAppService
+@inject IAuthorizationService AuthorizationService
 
 <Div class="card-container">
-    <Card class="left-card">
+    <Card class="left-card">        
     <CardBody>
         <Div class="project-overview">
             <Div class="overview-item">
@@ -33,15 +35,19 @@
                     <Div class="field-label">@totalTasks</Div>
                 </Div>
             </Div>
-            <Div class="overview-item">
-                <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
-                <Div>
-                    <Div class="top-label">@L["Total Customer"]</Div>
-                    <Div class="field-label">@totalCustomer</Div>
-                </Div>
-            </Div>
+                @if (CanViewCustomers)
+                {
+                    <Div class="overview-item">
+                        <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
+                        <Div>
+                            <Div class="top-label">@L["Total Customer"]</Div>
+                            <Div class="field-label">@totalCustomer</Div>
+                        </Div>
+                    </Div>
+                }
         </Div>
     </CardBody>
+    
 </Card>
 
     <Card class="right-card">
@@ -100,23 +106,34 @@
     private long totalCustomer;
     private decimal totalSuccessRate;  
     private decimal? successRate = null;
+    private bool CanViewCustomers;    
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        // ABP izin kontrolü
+        var isAdmin = user.IsInRole("Admin");
+        var canViewCustomersResult = await AuthorizationService.AuthorizeAsync(user, CrmPermissions.Customers.Default);
+        CanViewCustomers = isAdmin || canViewCustomersResult.Succeeded;
+
+        // Dashboard verileri
         totalProjects = await ProjectAppService.GetTotalProjectCountAsync();
         totalTasks = await TasksAppService.GetTotalTaskCountAsync();
-        totalCustomer = await CustomersAppService.GetTotalCustomerCountAsync();
-        totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(successRate); 
-        
-        var allCustomers = await CustomersAppService.GetListAllAsync();
-        var now = DateTime.Now;
 
-        newCustomersThisMonth = allCustomers
-            .Count(c => c.CreationTime.Month == now.Month && c.CreationTime.Year == now.Year);
+        if (CanViewCustomers)
+        {
+            totalCustomer = await CustomersAppService.GetTotalCustomerCountAsync();
+            var allCustomers = await CustomersAppService.GetListAllAsync();
+            var now = DateTime.Now;
+            newCustomersThisMonth = allCustomers
+                .Count(c => c.CreationTime.Month == now.Month && c.CreationTime.Year == now.Year);
+        }
 
-        var allTasks = await TasksAppService.GetListAllAsync(); 
-        activeTasks = allTasks.Count(t => t.Status == EnumStatus.Active); 
-
+        totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(null);
+        var allTasks = await TasksAppService.GetListAllAsync();
+        activeTasks = allTasks.Count(t => t.Status == EnumStatus.Active);
     }
 
     private int newCustomersThisMonth;  

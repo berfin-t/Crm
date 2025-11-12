@@ -3,17 +3,18 @@
 @using Blazorise
 @using Crm.Activities
 @using Crm.Blazor.Components.Dialogs.Activities
+
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
-
-
 @inject IActivityAppService ActivityAppService
+@inject IAuthorizationService AuthorizationService
 
 <Container>
+    @if(canCreateActivity) {
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="text-center">Timeline</h3>
         <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Activity"]</Button>
     </div>
-
+    }
     <div class="timeline">
         @for (int i = 0; i < activityList.Count; i++)
         {
@@ -27,7 +28,7 @@
                         <span style="color: dodgerblue">@activity.Date.ToString("HH:mm")</span>
                     </h5>
                     <p>@activity.Description</p>
-                    <Button Color="Color.Primary" Clicked="@(() => ShowEditModal(activity))">Read more</Button>
+                       <Button Color="Color.Primary" Clicked="@(() => ShowEditModal(activity))">Read more</Button>                    
                 </div>
             </iv>
         }
@@ -54,8 +55,14 @@
             }
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity!))">Edit</Button>
-            <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">Delete</Button>
+            @if (canEditActivity)
+            {
+                <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity!))">Edit</Button>
+            }
+            @if (canDeleteActivity)
+            {
+                <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">Delete</Button>
+            }
             <Button Color="Color.Secondary" @onclick="() => isActivityModalVisible = false">Close</Button>
         </ModalFooter>
     </ModalContent>

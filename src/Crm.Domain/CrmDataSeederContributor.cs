@@ -47,6 +47,8 @@ public class CrmDataSeederContributor(
 {
     public async System.Threading.Tasks.Task SeedAsync(DataSeedContext context)
     {
+        await SeedRoleAsync("admin", new[] { "Projects.Create", "Projects.Edit", "Projects.Delete", "Projects.Menu" });
+        await SeedRoleAsync("employee", new[] { "Projects.Menu" });
         await SeedUserAsync("Berfin", "Tek", "employee_berfin", "berfin@gmail.com", "1q2w3E*", "employee");
         var customers = await SeedCustomersAsync();
         var positions = await SeedPositionsAsync();

@@ -12,6 +12,7 @@
 @inject ITaskAppService TaskAppService
 @inject IEmployeeAppService EmployeeAppService
 @inject NavigationManager NavigationManager
+@inject IAuthorizationService AuthorizationService
 
 @if (project != null)
 {
@@ -53,15 +54,23 @@
                             @project.Status
                         </span>
                     </h4>
+                    @if(canEditProject || canDeleteProject) {
                     <Dropdown>
                         <DropdownToggle>
                             <span class="menu-icon">⋮</span>
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem @onclick="() => OnSelectProjectForEdit(project)">Edit</DropdownItem>
-                            <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>
+                            @* @if (canEditProject)
+                            { *@
+                                <DropdownItem @onclick="() => OnSelectProjectForEdit(project)">Edit</DropdownItem>
+                            @* }
+                            @if (canDeleteProject)
+                            { *@
+                                <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>
+                            @* } *@
                         </DropdownMenu>
                     </Dropdown>
+                    }                    
                 </Div>
             </CardTitle>
 

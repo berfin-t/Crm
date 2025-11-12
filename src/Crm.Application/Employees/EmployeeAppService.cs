@@ -17,8 +17,7 @@ using AutoMapper;
 
 namespace Crm.Employees
 {
-    [RemoteService(IsEnabled = false)]
-    [Authorize(CrmPermissions.Employees.Default)]
+    [RemoteService(IsEnabled = true)]
     public class EmployeeAppService(IEmployeeRepository employeeRepository,
         IProjectEmployeeRepository projectEmployeeRepository,
         EmployeeManager employeeManager,
@@ -27,19 +26,17 @@ namespace Crm.Employees
         IMapper _mapper) : CrmAppService, IEmployeeAppService
     {
         #region Create
-        [Authorize(CrmPermissions.Employees.Create)]
         [AllowAnonymous]
-
         public async Task<EmployeeDto> CreateAsync(EmployeeCreateDto input)
         {
             await userRules.EnsureUsernameNotExistAsync(input.User.UserName);
             await userRules.EnsureEmailNotExistAsync(input.User.Email);
 
             var employee = await employeeManager.CreateAsync(
-                input.FirstName, input.LastName,
-                input.Email, input.PhoneNumber,
-                input.Address, input.BirthDate!.Value,
-                input.PhotoPath, input.Gender, input.PositionId,
+                input.FirstName!, input.LastName!,
+                input.Email!, input.PhoneNumber!,
+                input.Address!, input.BirthDate!.Value,
+                input.PhotoPath!, input.Gender, input.PositionId,
                 input.User.UserName, input.User.Password);
 
             return ObjectMapper.Map<Employee, EmployeeDto>(employee);
@@ -48,7 +45,6 @@ namespace Crm.Employees
 
         #region Get
         [AllowAnonymous]
-
         public virtual async Task<EmployeeDto> GetAsync(GetEmployeeInput input)
         {
             var employee = await employeeRepository.GetAsync(input.EmployeeId, input.UserId);
@@ -73,7 +69,6 @@ namespace Crm.Employees
 
         #region GetListPaged
         [AllowAnonymous]
-
         public async Task<PagedResultDto<EmployeeDto>> GetListAsync(GetPagedEmployeesInput input)
         {
             var totalCount = await employeeRepository.GetCountAsync(
@@ -91,7 +86,6 @@ namespace Crm.Employees
         #endregion
 
         #region Update
-        //[Authorize(CrmPermissions.Employees.Edit)]
         [AllowAnonymous]
         public async Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input)
         {
@@ -104,6 +98,7 @@ namespace Crm.Employees
         #endregion
 
         #region Upload Photo
+        [AllowAnonymous]
         public async Task<EmployeeDto> UpdatePhotoAsync(Guid employeeId, string photoPath)
         {
             var employee = await employeeRepository.GetAsync(employeeId);
@@ -118,6 +113,7 @@ namespace Crm.Employees
             return ObjectMapper.Map<Employee, EmployeeDto>(employee);
         }
 
+        [AllowAnonymous]
         public async Task<string> UploadPhotoAsync(Guid employeeId, IFormFile? file)
         {
             string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "~/images/profile");
@@ -154,7 +150,6 @@ namespace Crm.Employees
 
         #region Delete
         [AllowAnonymous]
-        //[Authorize(CrmPermissions.Employees.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             var employee = await employeeRepository.GetAsync(id);
@@ -169,14 +164,13 @@ namespace Crm.Employees
 
         #region GetWithNavigationProperties
         [AllowAnonymous]
-
         public virtual async Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
         ObjectMapper.Map<EmployeeWithNavigationProperties, EmployeeWithNavigationPropertyDto>
             (await employeeRepository.GetWithNavigationPropertiesAsync(id));
 
-        #endregion
-        [AllowAnonymous]
+        #endregion        
 
+        [AllowAnonymous]
         public async Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId)
         {
             var projectEmployees = await projectEmployeeRepository.GetListAllAsync(projectId);
@@ -195,10 +189,7 @@ namespace Crm.Employees
 
             return result;
         }
-
-        [Authorize(CrmPermissions.Employees.Edit)]
-        [AllowAnonymous]
-
+        [AllowAnonymous]        
         public async Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
@@ -211,9 +202,7 @@ namespace Crm.Employees
 
             return result.Succeeded;
         }
-        [Authorize(CrmPermissions.Employees.Edit)]
         [AllowAnonymous]
-
         public async Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input)
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
