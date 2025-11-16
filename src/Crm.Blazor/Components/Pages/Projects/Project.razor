@@ -34,7 +34,7 @@
                 <Select TValue="EnumStatus?"
                          @bind-SelectedValue="selectedStatus"
                          @onkeydown="@OnEntered">
-                    <SelectItem Value="@(null as EnumStatus?)">Tümü</SelectItem>
+                    <SelectItem Value="@(null as EnumStatus?)">All</SelectItem>
                     @foreach (EnumStatus status in Enum.GetValues(typeof(EnumStatus)))
                     {
                         <SelectItem Value="@(status)">@status</SelectItem>

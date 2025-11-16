@@ -103,15 +103,15 @@ else
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Onayla</ModalTitle>
+            <ModalTitle>Confirm</ModalTitle>
             <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
         </ModalHeader>
         <ModalBody>
-            Silmek istediğinize emin misiniz?
+            Are you sure you want to delete?
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Sil</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">İptal</Button>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>

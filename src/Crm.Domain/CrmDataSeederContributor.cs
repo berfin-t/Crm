@@ -179,7 +179,7 @@ public class CrmDataSeederContributor(
         }
 
         var faker = new Faker("tr");
-        List<Employee> employees = [];
+        List<Employee> employees = new List<Employee>();
 
         string[] crmPermissions = ["Activity", "Task", "Meeting", "Note"];
 
@@ -198,44 +198,35 @@ public class CrmDataSeederContributor(
                 var birthDate = faker.Date.Past(30, DateTime.Now.AddYears(-18));
                 var photoPath = enumGender == EnumGender.Male ? "/images/profile/male.jpg" : "/images/profile/female.jpg";
 
-            //    var user = await SeedUserAsync(
-            //    firstName,
-            //    lastName,
-            //    faker.Internet.UserName(firstName, lastName),
-            //    email,
-            //    "1q2w3E*",
-            //    "employee",
-            //    crmPermissions
-            //);
+                var user = await SeedUserAsync(
+                firstName,
+                lastName,
+                faker.Internet.UserName(firstName, lastName),
+                faker.Internet.Email(firstName, lastName),
+                "1q2w3E*",
+                "employee",
+                crmPermissions
+            );
 
                 var employee = new Employee(
-                    guidGenerator.Create(),
-                    firstName,
-                    lastName,
-                    phone,
-                    address,
-                    birthDate,
-                    photoPath,
-                    enumGender,
-                    positionId
-                );
+            guidGenerator.Create(),
+            firstName,
+            lastName,
+            faker.Phone.PhoneNumber(),
+            faker.Address.FullAddress(),
+            birthDate,
+            photoPath,
+            enumGender,
+            positionId
+        );
 
+                employee.SetUserId(user.Id);
                 employees.Add(employee);
             }
         }
 
-        foreach (var employee in employees)
-        {
-            var user = await SeedUserAsync(
-                employee.FirstName, employee.LastName,
-                faker.Internet.UserName(employee.FirstName, employee.LastName),
-                faker.Internet.Email(employee.FirstName, employee.LastName), "1q2w3E*", "employee", crmPermissions
-                );
+        await employeeRepository.InsertManyAsync(employees, true);
 
-            employee.SetUserId(user.Id);
-        }
-
-        await SeedEntitiesAsync(employees, e => employeeRepository.InsertManyAsync(e, true));
         return employees;
     }
     #endregion

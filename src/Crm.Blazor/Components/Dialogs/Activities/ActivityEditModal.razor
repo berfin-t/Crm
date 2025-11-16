@@ -36,7 +36,7 @@
                 <Field>
                     <FieldLabel>Employees:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="selectedEmployeeId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">Select</SelectItem>
                         @foreach (var employee in EmployeeList)
                         {
                             <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
@@ -46,7 +46,7 @@
                 <Field>
                     <FieldLabel>Customer:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="@selectedCustomerId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">Select</SelectItem>
                         @foreach (var customer in CustomerList)
                         {
                             <SelectItem Value="@customer.Id">@customer.Name</SelectItem>

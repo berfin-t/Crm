@@ -48,7 +48,10 @@ namespace Crm.Employees
         public virtual async Task<EmployeeDto> GetAsync(GetEmployeeInput input)
         {
             var employee = await employeeRepository.GetAsync(input.EmployeeId, input.UserId);
-            return ObjectMapper.Map<Employee, EmployeeDto>(employee);
+            var dto = ObjectMapper.Map<Employee, EmployeeDto>(employee);
+            var user = await userManager.FindByIdAsync(employee.UserId.ToString());
+            dto.Email = user?.Email!;
+            return dto;
         }
         public async Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId)
         {
@@ -63,7 +66,13 @@ namespace Crm.Employees
         public async Task<List<EmployeeDto>> GetListAllAsync()
         {
             var items = await employeeRepository.GetListAsync();
-            return _mapper.Map<List<EmployeeDto>>(items);
+            var list = _mapper.Map<List<EmployeeDto>>(items);
+            foreach (var item in list)
+            {
+                var user = await userManager.FindByIdAsync(item.UserId.ToString());
+                item.Email = user?.Email!;
+            }
+            return list;
         }
         #endregion
 

@@ -3,6 +3,7 @@
 @using Crm.Common
 @using Crm.Customers
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 @inject IActivityAppService ActivityAppService
 @inject IEmployeeAppService EmployeeAppService
 @inject ICustomerAppService CustomerAppService
@@ -11,12 +12,12 @@
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
-                <ModalTitle>Add Activity</ModalTitle>
+                <ModalTitle>@L["Add Activity"]</ModalTitle>
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
                 <Field>
-                    <FieldLabel>Type:</FieldLabel>
+                    <FieldLabel>@L["Type"]:</FieldLabel>
                     <Select @bind-SelectedValue="Types">
                         @foreach (var type in Enum.GetValues(typeof(EnumType)).Cast<EnumType>())
                         {
@@ -25,20 +26,22 @@
                     </Select>
                 </Field>                
                 <Field>
-                    <FieldLabel>Description:</FieldLabel>
+                    <FieldLabel>@L["Description"]:</FieldLabel>
                     <InputText @bind-Value="Description" class="form-control" />
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Activity Date:</FieldLabel>
+                        <FieldLabel>
+                            @L["Activity Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="ActivityDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>                                         
 
                 <Field>
-                    <FieldLabel>Employees:</FieldLabel>
+                    <FieldLabel>
+                        @L["Employees"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedEmployeeId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
                         @foreach (var employee in Employees)
                         {
                             <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
@@ -46,9 +49,11 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Customer:</FieldLabel>
+                    <FieldLabel>
+                        @L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="@SelectedCustomerId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">
+                            @L["Select"]</SelectItem>
                         @foreach (var customer in Customers)
                         {
                             <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
@@ -57,8 +62,9 @@
                 </Field>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@CreateActivityAsync">Save Changes</Button>
+                <Button Color="Color.Danger" Clicked="@HideModal">
+                    @L["Close"]</Button>
+                <Button Color="Color.Success" Clicked="@CreateActivityAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

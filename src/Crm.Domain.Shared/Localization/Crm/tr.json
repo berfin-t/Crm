@@ -32,6 +32,14 @@
     "Load More": "Daha Fazla Yükle",
     "Read More": "Devamını Oku",
     "WelcomeMessage": "🌟 Hoş geldiniz, {0}! Sizi tekrar burada görmek harika!",
-    "Completed": "Tamamlandı"
+    "Completed": "Tamamlandı",
+    "Type": "Tür",
+    "Description": "Açıklama",
+    "Activity Date": "Etkinlik Tarihi",
+    "Employees": "Çalışanlar",
+    "Select": "Seçiniz",
+    "Customer": "Müşteriler",
+    "Close": "İptal",
+    "Save Changes": "Kaydet"
   }
 }

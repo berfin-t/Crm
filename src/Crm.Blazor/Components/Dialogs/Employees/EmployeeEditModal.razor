@@ -41,7 +41,7 @@
                 <Field>
                     <FieldLabel>Position:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedPositionId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">Select</SelectItem>
                         @foreach (var position in PositionList)
                         {
                             <SelectItem Value="@position.Id">@position.Name</SelectItem>
