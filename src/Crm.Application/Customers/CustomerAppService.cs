@@ -1,4 +1,5 @@
 ﻿using Crm.Activities;
+using Crm.Customers.Events;
 using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -9,12 +10,14 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.EventBus.Distributed;
 
 namespace Crm.Customers
 {
     [RemoteService(IsEnabled = true)]
     public class CustomerAppService(ICustomerRepository customerRepository,
-        CustomerManager customerManager) : CrmAppService, ICustomerAppService
+        CustomerManager customerManager,
+        IDistributedEventBus distributedEventBus) : CrmAppService, ICustomerAppService
     {
         #region Create
         public async Task<CustomerDto> CreateAsync(CustomerCreateDto input)
@@ -22,6 +25,13 @@ namespace Crm.Customers
             var customer = await customerManager.CreateAsync(
                 input.Name, input.Surname, input.Email, input.Phone, input.Address!,
                 input.CompanyName!);
+            
+            await distributedEventBus.PublishAsync(new CustomerCreatedEto
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Surname = customer.Surname,
+            });
 
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
         }

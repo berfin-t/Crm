@@ -44,7 +44,7 @@ namespace Crm.Blazor.Components.Pages.Orders
             hubConnection.On<OrderDto>("OrderCreated", async (order) =>
             {
                 OrderList?.Add(order);
-                latestOrderCode = order.OrderCode ?? "Yeni Sipariş";
+                latestOrderCode = order.OrderCode ?? "New Order";
                 showAlert = true;
                 await InvokeAsync(StateHasChanged);
             });

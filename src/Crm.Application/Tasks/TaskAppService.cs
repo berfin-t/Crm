@@ -2,24 +2,35 @@
 using Crm.Common;
 using Crm.Permissions;
 using Crm.Projects;
+using Crm.Tasks.Events;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.EventBus.Distributed;
 
 namespace Crm.Tasks
 {
     [RemoteService(IsEnabled = false)]
     public class TaskAppService(ITaskRepository taskRepository, IMapper _mapper,
-        TaskManager taskManager) : CrmAppService, ITaskAppService
+        TaskManager taskManager,
+        IDistributedEventBus distributedEventBus) : CrmAppService, ITaskAppService
     {
         #region Create
         public async Task<TaskDto> CreateAsync(TaskCreateDto input)
         {
             var task = await taskManager.CreateAsync(
                 input.Name, input.Description, input.DueDate, input.Priority, input.Status, input.ProjectId, input.EmployeeId);
+
+            await distributedEventBus.PublishAsync(new TaskCreatedEto
+            {
+                Id = task.Id,
+                Name = task.Title,
+                
+            });
 
             return _mapper.Map<TaskDto>(task);
         }

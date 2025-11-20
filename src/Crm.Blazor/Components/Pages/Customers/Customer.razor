@@ -4,8 +4,21 @@
 @using Blazorise.DataGrid
 @using Crm.Customers
 @using Crm.Blazor.Components.Dialogs.Customers
+@using Microsoft.AspNetCore.SignalR.Client
 
 @inject ICustomerAppService CustomerAppService
+
+<Alert Color="Color.Success"
+    Visible="@showAlert"
+    Dismisable
+    Dismissed="@OnAlertDismissed">
+    <div Class="d-flex justify-content-between align-items-center">
+        <div>
+            📦 A new customer has been added: <strong>@latestCustomerName</strong>
+        </div>
+        <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
+    </div>
+</Alert>
 
 <Container>
     <Card>

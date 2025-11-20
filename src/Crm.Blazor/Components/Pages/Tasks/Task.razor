@@ -2,7 +2,20 @@
 @using Crm.Blazor.Components.Dialogs.Tasks
 @using Crm.Common
 @using Crm.Tasks
+@using Microsoft.AspNetCore.SignalR.Client
 @inject ITaskAppService TaskAppService
+
+<Alert Color="Color.Success"
+    Visible="@showAlert"
+    Dismisable
+    Dismissed="@(()=> showAlert = false)">
+    <div Class="d-flex justify-content-between align-items-center">
+        <div>
+            🆕 A new task has been added: <strong>@latestTaskName</strong>
+        </div>
+        <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
+    </div>
+</Alert>
 
 @if (items != null && items.Any())
 {
@@ -61,14 +74,33 @@
 <TaskDetailModal @ref="taskDetailModal" Task="@selectedTask" />
 
 @code {
+    [Inject] public NavigationManager? NavigationManager { get; set; }
     private List<TaskDto> items = new List<TaskDto>{};
     private TaskDto? selectedTask;
     private TaskDetailModal? taskDetailModal;
     [Parameter] public TaskDto? TaskPriority { get; set; }
+    private HubConnection? hubConnection;
+    private bool showAlert = false;
+    private string latestTaskName = string.Empty;
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         items = (await TaskAppService.GetListAllAsync()).OrderByDescending(x=>x.Priority).ToList();
+        
+        hubConnection = new HubConnectionBuilder()
+                .WithUrl($"{NavigationManager!.BaseUri}crmhub")
+                .WithAutomaticReconnect()
+                .Build();
+
+        hubConnection.On<TaskDto>("TaskCreated", async (task) =>
+    {
+        items?.Add(task);
+        latestTaskName = task.Name ?? "New Task";
+        showAlert = true;
+        await InvokeAsync(StateHasChanged);
+    });
+        await hubConnection.StartAsync();
+
         StateHasChanged();
     }
 
