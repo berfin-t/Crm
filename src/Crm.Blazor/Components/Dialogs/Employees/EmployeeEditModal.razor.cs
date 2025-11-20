@@ -66,6 +66,7 @@ namespace Crm.Blazor.Components.Dialogs.Employees
                 EmployeeUpdateDto.PositionId = SelectedPositionId;
 
                 await EmployeeAppService.UpdateAsync(EmployeeUpdateDto.Id, EmployeeUpdateDto);
+                await EventCallback.InvokeAsync();
                 await HideModal();
             }
             catch (Exception ex)

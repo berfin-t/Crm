@@ -68,14 +68,28 @@
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        items = (await TaskAppService.GetListAllAsync()).ToList();
+        items = (await TaskAppService.GetListAllAsync()).OrderByDescending(x=>x.Priority).ToList();
         StateHasChanged();
     }
 
-    private System.Threading.Tasks.Task ItemDropped(DraggableDroppedEventArgs<TaskDto> dropItem)
+    private async System.Threading.Tasks.Task ItemDropped(DraggableDroppedEventArgs<TaskDto> dropItem)
     {
         dropItem.Item.Group = dropItem.DropZoneName;
-        return System.Threading.Tasks.Task.CompletedTask;
+        var updateDto = new TaskUpdateDto
+        {
+            Name = dropItem.Item.Name!,
+            Description = dropItem.Item.Description!,
+            DueDate = dropItem.Item.DueDate,
+            Priority = dropItem.Item.Priority,
+            Group = dropItem.DropZoneName,
+            ProjectId = dropItem.Item.ProjectId,
+            EmployeeId = dropItem.Item.EmployeeId,
+            Status = MapStatus(dropItem.DropZoneName)
+        };
+        await TaskAppService.UpdateAsync(dropItem.Item.Id, updateDto);
+        items = (await TaskAppService.GetListAllAsync()).OrderByDescending(x=>x.Priority).ToList();
+        StateHasChanged();
+        return; 
     }
     
     private void OnCardClick(TaskDto task)
@@ -98,5 +112,17 @@
             _ => "border-left: 5px solid #D1D5DB; background-color: #FFFFFF;"
         };
     }
+
+    private EnumStatus MapStatus(string zone)
+    {
+        return zone switch
+        {
+            "Pending" => EnumStatus.Pending,
+            "Active" => EnumStatus.Active,
+            "Completed" => EnumStatus.Completed,
+            _ => EnumStatus.Pending
+        };
+    }
+
 
 }
