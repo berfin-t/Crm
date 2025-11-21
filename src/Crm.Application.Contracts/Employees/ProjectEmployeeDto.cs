@@ -12,6 +12,7 @@ namespace Crm.Employees
         public Guid ProjectId { get; set; }
         public Guid EmployeeId { get; set; }
         public string EmployeeName { get; set; }
+        public string PhotoPath { get; set; }
 
     }
 }

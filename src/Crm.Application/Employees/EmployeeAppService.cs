@@ -26,7 +26,7 @@ namespace Crm.Employees
         IMapper _mapper) : CrmAppService, IEmployeeAppService
     {
         #region Create
-        [AllowAnonymous]
+        [Authorize(CrmPermissions.Employees.Create)]
         public async Task<EmployeeDto> CreateAsync(EmployeeCreateDto input)
         {
             await userRules.EnsureUsernameNotExistAsync(input.User.UserName);
@@ -95,7 +95,7 @@ namespace Crm.Employees
         #endregion
 
         #region Update
-        [AllowAnonymous]
+        [Authorize(CrmPermissions.Employees.Edit)]
         public async Task<EmployeeDto> UpdateAsync(Guid id, EmployeeUpdateDto input)
         {
             var employee = await employeeManager.UpdateAsync(
@@ -158,7 +158,7 @@ namespace Crm.Employees
         #endregion
 
         #region Delete
-        [AllowAnonymous]
+        [Authorize(CrmPermissions.Employees.Delete)]
         public virtual async Task DeleteAsync(Guid id)
         {
             var employee = await employeeRepository.GetAsync(id);
@@ -194,6 +194,7 @@ namespace Crm.Employees
                               ProjectId = pe.ProjectId,
                               EmployeeId = e.Id,
                               EmployeeName = e.FirstName + " " + e.LastName,
+                              PhotoPath = e.PhotoPath
                           }).ToList();
 
             return result;

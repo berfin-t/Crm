@@ -15,44 +15,55 @@ namespace Crm.Blazor.Components.Pages.Projects
 {
     public partial class ProjectDetail
     {
-        #region References
-        [Parameter] public string? ProjectSlug { get; set; }
+        #region Parameters & Injects
         [Parameter] public Guid ProjectId { get; set; }
+
         private ProjectDto? project;
         private ProjectDto? selectedProject;
+        private List<ProjectEmployeeDto> projectEmployees = new();
+
         private bool isProjectModalVisible = false;
         private bool isDeleteModalVisible = false;
+
         private ProjectEditModal? projectEditModal;
-        [Parameter] public List<EmployeeDto>? Employees { get; set; }
-        [Parameter] public List<CustomerDto>? Customers { get; set; }
+
         private long totalTasks;
         private long completedTasks;
         private long teamSize;
-        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
 
         private bool canEditProject;
         private bool canDeleteProject;
+
+        private EventCallback RefreshCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
+            // --- Project Info ---
+            project = await ProjectAppService.GetAsync(ProjectId);
+
+            // --- Team Members ---
+            projectEmployees = await EmployeeAppService.GetEmployeesByProjectIdAsync(ProjectId);
+            teamSize = projectEmployees.Count;
+
+            // --- Tasks ---
             totalTasks = await TaskAppService.GetTotalTaskCountByProjectIdAsync(ProjectId);
             completedTasks = await TaskAppService.GetCompletedTasksByProjectId(ProjectId);
-            teamSize = (await EmployeeAppService.GetEmployeesByProjectIdAsync(ProjectId)).Count();
 
+            // --- Permissions ---
             canEditProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Edit);
             canDeleteProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Delete);
 
-            project = await ProjectAppService.GetAsync(ProjectId);
             await base.OnInitializedAsync();
-        }       
+        }
 
         #region Edit
         private async Task EditProject(ProjectDto project)
         {
             isProjectModalVisible = false;
-            await projectEditModal!.ShowModal(project, EventCallback);
+            await projectEditModal!.ShowModal(project, RefreshCallback);
         }
+
         private async Task OnSelectProjectForEdit(ProjectDto project)
         {
             selectedProject = project;
@@ -60,11 +71,11 @@ namespace Crm.Blazor.Components.Pages.Projects
         }
         #endregion
 
-        #region Delete        
+        #region Delete
         private async Task ConfirmDelete()
         {
-            await ProjectAppService!.DeleteAsync(ProjectId);
-            NavigationManager!.NavigateTo("/projects");
+            await ProjectAppService.DeleteAsync(ProjectId);
+            NavigationManager.NavigateTo("/projects");
         }
         #endregion
     }

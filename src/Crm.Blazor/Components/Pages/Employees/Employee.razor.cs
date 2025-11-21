@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Crm.Blazor.Components.Pages.Employees
 {
@@ -37,9 +38,15 @@ namespace Crm.Blazor.Components.Pages.Employees
         private EmployeeEditModal? employeeEditModal;
         public List<PositionDto> PositionList { get; set; } = new();
 
+        private bool canCreateEmployee;
+        private bool canDeleteEmployee;
+        private bool canEditEmployee;
         #endregion
         protected override async Task OnInitializedAsync()
         {
+            canCreateEmployee = await AuthorizationService.IsGrantedAsync(Crm.Permissions.CrmPermissions.Employees.Create);
+            canDeleteEmployee = await AuthorizationService.IsGrantedAsync(Crm.Permissions.CrmPermissions.Employees.Delete);
+            canEditEmployee = await AuthorizationService.IsGrantedAsync(Crm.Permissions.CrmPermissions.Employees.Edit);
             AllEmployees = (await EmployeeAppService.GetListAllAsync()).OrderBy(e => e.FirstName).ToList();
             ApplyFilters();
         }
