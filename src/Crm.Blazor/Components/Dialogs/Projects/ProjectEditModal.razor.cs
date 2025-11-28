@@ -22,7 +22,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         private EnumStatus selectedStatus = Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>().FirstOrDefault();
         private DateTime? selectedStartTime { get; set; }
         private DateTime? selectedEndTime { get; set; }
-        private Guid selectedEmployeeId { get; set; }
+        private List<Guid> selectedEmployeeIds { get; set; } = new();
         private Guid selectedCustomerId { get; set; }
         private EventCallback EventCallback { get; set; }
         #endregion
@@ -47,13 +47,9 @@ namespace Crm.Blazor.Components.Dialogs.Projects
                 ProjectUpdateDto.Status = project.Status;
                 ProjectUpdateDto.Revenue = project.Revenue;
                 ProjectUpdateDto.SuccessRate = project.SuccessRate;
-                ProjectUpdateDto.EmployeeId = project.EmployeeId;
-                ProjectUpdateDto.CustomerId = project.CustomerId;
-
                 selectedStatus = project.Status;
                 selectedStartTime = project.StartTime;
                 selectedEndTime = project.EndTime;
-                selectedEmployeeId = project.EmployeeId;
                 selectedCustomerId = project.CustomerId;
             }
             await modalRef!.Show();
@@ -66,24 +62,15 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Update Project
         private async Task UpdateProjectAsync()
         {
-            try
-            {
-                ProjectUpdateDto.Status = selectedStatus;
-                ProjectUpdateDto.StartTime = selectedStartTime ?? DateTime.Now;
-                ProjectUpdateDto.EndTime = selectedEndTime ?? DateTime.Now;
-                ProjectUpdateDto.EmployeeId = selectedEmployeeId;
-                ProjectUpdateDto.CustomerId = selectedCustomerId;
+            ProjectUpdateDto.Status = selectedStatus;
+            ProjectUpdateDto.StartTime = selectedStartTime ?? DateTime.Now;
+            ProjectUpdateDto.EndTime = selectedEndTime ?? DateTime.Now;
+            ProjectUpdateDto.CustomerId = selectedCustomerId;
 
-                await ProjectAppService.UpdateAsync(ProjectUpdateDto.Id, ProjectUpdateDto);
-                await HideModal();
-                await EventCallback.InvokeAsync();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating project: {ex.Message}");
-            }
+            await ProjectAppService.UpdateAsync(ProjectUpdateDto.Id, ProjectUpdateDto);
+            await HideModal();
+            await EventCallback.InvokeAsync();
         }
-        #endregion
+        #endregion       
     }
 }

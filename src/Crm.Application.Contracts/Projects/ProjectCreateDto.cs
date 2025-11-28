@@ -8,7 +8,7 @@ namespace Crm.Projects
     public class ProjectCreateDto
     {
         [Required]
-        public string Name { get; set; } 
+        public string? Name { get; set; } 
         public string? Description { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -19,7 +19,7 @@ namespace Crm.Projects
         [Required]
         public decimal SuccesRate { get; set; }
         [Required]
-        public Guid EmployeeId { get; set; }
+        public List<Guid> EmployeeIds { get; set; } = new List<Guid>();
         [Required]
         public Guid CustomerId { get; set; } 
     }

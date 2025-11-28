@@ -15,11 +15,11 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Reference 
         private EventCallback EventCallback { get; set; }
         private Modal? modalRef;
-        private ProjectCreateDto ProjectCreateDto { get; set; } = new ProjectCreateDto();
-        private Guid SelectedEmployeeId { get; set; }
-        private Guid SelectedCustomerId { get; set; }
+        private ProjectEmployeeCreateDto ProjectCreateDto { get; set; } = new ProjectEmployeeCreateDto(); // ✔ DTO değişti
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<CustomerDto> Customers { get; set; } = new();
+        public List<Guid> SelectedEmployeeIds { get; set; } = new();
+        private Guid SelectedCustomerId { get; set; }
         #endregion
 
         #region Form Fields
@@ -30,8 +30,6 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         private EnumStatus Status { get; set; }
         private decimal Revenue { get; set; }
         private decimal SuccesRate { get; set; }
-        private string? Employee { get; set; }
-        private string? Customer { get; set; }
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -51,10 +49,11 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             Status = EnumStatus.Active;
             Revenue = 0;
             SuccesRate = 0;
-            SelectedEmployeeId = Guid.Empty;
+
+            SelectedEmployeeIds = new List<Guid>();   // ✔ MULTI SELECT RESET
             SelectedCustomerId = Guid.Empty;
 
-            ProjectCreateDto = new ProjectCreateDto();
+            ProjectCreateDto = new ProjectEmployeeCreateDto();
 
             return modalRef!.Show();
         }
@@ -67,6 +66,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Create Project       
         private async Task CreateProjectAsync()
         {
+            // ProjectEmployeeCreateDto’ya map et
             ProjectCreateDto.Name = Name!;
             ProjectCreateDto.Description = Description;
             ProjectCreateDto.StartTime = StartTime;
@@ -74,12 +74,12 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             ProjectCreateDto.Statues = Status;
             ProjectCreateDto.Revenue = Revenue;
             ProjectCreateDto.SuccesRate = SuccesRate;
-            ProjectCreateDto.EmployeeId = SelectedEmployeeId;
+            ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;   // ✔ Çoklu çalışan
             ProjectCreateDto.CustomerId = SelectedCustomerId;
 
             try
             {
-                await ProjectAppService.CreateAsync(ProjectCreateDto);
+                await ProjectEmployeeAppService.CreateAsync(ProjectCreateDto);
                 await HideModal();
                 await EventCallback.InvokeAsync();
             }
@@ -87,7 +87,6 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             {
                 Console.WriteLine($"Hata: {ex.Message}");
             }
-
         }
         #endregion        
     }

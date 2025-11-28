@@ -18,7 +18,7 @@ namespace Crm.Projects
         public EnumStatus Status { get; set; } 
         public decimal Revenue { get; set; }
         public decimal SuccessRate { get; set; }
-        public Guid EmployeeId { get; set; }
+        public List<Guid> EmployeeIds { get; set; } = new();
         public Guid CustomerId { get; set; }
 
         public string ConcurrencyStamp { get; set; } = null!;

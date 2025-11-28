@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Crm.Employees;
+using System;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Crm.Projects
 {
-    public class ProjectEmployee:FullAuditedAggregateRoot<Guid>
+    public class ProjectEmployee : FullAuditedAggregateRoot<Guid>
     {
         public virtual Guid ProjectId { get; private set; }
         public virtual Guid EmployeeId { get; private set; }
+        public virtual Project Project { get; private set; }
+        public virtual Employee Employee { get; private set; }
 
         protected ProjectEmployee() { }
 
@@ -22,7 +21,10 @@ namespace Crm.Projects
             SetEmployeeId(employeeId);
         }
 
-        public void SetProjectId(Guid projectId) => ProjectId = Check.NotDefaultOrNull<Guid>(projectId, nameof(projectId));
-        public void SetEmployeeId(Guid employeeId) => EmployeeId = Check.NotDefaultOrNull<Guid>(employeeId, nameof(employeeId));
+        public void SetProjectId(Guid projectId)
+            => ProjectId = Check.NotDefaultOrNull<Guid>(projectId, nameof(projectId));
+
+        public void SetEmployeeId(Guid employeeId)
+            => EmployeeId = Check.NotDefaultOrNull<Guid>(employeeId, nameof(employeeId));
     }
 }

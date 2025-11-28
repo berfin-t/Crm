@@ -60,6 +60,8 @@ public class CrmApplicationAutoMapperProfile : Profile
 
         CreateMap<ProjectEmployee, ProjectEmployeeDto>().ReverseMap();
         CreateMap<Employee, ProjectEmployeeDto>().ReverseMap();
+        CreateMap<ProjectEmployeeCreateDto, ProjectEmployee>();
+
 
         //CreateMap<Task, TaskDto>();
         //CreateMap<TaskCreateDto, Task>();

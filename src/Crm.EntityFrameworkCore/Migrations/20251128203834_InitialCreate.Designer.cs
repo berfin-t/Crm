@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Crm.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20250401181114_GenderAndPhotoPath")]
-    partial class GenderAndPhotoPath
+    [Migration("20251128203834_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -365,11 +365,6 @@ namespace Crm.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("DeletionTime");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Email");
-
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("text")
@@ -416,6 +411,9 @@ namespace Crm.Migrations
                     b.Property<Guid>("PositionId")
                         .HasColumnType("uuid")
                         .HasColumnName("PositionId");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -477,6 +475,11 @@ namespace Crm.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("LastModifierId");
+
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("OrderCode");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp without time zone")
@@ -614,9 +617,6 @@ namespace Crm.Migrations
                         .HasColumnType("character varying(1024)")
                         .HasColumnName("Description");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("EndTime");
@@ -666,9 +666,70 @@ namespace Crm.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.ToTable("AppProjects", (string)null);
+                });
+
+            modelBuilder.Entity("Crm.Projects.ProjectEmployee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("AppProjects", (string)null);
+                    b.HasIndex("ProjectId", "EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("AppProjectEmployees", (string)null);
                 });
 
             modelBuilder.Entity("Crm.Tasks.Task", b =>
@@ -690,9 +751,6 @@ namespace Crm.Migrations
                     b.Property<Guid?>("CreatorId")
                         .HasColumnType("uuid")
                         .HasColumnName("CreatorId");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("DeleterId")
                         .HasColumnType("uuid")
@@ -737,6 +795,9 @@ namespace Crm.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("Priority");
 
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("Status");
@@ -748,9 +809,9 @@ namespace Crm.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
-
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("AppTasks", (string)null);
                 });
@@ -2561,25 +2622,38 @@ namespace Crm.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
 
-                    b.HasOne("Crm.Employees.Employee", null)
-                        .WithMany()
+            modelBuilder.Entity("Crm.Projects.ProjectEmployee", b =>
+                {
+                    b.HasOne("Crm.Employees.Employee", "Employee")
+                        .WithMany("ProjectEmployees")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Crm.Projects.Project", "Project")
+                        .WithMany("ProjectEmployees")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Crm.Tasks.Task", b =>
                 {
-                    b.HasOne("Crm.Customers.Customer", null)
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Crm.Employees.Employee", null)
                         .WithMany()
                         .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Crm.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
@@ -2724,6 +2798,16 @@ namespace Crm.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Crm.Employees.Employee", b =>
+                {
+                    b.Navigation("ProjectEmployees");
+                });
+
+            modelBuilder.Entity("Crm.Projects.Project", b =>
+                {
+                    b.Navigation("ProjectEmployees");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>

@@ -26,6 +26,10 @@ namespace Crm.Configurations
             builder.Property(x => x.PositionId).HasColumnName(nameof(Employee.PositionId)).IsRequired();
 
             builder.HasOne<Position>().WithMany().IsRequired().HasForeignKey(x => x.PositionId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.ProjectEmployees)
+                   .WithOne()
+                   .HasForeignKey(pe => pe.EmployeeId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

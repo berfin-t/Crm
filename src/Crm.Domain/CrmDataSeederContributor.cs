@@ -56,7 +56,8 @@ public class CrmDataSeederContributor(
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
-        var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
+        var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id)
+        );
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
         var tasks = await SeedTasksAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
         var projectEmployees = await SeedProjectEmployeesAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
@@ -299,26 +300,71 @@ public class CrmDataSeederContributor(
     #endregion
 
     #region Projects
-    private async Task<IEnumerable<Project>> SeedProjectsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
+    private async Task<IEnumerable<Project>> SeedProjectsAsync(IEnumerable<Guid> customerIds, IEnumerable<Guid> employeeIds)
     {
+        var employeeIdList = employeeIds.ToList();
         var faker = new Faker<Project>("tr")
-            .CustomInstantiator(f => new Project(
-                guidGenerator.Create(),
-                f.Commerce.ProductName(),
-                f.Lorem.Paragraph(),
-                f.Date.Past(),
-                f.Date.Future(),
-                f.PickRandom<EnumStatus>(Enum.GetValues(typeof(EnumStatus))
-                .Cast<EnumStatus>().Where(x => x != 0)),
-                f.Random.Decimal(1000, 5000),
-                f.Random.Decimal(0, 100),
-                f.PickRandom(employees),
-                f.PickRandom(customers)
-                ));
-        var projects = faker.Generate(50);
+            .CustomInstantiator(f =>
+            {
+                var selectedEmployees = employeeIdList
+                    .OrderBy(x => Guid.NewGuid())
+                    .Take(f.Random.Int(1, Math.Min(5, employeeIdList.Count)))
+                    .ToList();
 
+                return new Project(
+                    guidGenerator.Create(),
+                    f.Commerce.ProductName(),
+                    f.Lorem.Paragraph(),
+                    f.Date.Past(),
+                    f.Date.Future(),
+                    f.PickRandom<EnumStatus>(
+                        Enum.GetValues(typeof(EnumStatus))
+                            .Cast<EnumStatus>().Where(x => x != 0)
+                    ),
+                    f.Random.Decimal(1000, 5000),
+                    f.Random.Decimal(0, 100),
+                    selectedEmployees,
+                    f.PickRandom(customerIds)
+                );
+            });
+
+        var projects = faker.Generate(50);
         await projectRepository.InsertManyAsync(projects, true);
         return projects;
+    }
+
+    #endregion
+
+
+    #region Project Employees
+    private async Task<IEnumerable<ProjectEmployee>> SeedProjectEmployeesAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
+    {
+        var faker = new Faker("tr");
+
+        var projectEmployeeList = new List<ProjectEmployee>();
+
+        foreach (var projectId in projects)
+        {
+            var assignedEmployees = faker.PickRandom(employees, faker.Random.Int(1, 5)).ToList();
+
+            foreach (var employeeId in assignedEmployees)
+            {
+                var projectEmployee = new ProjectEmployee(
+                    guidGenerator.Create(),
+                    projectId,
+                    employeeId
+                );
+
+                if (!projectEmployeeList.Any(pe => pe.ProjectId == projectId && pe.EmployeeId == employeeId))
+                {
+                    projectEmployeeList.Add(projectEmployee);
+                }
+            }
+        }
+
+        await projectEmployeeRepository.InsertManyAsync(projectEmployeeList, true);
+
+        return projectEmployeeList;
     }
     #endregion
 
@@ -364,36 +410,5 @@ public class CrmDataSeederContributor(
         return tasks;
     }
     #endregion
-
-    #region Project Employees
-    private async Task<IEnumerable<ProjectEmployee>> SeedProjectEmployeesAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
-    {
-        var faker = new Faker("tr");
-
-        var projectEmployeeList = new List<ProjectEmployee>();
-
-        foreach (var projectId in projects)
-        {
-            var assignedEmployees = faker.PickRandom(employees, faker.Random.Int(1, 5)).ToList();
-
-            foreach (var employeeId in assignedEmployees)
-            {
-                var projectEmployee = new ProjectEmployee(
-                    guidGenerator.Create(),
-                    projectId,
-                    employeeId
-                );
-
-                if (!projectEmployeeList.Any(pe => pe.ProjectId == projectId && pe.EmployeeId == employeeId))
-                {
-                    projectEmployeeList.Add(projectEmployee);
-                }
-            }
-        }
-
-        await projectEmployeeRepository.InsertManyAsync(projectEmployeeList, true);
-
-        return projectEmployeeList;
-    }
-    #endregion
+    
 }

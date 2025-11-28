@@ -1,4 +1,5 @@
-﻿using Crm.Tasks;
+﻿using Crm.Projects;
+using Crm.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,7 +11,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Crm.Employees
 {
-    public class Employee:FullAuditedAggregateRoot<Guid>
+    public class Employee : FullAuditedAggregateRoot<Guid>
     {
         [NotNull]
         public virtual string FirstName { get; private set; }
@@ -29,6 +30,7 @@ namespace Crm.Employees
 
         public virtual Guid PositionId { get; private set; }
         public virtual Guid UserId { get; private set; }
+        public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; }
 
         protected Employee()
         {
@@ -38,17 +40,17 @@ namespace Crm.Employees
             Address = string.Empty;
             BirthDate = DateTime.Now;
             PhotoPath = string.Empty;
-            
+            ProjectEmployees = new HashSet<ProjectEmployee>();
         }
-        public Employee(Guid id, 
-            string firstName, 
-            string lastName, 
-            string phoneNumber, 
+        public Employee(Guid id,
+            string firstName,
+            string lastName,
+            string phoneNumber,
             string address,
-            DateTime birthDate, 
+            DateTime birthDate,
             string photoPath,
-            EnumGender gender, 
-            Guid positionId):base(id)
+            EnumGender gender,
+            Guid positionId) : base(id)
         {
             SetFirstName(firstName);
             SetLastName(lastName);
@@ -58,8 +60,9 @@ namespace Crm.Employees
             SetPositionId(positionId);
             SetPhotoPath(photoPath);
             SetGender(gender);
-
+            ProjectEmployees = new HashSet<ProjectEmployee>();
         }
+
         public Employee(Guid id,
             string firstName,
             string lastName,
@@ -70,8 +73,10 @@ namespace Crm.Employees
             string photoPath,
             EnumGender gender,
             Guid positionId,
-            Guid userId) :this(id, firstName, lastName, phoneNumber, address, birthDate, photoPath, gender, positionId) =>
+            Guid userId) : this(id, firstName, lastName, phoneNumber, address, birthDate, photoPath, gender, positionId)
+        {
             SetUserId(userId);
+        }
         public void SetFirstName(string firstName) => FirstName = Check.NotNullOrWhiteSpace(firstName, nameof(firstName));
         public void SetLastName(string lastName) => LastName = Check.NotNullOrWhiteSpace(lastName, nameof(lastName));
         public void SetPhoneNumber(string phoneNumber) => PhoneNumber = Check.NotNullOrWhiteSpace(phoneNumber, nameof(phoneNumber));

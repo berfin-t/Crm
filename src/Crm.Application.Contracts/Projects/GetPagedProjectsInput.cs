@@ -16,7 +16,7 @@ namespace Crm.Projects
         public ICollection<EnumStatus>? Statues { get; set; } = null;
         public decimal? Revenue { get; set; } = null;
         public decimal? SuccesRate { get; set; } = null;
-        public Guid? EmployeeId { get; set; } = null;
+        public List<Guid>? EmployeeIds { get; set; } = null;
         public Guid? CustomerId { get; set; } = null;
         public string? Filter { get; set; } = null;
 

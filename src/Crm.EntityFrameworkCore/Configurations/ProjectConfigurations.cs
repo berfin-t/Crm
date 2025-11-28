@@ -20,7 +20,11 @@ namespace Crm.Configurations
             builder.Property(x => x.Revenue).HasColumnName(nameof(Project.Revenue)).IsRequired();
             builder.Property(x => x.SuccessRate).HasColumnName(nameof(Project.SuccessRate)).IsRequired();
 
-            builder.HasOne<Employee>().WithMany().IsRequired().HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.ProjectEmployees)
+                       .WithOne()
+                       .HasForeignKey(pe => pe.ProjectId)
+                       .IsRequired()
+                       .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne<Customer>().WithMany().IsRequired().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
         }
     }

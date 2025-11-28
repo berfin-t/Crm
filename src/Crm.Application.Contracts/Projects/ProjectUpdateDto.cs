@@ -31,7 +31,7 @@ namespace Crm.Projects
         public decimal SuccessRate { get; set; }
         [Required]
 
-        public Guid EmployeeId { get; set; }
+        public List<Guid> EmployeeIds { get; set; } = new List<Guid>(); 
         [Required]
 
         public Guid CustomerId { get; set; }

@@ -13,14 +13,14 @@ namespace Crm.Projects
         Task<List<Project>> GetListAllAsync(string? name = null, string? description = null,
             DateTime? startTime = null, DateTime? endTime = null,
             ICollection<EnumStatus>? statues = null, decimal? revenue = null,
-            decimal? succesRate = null, Guid? employeeId = null, Guid? customerId = null,
+            decimal? succesRate = null, List<Guid>? employeeIds = null, Guid? customerId = null,
             string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0,
             CancellationToken cancellationToken = default);
 
         Task<long> GetCountAsync(string? name = null, string? description = null,
             DateTime? startTime = null, DateTime? endTime = null,
             ICollection<EnumStatus>? statues = null, decimal? revenue = null,
-            decimal? succesRate = null, Guid? employeeId = null,
+            decimal? succesRate = null, List<Guid>? employeeIds = null,
             Guid? customerId = null, CancellationToken cancellationToken = default);
 
         Task<decimal> GetSuccessRateAverageAsync(decimal? successRate = null, CancellationToken cancellationToken = default);
@@ -34,7 +34,7 @@ namespace Crm.Projects
             ICollection<EnumStatus>? statues = null,
             decimal? revenue = null,
             decimal? succesRate = null,
-            Guid? employeeId = null,
+            List<Guid>? employeeIds = null,
             Guid? customerId = null);
     }
 

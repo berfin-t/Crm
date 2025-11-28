@@ -24,7 +24,7 @@ namespace Crm.Projects
         [NotNull]
         public virtual decimal SuccessRate { get; private set; }        
         public virtual Guid CustomerId { get; private set; }
-        public virtual Guid EmployeeId { get; private set; }
+        public virtual ICollection<ProjectEmployee> ProjectEmployees { get; private set; } = new List<ProjectEmployee>();
 
         protected Project()
         {
@@ -39,7 +39,7 @@ namespace Crm.Projects
         public Project(
             Guid id, string name, string description,
             DateTime startTime, DateTime endTime, EnumStatus status,
-            decimal revenue, decimal successRate, Guid employeeId,
+            decimal revenue, decimal successRate, List<Guid> employeeIds,
             Guid customerId
         )
         {
@@ -50,7 +50,6 @@ namespace Crm.Projects
             SetStatus(status);
             SetRevenue(revenue);
             SetSuccessRate(successRate);
-            SetEmployeeId(employeeId);
             SetCustomerId(customerId);
         }
 
@@ -61,9 +60,21 @@ namespace Crm.Projects
         public void SetStatus(EnumStatus status) => Status = Check.NotNull(status, nameof(status));
         public void SetRevenue(decimal revenue) => Revenue = Check.NotNull(revenue, nameof(revenue));
         public void SetSuccessRate(decimal successRate) => SuccessRate = Check.NotNull(successRate, nameof(successRate));
-        public void SetEmployeeId(Guid employeeId) => EmployeeId = Check.NotDefaultOrNull<Guid>(employeeId, nameof(employeeId));
         public void SetCustomerId(Guid customerId) => CustomerId = Check.NotDefaultOrNull<Guid>(customerId, nameof(customerId));
 
+        public void AddProjectEmployee(ProjectEmployee projectEmployee)
+        {
+            if (projectEmployee == null) throw new ArgumentNullException(nameof(projectEmployee));
+            ProjectEmployees.Add(projectEmployee);
+        }
+
+        public void RemoveProjectEmployee(ProjectEmployee projectEmployee)
+        {
+            if (projectEmployee == null) throw new ArgumentNullException(nameof(projectEmployee));
+            ProjectEmployees.Remove(projectEmployee);
+        }
     }
+
+
 }
 

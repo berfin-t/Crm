@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Crm.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -787,17 +787,52 @@ namespace Crm.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppProjects",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Revenue = table.Column<decimal>(type: "numeric", nullable: false),
+                    SuccessRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExtraProperties = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppProjects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppProjects_AppCustomers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AppCustomers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppEmployees",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
+                    PhotoPath = table.Column<string>(type: "text", nullable: false),
+                    Gender = table.Column<int>(type: "integer", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     PositionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -864,6 +899,43 @@ namespace Crm.Migrations
                         principalTable: "AbpEntityChanges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppOrders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrderCode = table.Column<string>(type: "text", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExtraProperties = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppOrders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppOrders_AppCustomers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AppCustomers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppOrders_AppProjects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "AppProjects",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -937,19 +1009,12 @@ namespace Crm.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppProjects",
+                name: "AppProjectEmployees",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Revenue = table.Column<decimal>(type: "numeric", nullable: false),
-                    SuccessRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -962,16 +1027,16 @@ namespace Crm.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppProjects", x => x.Id);
+                    table.PrimaryKey("PK_AppProjectEmployees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppProjects_AppCustomers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AppCustomers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AppProjects_AppEmployees_EmployeeId",
+                        name: "FK_AppProjectEmployees_AppEmployees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "AppEmployees",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppProjectEmployees_AppProjects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "AppProjects",
                         principalColumn: "Id");
                 });
 
@@ -985,7 +1050,7 @@ namespace Crm.Migrations
                     DueDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Priority = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
@@ -1001,14 +1066,14 @@ namespace Crm.Migrations
                 {
                     table.PrimaryKey("PK_AppTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppTasks_AppCustomers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AppCustomers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_AppTasks_AppEmployees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "AppEmployees",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppTasks_AppProjects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "AppProjects",
                         principalColumn: "Id");
                 });
 
@@ -1043,42 +1108,6 @@ namespace Crm.Migrations
                         name: "FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId",
                         column: x => x.AuthorizationId,
                         principalTable: "OpenIddictAuthorizations",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppOrders",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExtraProperties = table.Column<string>(type: "text", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    LastModifierId = table.Column<Guid>(type: "uuid", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    DeleterId = table.Column<Guid>(type: "uuid", nullable: true),
-                    DeletionTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppOrders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppOrders_AppCustomers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "AppCustomers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AppOrders_AppProjects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "AppProjects",
                         principalColumn: "Id");
                 });
 
@@ -1337,24 +1366,30 @@ namespace Crm.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppProjects_CustomerId",
-                table: "AppProjects",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppProjects_EmployeeId",
-                table: "AppProjects",
+                name: "IX_AppProjectEmployees_EmployeeId",
+                table: "AppProjectEmployees",
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppTasks_CustomerId",
-                table: "AppTasks",
+                name: "IX_AppProjectEmployees_ProjectId_EmployeeId",
+                table: "AppProjectEmployees",
+                columns: new[] { "ProjectId", "EmployeeId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppProjects_CustomerId",
+                table: "AppProjects",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppTasks_EmployeeId",
                 table: "AppTasks",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppTasks_ProjectId",
+                table: "AppTasks",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
@@ -1475,6 +1510,9 @@ namespace Crm.Migrations
                 name: "AppOrders");
 
             migrationBuilder.DropTable(
+                name: "AppProjectEmployees");
+
+            migrationBuilder.DropTable(
                 name: "AppTasks");
 
             migrationBuilder.DropTable(
@@ -1499,6 +1537,9 @@ namespace Crm.Migrations
                 name: "AbpUsers");
 
             migrationBuilder.DropTable(
+                name: "AppEmployees");
+
+            migrationBuilder.DropTable(
                 name: "AppProjects");
 
             migrationBuilder.DropTable(
@@ -1508,16 +1549,13 @@ namespace Crm.Migrations
                 name: "AbpAuditLogs");
 
             migrationBuilder.DropTable(
+                name: "AppPositions");
+
+            migrationBuilder.DropTable(
                 name: "AppCustomers");
 
             migrationBuilder.DropTable(
-                name: "AppEmployees");
-
-            migrationBuilder.DropTable(
                 name: "OpenIddictApplications");
-
-            migrationBuilder.DropTable(
-                name: "AppPositions");
         }
     }
 }

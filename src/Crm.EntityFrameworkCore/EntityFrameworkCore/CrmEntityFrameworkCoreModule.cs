@@ -63,6 +63,7 @@ public class CrmEntityFrameworkCoreModule : AbpModule
             options.AddRepository<Position, EfCorePositionRepository>();
             options.AddRepository<Project, EfCoreProjectRepository>();
             options.AddRepository<Task, EfCoreTaskRepository>();
+            options.AddRepository<ProjectEmployee, EfCoreProjectEmployeeRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>
