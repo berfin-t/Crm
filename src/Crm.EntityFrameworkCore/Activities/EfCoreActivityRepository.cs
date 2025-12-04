@@ -82,5 +82,18 @@ namespace Crm.Activities
         ) =>
             await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.Activity.Id == id);
         #endregion
+
+        #region GetListByCustomerAsync
+        public async Task<List<Activity>> GetListByCustomerAsync(
+            Guid? customerId = null,
+            CancellationToken cancellationToken = default)
+        {
+            var query = await GetQueryableAsync();
+            return await query
+                .Where(x => x.CustomerId == customerId)
+                .OrderByDescending(x => x.Date)
+                .ToListAsync(cancellationToken);
+        }
+        #endregion
     }
 }

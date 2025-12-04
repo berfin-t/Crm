@@ -15,5 +15,6 @@ namespace Crm.Activities
         Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input);
         Task DeleteAsync(Guid id);
         Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id);
+        Task<List<ActivityDto>> GetListByCustomerAsync(Guid customerId);
     }
 }

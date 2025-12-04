@@ -13,7 +13,7 @@ namespace Crm.Blazor.Components.Pages.Customers
 {
     public partial class Customer
     {
-        [Inject] public NavigationManager? NavigationManager { get; set; }
+        [Inject] public NavigationManager NavigationManager { get; set; }
 
         #region reference to the service
         private CustomerDto? CustomerDto { get; set; }
@@ -52,6 +52,12 @@ namespace Crm.Blazor.Components.Pages.Customers
         private void OnAlertDismissed()
         {
             showAlert = false;
+        }
+
+        private async Task ShowDetailModal(CustomerDto customer)
+        {
+            NavigationManager.NavigateTo($"/customers/detail/{customer.Id}");
+            await Task.CompletedTask; 
         }
 
         private async Task ShowCreateModal()

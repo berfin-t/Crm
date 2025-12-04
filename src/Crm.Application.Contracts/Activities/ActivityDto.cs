@@ -14,5 +14,8 @@ namespace Crm.Activities
         public Guid CustomerId { get; set; }
         public Guid EmployeeId { get; set; }
         public EnumType Type { get; set; }
+        public string? EmployeeName { get; set; }
+        public string? EmployeeSurname { get; set; }
+
     }
 }

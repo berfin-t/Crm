@@ -41,6 +41,8 @@ namespace Crm.Controllers.CustomerNotes
         [Route("update/{id}")]
         public virtual Task<CustomerNoteDto> UpdateAsync(Guid id, CustomerNoteUpdateDto input) => _customerNoteAppService.UpdateAsync(id, input);
 
-
+        [HttpGet]
+        [Route("by-customer/{customerId}")]
+        public Task<List<CustomerNoteDto>> GetListByCustomerAsync(Guid customerId) => _customerNoteAppService.GetListByCustomerAsync(customerId);
     }
 }

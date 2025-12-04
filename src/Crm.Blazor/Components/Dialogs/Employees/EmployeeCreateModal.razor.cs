@@ -19,17 +19,13 @@ namespace Crm.Blazor.Components.Dialogs.Employees
         private Modal? modalRef;
         private Guid SelectedPositionId { get; set; }
         private List<PositionDto> Positions { get; set; } = new();
-        #endregion
-
-        #region Form Fields
+        private Validations? validations;
+        private EmployeeCreateDto EmployeeCreateDto { get; set; } = new();
+        private string PhotoPath { get; set; }
+        private IBrowserFile SelectedPhoto { get; set; }      
         private string? FirstName { get; set; }
         private string? LastName { get; set; }
-        private string? Email { get; set; }
-        private string? PhoneNumber { get; set; }
-        private string? EmployeeAddress { get; set; }
         private DateTime? BirthDate { get; set; }
-        private string? Position { get; set; }
-        private string? PhotoPath { get; set; }
         private EnumGender Gender { get; set; }
         #endregion
 
@@ -37,23 +33,24 @@ namespace Crm.Blazor.Components.Dialogs.Employees
         {
             Positions = await PositionAppService.GetListAllAsync();
         }
-        public Task ShowModal(EventCallback eventCallback)
+        public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
 
-            FirstName = FirstName ?? string.Empty;
-            LastName = LastName ?? string.Empty;
-            Email = Email ?? string.Empty;
-            PhoneNumber = PhoneNumber ?? string.Empty;
-            EmployeeAddress = EmployeeAddress ?? string.Empty;
-            BirthDate = BirthDate ?? DateTime.Now;
-            SelectedPositionId = Guid.Empty;
-            PhotoPath = PhotoPath ?? string.Empty;
-            Gender = EnumGender.Female;
+            if(validations is not null)
+                await validations.ClearAll();
 
-            EmployeeCreateDto = new EmployeeCreateDto();
+            EmployeeCreateDto.FirstName = string.Empty;
+            EmployeeCreateDto.LastName = string.Empty;
+            EmployeeCreateDto.Email = string.Empty;
+            EmployeeCreateDto.PhoneNumber = string.Empty;
+            EmployeeCreateDto.Address = string.Empty;
+            EmployeeCreateDto.BirthDate = BirthDate ?? DateTime.Now;
+            EmployeeCreateDto.PositionId = Guid.Empty;
+            EmployeeCreateDto.PhotoPath = string.Empty;
+            EmployeeCreateDto.Gender = EnumGender.Female;
 
-            return modalRef!.Show();
+            await modalRef!.Show();
         }
         private Task HideModal()
         {
@@ -78,19 +75,26 @@ namespace Crm.Blazor.Components.Dialogs.Employees
 
             PhotoPath = $"/images/profile/{fileName}";
         }
-        #region Create Employee
-        private EmployeeCreateDto EmployeeCreateDto { get; set; } = new EmployeeCreateDto();
+        #region Create Employee        
         private async Task CreateEmployeeAsync()
         {
-            EmployeeCreateDto.FirstName = FirstName ?? string.Empty;
-            EmployeeCreateDto.LastName = LastName ?? string.Empty;
-            EmployeeCreateDto.Email = Email ?? $"{FirstName}.{LastName}@example.com".ToLower();
-            EmployeeCreateDto.PhoneNumber = PhoneNumber ?? string.Empty;
-            EmployeeCreateDto.Address = EmployeeAddress ?? string.Empty;
-            EmployeeCreateDto.BirthDate = BirthDate ?? DateTime.Now;
-            EmployeeCreateDto.PositionId = SelectedPositionId != Guid.Empty ? SelectedPositionId : Guid.NewGuid();
-            EmployeeCreateDto.PhotoPath = PhotoPath ?? string.Empty;
-            EmployeeCreateDto.Gender = Gender;
+            if (validations is null)
+                return;
+
+            var isValid = await validations.ValidateAll();
+
+            if (!isValid)
+                return;
+
+            //EmployeeCreateDto.FirstName = FirstName ?? string.Empty;
+            //EmployeeCreateDto.LastName = LastName ?? string.Empty;
+            //EmployeeCreateDto.Email = Email ?? $"{FirstName}.{LastName}@example.com".ToLower();
+            //EmployeeCreateDto.PhoneNumber = PhoneNumber ?? string.Empty;
+            //EmployeeCreateDto.Address = EmployeeAddress ?? string.Empty;
+            //EmployeeCreateDto.BirthDate = BirthDate ?? DateTime.Now;
+            //EmployeeCreateDto.PositionId = SelectedPositionId != Guid.Empty ? SelectedPositionId : Guid.NewGuid();
+            //EmployeeCreateDto.PhotoPath = PhotoPath ?? string.Empty;
+            //EmployeeCreateDto.Gender = Gender;
 
             EmployeeCreateDto.User = new IdentityUserCreateDto
             {
@@ -106,5 +110,21 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             await EventCallback.InvokeAsync();
         }
         #endregion
+
+        private void ValidatePosition(ValidatorEventArgs e)
+        {
+            var value = (Guid?)e.Value;
+            if (value == null || value == Guid.Empty)
+            {
+                e.Status = ValidationStatus.Error;
+                e.ErrorText = "Position is required.";
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }               
+
     }
 }
+

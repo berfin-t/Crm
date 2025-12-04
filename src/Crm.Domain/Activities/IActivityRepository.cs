@@ -19,5 +19,9 @@ namespace Crm.Activities
         Task<ActivityWithNavigationProperties> GetWithNavigationPropertiesAsync(
             Guid id,
             CancellationToken cancellationToken = default);
+
+        Task<List<Activity>> GetListByCustomerAsync(
+            Guid? customerId = null,
+            CancellationToken cancellationToken = default);
     }
 }

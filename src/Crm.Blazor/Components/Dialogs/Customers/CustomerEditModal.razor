@@ -1,54 +1,57 @@
 ﻿@using Crm.Customers
 
 @inject ICustomerAppService CustomerAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
-                <ModalTitle>Edit Customer</ModalTitle>
+                <ModalTitle>@L["Edit Customer"]</ModalTitle>
                 <CloseButton />
             </ModalHeader>
+
             <ModalBody>
                 <Field>
-                    <FieldLabel>Customer Name:</FieldLabel>
+                    <FieldLabel>@L["Customer Name"]:</FieldLabel>
                     <InputText @bind-Value="CustomerUpdateDto.Name" class="form-control" />
                 </Field>
                 <Field>
-                    <FieldLabel>Customer Surname:</FieldLabel>
+                    <FieldLabel>@L["Customer Surname"]:</FieldLabel>
                     <InputText @bind-Value="CustomerUpdateDto.Surname" class="form-control" />
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Email:</FieldLabel>
+                        <FieldLabel>@L["Email"]:</FieldLabel>
                         <InputText @bind-Value="CustomerUpdateDto.Email" class="form-control" />
                     </Field>
                 </Card>
 
                 <Card>
                     <Field>
-                        <FieldLabel>Phone:</FieldLabel>
+                        <FieldLabel>@L["Phone Number"]:</FieldLabel>
                         <InputText @bind-Value="CustomerUpdateDto.Phone" class="form-control" />
                     </Field>
                 </Card>
 
                 <Card>
                     <Field>
-                        <FieldLabel>Address:</FieldLabel>
+                        <FieldLabel>@L["Address"]:</FieldLabel>
                         <InputText @bind-Value="CustomerUpdateDto.Address" class="form-control" />
                     </Field>
                 </Card>
 
                 <Card>
                     <Field>
-                        <FieldLabel>Company Name:</FieldLabel>
+                        <FieldLabel>@L["Company Name"]:</FieldLabel>
                         <InputText @bind-Value="CustomerUpdateDto.CompanyName" class="form-control" />
                     </Field>
                 </Card>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@UpdateCustomerAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateCustomerAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>        

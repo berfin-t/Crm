@@ -14,5 +14,9 @@ namespace Crm.CustomerNotes
 
         Task<long> GetCountAsync(string? note = null, DateTime? noteDate = null, 
             Guid? customerId = null, CancellationToken cancellationToken=default);
+
+        Task<List<CustomerNote>> GetListByCustomerAsync(
+            Guid? customerId = null,
+            CancellationToken cancellationToken = default);
     }
 }

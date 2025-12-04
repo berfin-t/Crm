@@ -11,62 +11,102 @@
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
                 <ModalTitle>@L["Add Activity"]</ModalTitle>
                 <CloseButton />
             </ModalHeader>
+
             <ModalBody>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@ActivityCreateDto">
+                
+                <!-- Type -->
                 <Field>
                     <FieldLabel>@L["Type"]:</FieldLabel>
-                    <Select @bind-SelectedValue="Types">
-                        @foreach (var type in Enum.GetValues(typeof(EnumType)).Cast<EnumType>())
-                        {
-                            <SelectItem Value="@type">@type</SelectItem>
-                        }
-                    </Select>
-                </Field>                
+                        <Select TValue="EnumType" @bind-SelectedValue="ActivityCreateDto.Type">
+
+                             @foreach (var type in Enum.GetValues(typeof(EnumType)).Cast<EnumType>())
+                             {
+                                 <SelectItem Value="@type">@type</SelectItem>
+                             }
+                        </Select>
+                </Field>  
+                    
+                <!-- Description -->
+                <Validation>
                 <Field>
-                    <FieldLabel>@L["Description"]:</FieldLabel>
-                    <InputText @bind-Value="Description" class="form-control" />
+                    <FieldLabel>@L["Description"]:</FieldLabel>                    
+                    <FieldBody>
+                                <TextEdit @bind-Text="ActivityCreateDto.Description">
+                            <Feedback>
+                                <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                    </TextEdit>
+                    </FieldBody>
                 </Field>
+                </Validation>
+
+                <!-- Activity Date -->
                 <Card>
                     <Field>
-                        <FieldLabel>
-                            @L["Activity Date"]:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="ActivityDate" Format="yyyy-MM-dd HH:mm" />
+                        <FieldLabel>@L["Activity Date"]:</FieldLabel>
+                            <DatePicker TValue="DateTime"
+                                        InputMode="DateInputMode.DateTime"
+                                        @bind-Date="ActivityCreateDto.Date"
+                                        Format="yyyy-MM-dd HH:mm" />
                     </Field>
-                </Card>                                         
+                </Card>
 
-                <Field>
-                    <FieldLabel>
-                        @L["Employees"]:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="SelectedEmployeeId">
-                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
-                        @foreach (var employee in Employees)
-                        {
-                            <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
-                        }
-                    </Select>
-                </Field>
-                <Field>
-                    <FieldLabel>
-                        @L["Customer"]:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="@SelectedCustomerId">
-                        <SelectItem Value="Guid.Empty">
-                            @L["Select"]</SelectItem>
-                        @foreach (var customer in Customers)
-                        {
-                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
-                        }
-                    </Select>
-                </Field>
+                <!-- Employee -->
+                    <Validation Validator="ValidateEmployee">
+                        <Field>
+                            <FieldLabel>@L["Employees"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="ActivityCreateDto.EmployeeId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var employee in Employees)
+                                    {
+                                        <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Employee is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+
+                    <!-- Customer -->
+                    <Validation Validator="ValidateCustomer">
+                        <Field>
+                            <FieldLabel>@L["Customer"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="ActivityCreateDto.CustomerId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var customer in Customers)
+                                    {
+                                        <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Customer is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                </Validations>
             </ModalBody>
+
             <ModalFooter>
                 <Button Color="Color.Danger" Clicked="@HideModal">
                     @L["Close"]</Button>
                 <Button Color="Color.Success" Clicked="@CreateActivityAsync">@L["Save Changes"]</Button>
             </ModalFooter>
+
         </ModalContent>
     </Modal>
 </CascadingValue>
-

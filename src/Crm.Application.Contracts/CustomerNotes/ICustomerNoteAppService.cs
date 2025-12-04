@@ -15,5 +15,6 @@ namespace Crm.CustomerNotes
         Task<CustomerNoteDto> GetAsync(Guid id);
         Task<CustomerNoteDto> CreateAsync(CustomerNoteCreateDto input);
         Task<CustomerNoteDto> UpdateAsync(Guid id, CustomerNoteUpdateDto input);
+        Task<List<CustomerNoteDto>> GetListByCustomerAsync(Guid customerId);
     }
 }

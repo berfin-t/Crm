@@ -46,6 +46,18 @@ namespace Crm.Activities
         }
         #endregion
 
+        #region GetListByCustomerAsync
+        public async Task<List<ActivityDto>> GetListByCustomerAsync(Guid customerId)
+        {
+            if (customerId == Guid.Empty)
+            {
+                throw new Exception("CustomerId cannot be empty.");
+            }
+            var items = await activityRepository.GetListByCustomerAsync(customerId);
+            return ObjectMapper.Map<List<Activity>, List<ActivityDto>>(items);
+        }
+        #endregion
+
         #region GetListPaged
         [AllowAnonymous]
         public virtual async Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input)

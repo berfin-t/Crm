@@ -32,6 +32,16 @@ namespace Crm.CustomerNotes
         }
         #endregion
 
+        #region GetListByCustomerAsync
+        public async Task<List<CustomerNote>> GetListByCustomerAsync(Guid? customerId = null, CancellationToken cancellationToken = default)
+        {
+            var query = await GetQueryableAsync();
+            return await query.Where(x=> x.CustomerId == customerId)
+                .OrderByDescending(x=>x.NoteDate)
+                .ToListAsync(cancellationToken);
+        }
+        #endregion
+
         #region ApplyDataFilters
         protected virtual IQueryable<CustomerNote> ApplyDataFilters(IQueryable<CustomerNote> query, string? note = null, DateTime? noteDate = null, Guid? customerId = null)
         {

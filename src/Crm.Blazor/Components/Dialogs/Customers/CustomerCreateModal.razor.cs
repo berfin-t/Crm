@@ -7,34 +7,29 @@ using System.Threading.Tasks;
 namespace Crm.Blazor.Components.Dialogs.Customers
 {
     public partial class CustomerCreateModal
-    {
-        #region Form Fields
-        private string? Name { get; set; }
-        private string? Surname { get; set; }
-        private string? Email { get; set; }
-        private string? Phone { get; set; }
-        private string? Address { get; set; }
-        private string? CompanyName { get; set; }
-        #endregion
-
+    {       
         #region reference to the modal component
         private EventCallback EventCallback { get; set; }
         private Modal? modalRef;
+        private CustomerCreateDto CustomerCreateDto { get; set; } = new();
+        private Validations? validations;
         #endregion
 
-        public Task ShowModal(EventCallback eventCallback)
+        public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
 
-            Name = string.Empty;
-            Surname = string.Empty;
-            Email = string.Empty;
-            Phone = string.Empty;
-            Address = string.Empty;
-            CompanyName = string.Empty;
-            CustomerCreateDto = new CustomerCreateDto();
+            if (validations is not null)
+                await validations.ClearAll();
 
-            return modalRef!.Show();
+            CustomerCreateDto.Name = string.Empty;
+            CustomerCreateDto.Surname = string.Empty;
+            CustomerCreateDto.Email = string.Empty;
+            CustomerCreateDto.Phone = string.Empty;
+            CustomerCreateDto.Address = string.Empty;
+            CustomerCreateDto.CompanyName = string.Empty;
+
+            await modalRef!.Show();
         }
 
         private Task HideModal()
@@ -42,17 +37,16 @@ namespace Crm.Blazor.Components.Dialogs.Customers
             return modalRef!.Hide();
         }
 
-        #region Create Customer
-        private CustomerCreateDto CustomerCreateDto { get; set; } = new CustomerCreateDto();
-
+        #region Create Customer       
         private async Task CreateCustomerAsync()
         {
-            CustomerCreateDto.Name = Name!;
-            CustomerCreateDto.Surname = Surname!;
-            CustomerCreateDto.Email = Email!;
-            CustomerCreateDto.Phone = Phone!;
-            CustomerCreateDto.Address = Address;
-            CustomerCreateDto.CompanyName = CompanyName;
+            if (validations is null)
+                return;
+
+            var isValid = await validations.ValidateAll();
+
+            if (!isValid)
+                return;
 
             try
             {
@@ -62,7 +56,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
         }
         #endregion

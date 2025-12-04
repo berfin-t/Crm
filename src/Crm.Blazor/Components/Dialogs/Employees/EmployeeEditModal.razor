@@ -3,45 +3,47 @@
 
 @inject IPositionAppService PositionAppService
 @inject IEmployeeAppService EmployeeAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
-                <ModalTitle>Edit Employee</ModalTitle>
+                <ModalTitle>@L["Edit Employee"]</ModalTitle>
             </ModalHeader>
+
             <ModalBody>
                 <Field>
-                    <FieldLabel>First Name:</FieldLabel>
+                    <FieldLabel>@L["First Name"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.FirstName" class="form-control" />
 
                 </Field>
                 <Field>
-                    <FieldLabel>Last Name:</FieldLabel>
+                    <FieldLabel>@L["Last Name"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.LastName" class="form-control" />
                 </Field>                
                 <Field>
-                    <FieldLabel>Email:</FieldLabel>
+                    <FieldLabel>@L["Email"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.Email" class="form-control" />
                 </Field>  
                 <Field>
-                    <FieldLabel>Phone Number:</FieldLabel>
+                    <FieldLabel>@L["Phone Number"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.PhoneNumber" class="form-control" />
                 </Field>
                 <Field>
-                    <FieldLabel>Address:</FieldLabel>
+                    <FieldLabel>@L["Address"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.Address" class="form-control" />
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Birth Date:</FieldLabel>
+                        <FieldLabel>@L["Birth Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedBirthDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Field>
-                    <FieldLabel>Position:</FieldLabel>
+                    <FieldLabel>@L["Position"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedPositionId">
-                        <SelectItem Value="Guid.Empty">Select</SelectItem>
                         @foreach (var position in PositionList)
                         {
                             <SelectItem Value="@position.Id">@position.Name</SelectItem>
@@ -49,7 +51,7 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Gender:</FieldLabel>
+                    <FieldLabel>@L["Gender"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedGender">
                         @foreach (var gender in Enum.GetValues(typeof(EnumGender)).Cast<EnumGender>())
                         {
@@ -58,13 +60,13 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Photo Path:</FieldLabel>
+                    <FieldLabel>@L["Photo"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.PhotoPath" class="form-control" />
                 </Field>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@UpdateEmployeeAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateEmployeeAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

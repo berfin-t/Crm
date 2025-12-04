@@ -41,6 +41,15 @@
                 <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
                 <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
 
+                <DataGridColumn TItem="CustomerDto" Caption="Details">
+                    <DisplayTemplate>
+                        <Button Color="Color.Info" Clicked="@(() => ShowDetailModal(context))">
+                            <i class="fa-solid fa-eye"></i>
+                        </Button>
+                    </DisplayTemplate>
+                </DataGridColumn>
+
+
                 <DataGridCommandColumn>  
                     <NewCommandTemplate>
                         <Field>

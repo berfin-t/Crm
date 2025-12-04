@@ -48,5 +48,10 @@ namespace Crm.Controllers.Activities
         [Route("with-navigation-properties/{id}")]
         public virtual Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id)
             => _activityAppService.GetWithNavigationPropertiesAsync(id);
+
+        [HttpGet]
+        [Route("by-customer/{customerId}")]
+        public virtual Task<List<ActivityDto>> GetListByCustomerAsync(Guid customerId)
+            => _activityAppService.GetListByCustomerAsync(customerId);
     }
 }

@@ -6,16 +6,17 @@
 @inject IActivityAppService ActivityAppService
 @inject IEmployeeAppService EmployeeAppService
 @inject ICustomerAppService CustomerAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
-                <ModalTitle>Edit Activity</ModalTitle>
+                <ModalTitle>@L["Edit Activity"]</ModalTitle>
             </ModalHeader>
             <ModalBody>
                 <Field>
-                    <FieldLabel>Type:</FieldLabel>
+                    <FieldLabel>@L["Type"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedType">
                         @foreach (var type in Enum.GetValues(typeof(EnumType)).Cast<EnumType>())
                         {
@@ -24,19 +25,19 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Description:</FieldLabel>
+                    <FieldLabel>@L["Description"]:</FieldLabel>
                     <InputText @bind-Value="ActivityUpdateDto.Description" class="form-control" />
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Activity Date:</FieldLabel>
+                        <FieldLabel>
+                            @L["Activity Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Field>
-                    <FieldLabel>Employees:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="selectedEmployeeId">
-                        <SelectItem Value="Guid.Empty">Select</SelectItem>
+                    <FieldLabel>@L["Employees"]:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="selectedEmployeeId">                        
                         @foreach (var employee in EmployeeList)
                         {
                             <SelectItem Value="@employee.Id">@employee.FirstName</SelectItem>
@@ -44,9 +45,8 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Customer:</FieldLabel>
+                    <FieldLabel>@L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="@selectedCustomerId">
-                        <SelectItem Value="Guid.Empty">Select</SelectItem>
                         @foreach (var customer in CustomerList)
                         {
                             <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
@@ -55,8 +55,8 @@
                 </Field>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@UpdateActivityAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateActivityAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

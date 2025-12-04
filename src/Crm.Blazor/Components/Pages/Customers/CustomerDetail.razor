@@ -1,0 +1,161 @@
+﻿@page "/customers/detail/{Id:guid}"
+
+@using Crm.Customers
+@using Crm.CustomerNotes
+@using Crm.Activities
+
+@inject ICustomerAppService CustomerAppService
+@inject ICustomerNoteAppService CustomerNoteAppService
+@inject IActivityAppService ActivityAppService
+@inject NavigationManager Navigation
+
+<PageTitle>Customer Detail</PageTitle>
+
+<Div class="mt-4">
+    <Card Class="shadow-lg">
+        <CardHeader>
+            <Div class="d-flex align-items-center">
+                <i class="fa-solid fa-user text-primary fa-2x me-2"></i>
+                <h4 class="m-0">Customer Details</h4>
+            </Div>
+        </CardHeader>
+
+        <CardBody>
+
+            @if (customer == null)
+            {
+                <Div class="text-center py-4">
+                    <Spinner Color="Color.Primary" />
+                    <p class="text-muted mt-2">Loading customer information...</p>
+                </Div>
+            }
+            else
+            {
+                <!-- ================= PERSONAL & COMPANY INFO ================= -->
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
+                        <Card Class="mb-3 border">
+                            <CardBody>
+                                <h5 class="mb-3">
+                                    <i class="fa-solid fa-id-card-clip text-primary me-2"></i>
+                                    Personal Info
+                                </h5>
+
+                                <p><Strong>Name:</Strong> @customer.Name</p>
+                                <p><Strong>Surname:</Strong> @customer.Surname</p>
+                                <p><strong>Full Name:</strong> @customer.FullName</p>
+                                <p><Strong>Email:</Strong> @customer.Email</p>
+                                <p><Strong>Phone:</Strong> @customer.Phone</p>
+                            </CardBody>
+                        </Card>
+                    </Column>
+
+                    <Column ColumnSize="ColumnSize.Is6.OnDesktop">
+                        <Card class="mb-3 border">
+                            <CardBody>
+                                <h5 class="mb-3">
+                                    <i class="fa-solid fa-building text-primary me-2"></i>
+                                    Company Info
+                                </h5>
+
+                                <p><Strong>Company:</Strong> @customer.CompanyName</p>
+                                <p><Strong>Address:</Strong> @customer.Address</p>
+                                <p><Strong>Created At:</Strong> @customer.CreationTime.ToString("dd MMM yyyy HH:mm")</p>
+
+                            </CardBody>
+                        </Card>
+                    </Column>
+                </Row>
+
+                <!-- ================= CUSTOMER NOTES ================= -->
+                <Card class="border mt-4">
+                    <CardHeader>
+                        <h5 class="m-0">
+                            <i class="fa-solid fa-note-sticky text-warning me-2"></i>
+                            Customer Notes
+                        </h5>
+                    </CardHeader>
+
+                    <CardBody>
+                        @if (notes == null)
+                        {
+                            <Spinner Color="Color.Warning" />
+                        }
+                        else if (!notes.Any())
+                        {
+                            <p class="text-muted">No notes found for this customer.</p>
+                        }
+                        else
+                        {
+                            <ListGroup>
+                                @foreach (var note in notes)
+                                {
+                                    <ListGroupItem>
+                                        <p class="mb-1">@note.Note</p>
+                                        <small class="text-muted">
+                                            <i class="fa-regular fa-clock me-1"></i>
+                                            @note.NoteDate.ToString("dd MMM yyyy HH:mm")
+                                        </small>
+                                    </ListGroupItem>
+                                }
+                            </ListGroup>
+                        }
+                    </CardBody>
+                </Card>
+
+                <!-- ================= ACTIVITIES ================= -->
+                 <Card class="border mt-4">
+                    <CardHeader>
+                        <h5 class="m-0">
+                            <i class="fa-solid fa-list-check text-info me-2"></i>
+                            Customer Activities
+                        </h5>
+                    </CardHeader>
+
+                    <CardBody>
+                        @if (activities == null)
+                        {
+                            <Spinner Color="Color.Info" />
+                        }
+                        else if (!activities.Any())
+                        {
+                            <p class="text-muted">No activities recorded for this customer.</p>
+                        }
+                        else
+                        {
+                            <Table Hoverable Striped>
+                                <Thead>
+                                    <Tr>
+                                        <Th>Type</Th>
+                                        <Th>Description</Th>
+                                        <Th>Date</Th>
+                                        <Th>Employee</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    @foreach (var act in activities)
+                                {
+                                    <Tr>
+                                    <Td>@act.Type.ToString()</Td>
+                                    <Td>@act.Description</Td>
+                                    <Td>@act.Date.ToString("dd MMM yyyy HH:mm")</Td>
+                                    <Td>@act.EmployeeName @act.EmployeeSurname</Td>
+
+                                    </Tr>
+                                }
+
+                                </Tbody>
+                            </Table>
+                        }
+                    </CardBody>
+                </Card> 
+
+                <Div class="text-end mt-3">
+                    <Button Color="Color.Secondary" Clicked="@GoBack">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back
+                    </Button>
+                </Div>
+            }
+        </CardBody>
+    </Card>
+</Div>

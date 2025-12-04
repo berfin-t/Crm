@@ -9,7 +9,7 @@ namespace Crm.CustomerNotes
     public class CustomerNoteDto
     {
         public string? Note { get; set; }
-        public DateTime? NoteDate { get; set; }
-        public Guid? CustomerId { get; set; }
+        public DateTime NoteDate { get; set; }
+        public Guid CustomerId { get; set; }
     }
 }

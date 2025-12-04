@@ -1,58 +1,112 @@
 ﻿@using Crm.Customers
-
 @inject ICustomerAppService CustomerAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
-                <ModalTitle>Add Customer</ModalTitle>
+                <ModalTitle>@L["Add Customer"]</ModalTitle>
                 <CloseButton />
             </ModalHeader>
+
             <ModalBody>
-                <Field>
-                    <FieldLabel>Customer Name:</FieldLabel>
-                    <InputText @bind-Value="Name" class="form-control" />
-                </Field>
-                <Field>
-                    <FieldLabel>Customer Surname:</FieldLabel>
-                    <InputText @bind-Value="Surname" class="form-control"/>
-                </Field>
-                <Card>
-                    <Field>
-                        <FieldLabel>Email:</FieldLabel>
-                        <InputText @bind-Value="Email" class="form-control" />
-                    </Field>
-                </Card>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@CustomerCreateDto">
 
-                <Card>
-                    <Field>
-                        <FieldLabel>Phone:</FieldLabel>
-                        <InputText @bind-Value="Phone" class="form-control" />
-                    </Field>
-                </Card> 
+                    <!-- Name -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Customer Name"]:</FieldLabel>
+                             <FieldBody> 
+                                <TextEdit @bind-Text="CustomerCreateDto.Name">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                             </FieldBody>
+                         </Field>
+                    </Validation>
 
-                <Card>
-                    <Field>
-                        <FieldLabel>Address:</FieldLabel>
-                        <InputText @bind-Value="Address" class="form-control" />
-                    </Field>
-                </Card>
+                    <!-- Surname -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Surname"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="CustomerCreateDto.Surname">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
-                <Card>
-                    <Field>
-                        <FieldLabel>Company Name:</FieldLabel>
-                        <InputText @bind-Value="CompanyName" class="form-control" />
-                    </Field>
-                </Card>
+                    <!-- Email -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Email"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="CustomerCreateDto.Email">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"], @L["Invalid email address"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
+                    <!-- Phone -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Phone number"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="CustomerCreateDto.Phone">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"], @L["Must be exactly 11 digits"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Address -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Address"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="CustomerCreateDto.Address">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Company Name -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Company Name"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="CustomerCreateDto.CompanyName">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                </Validations>
             </ModalBody>
+
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@CreateCustomerAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@CreateCustomerAsync">@L["Save Changes"]</Button>
             </ModalFooter>
+
         </ModalContent>
     </Modal>
 </CascadingValue>
-
-

@@ -41,6 +41,18 @@ namespace Crm.CustomerNotes
         }
         #endregion
 
+        #region GetListByCustomerAsync
+        public async Task<List<CustomerNoteDto>> GetListByCustomerAsync(Guid customerId)
+        {
+            if(customerId == Guid.Empty)
+            {
+                throw new Exception("CustomerId cannot be empty.");
+            }
+            var items = await customerNoteRepository.GetListByCustomerAsync(customerId);
+            return ObjectMapper.Map<List<CustomerNote>, List<CustomerNoteDto>>(items);
+        }
+        #endregion
+
         #region GetListPaged
         public async Task<PagedResultDto<CustomerNoteDto>> GetListAsync(GetPagedCustomerNotesInput input)
         {
@@ -55,7 +67,7 @@ namespace Crm.CustomerNotes
                 TotalCount = totalCount,
                 Items = ObjectMapper.Map<List<CustomerNote>, List<CustomerNoteDto>>(items)
             };
-        }
+        }        
         #endregion
 
         #region Update

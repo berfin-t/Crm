@@ -4,73 +4,134 @@
 
 @inject IPositionAppService PositionAppService
 @inject IEmployeeAppService EmployeeAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
-                <ModalTitle>Add Employee</ModalTitle>
+                <ModalTitle>@L["Add Employee"]:</ModalTitle>
                 <CloseButton />
             </ModalHeader>
+
             <ModalBody>
-                <Field>
-                    <FieldLabel>Employee Name:</FieldLabel>
-                    <InputText @bind-Value="FirstName" class="form-control" />
-                </Field>
-                <Field>
-                    <FieldLabel>Employee Surname:</FieldLabel>
-                    <InputText @bind-Value="LastName" class="form-control"/>
-                </Field>
-                <Card>
-                    <Field>
-                        <FieldLabel>Email:</FieldLabel>
-                        <InputText @bind-Value="Email" class="form-control" />
-                    </Field>
-                </Card>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="EmployeeCreateDto">
 
-                <Card>
+                <!-- Name -->
+                <Validation>
                     <Field>
-                        <FieldLabel>Phone:</FieldLabel>
-                        <InputText @bind-Value="PhoneNumber" class="form-control" />
-                    </Field>
-                </Card> 
+                    <FieldLabel>@L["First Name"]:</FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="EmployeeCreateDto.FirstName">
+                            <Feedback>
+                                <ValidationError>@L["Required"]</ValidationError>
+                            </Feedback>
+                        </TextEdit>
+                            </FieldBody>
+                            </Field>
+                </Validation>
 
-                <Card>
-                    <Field>
-                        <FieldLabel>Address:</FieldLabel>
-                        <InputText @bind-Value="EmployeeAddress" class="form-control" />
-                    </Field>
-                </Card>
+                    <!-- Surname -->
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Last Name"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="EmployeeCreateDto.LastName">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
-                <Card>
-                    <Field>
-                        <FieldLabel>Birth Date:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="BirthDate" Format="yyyy-MM-dd" />
-                    </Field>
-                </Card>
+                    <!-- Email -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Email"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="EmployeeCreateDto.Email">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"], @L["Invalid email address"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
-                <Field>
-                    <FieldLabel>Positions:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="SelectedPositionId">
-                        <SelectItem Value="Guid.Empty">Select</SelectItem>
-                        @foreach (var position in Positions)
-                        {
-                            <SelectItem Value="@position.Id">@position.Name</SelectItem>
-                        }
-                    </Select>
-                </Field>
+                    <!-- Phone -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Phone number"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="EmployeeCreateDto.PhoneNumber">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"], @L["Must be exactly 11 digits"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
-                <Card>
-                    <Field>
+                    <!-- Address -->
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel>@L["Address"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="EmployeeCreateDto.Address">
+                                    <Feedback>
+                                        <ValidationError>@L["Required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Birth Date -->
+                    <Card>
+                        <Field>
+                            <FieldLabel>@L["Birth Date"]:</FieldLabel>
+                            <DatePicker TValue="DateTime"
+                                        InputMode="DateInputMode.DateTime"
+                                        @bind-Date="EmployeeCreateDto.BirthDate"
+                                        Format="yyyy-MM-dd HH:mm" />
+                        </Field>
+                    </Card>
+
+                    <!-- Position -->
+                    <Validation Validator="ValidatePosition">
+                        <Field>
+                            <FieldLabel>@L["Positions"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="EmployeeCreateDto.PositionId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var position in Positions)
+                                    {
+                                        <SelectItem Value="@position.Id">@position.Name</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Position is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Photo -->
+                    <Card>
+                            <Field>
                         <FieldLabel>Photo:</FieldLabel>
                         <InputFile OnChange="HandleFileSelected" accept="image/*" />
-                        @if (!string.IsNullOrEmpty(PhotoPath))
-                        {
+                                    @if (!string.IsNullOrEmpty(PhotoPath))
+                                    {
                             <img src="@PhotoPath" alt="Profile Photo" style="width:120px; height:120px; margin-top:10px; border-radius:10px;" />
-                        }
-                    </Field>
-                </Card>
+                                    }
+                            </Field>
+                    </Card>
 
+                <!-- Gender -->
                 <Field>
                     <FieldLabel>Gender:</FieldLabel>
                     <Select @bind-SelectedValue="Gender">
@@ -81,8 +142,7 @@
                     </Select>
                 </Field>
 
-
-
+                </Validations>
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
