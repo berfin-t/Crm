@@ -1,10 +1,13 @@
 ﻿using Crm.Activities;
+using Crm.CustomerNotes;
 using Crm.Customers.Events;
 using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -15,8 +18,8 @@ using Volo.Abp.EventBus.Distributed;
 namespace Crm.Customers
 {
     [RemoteService(IsEnabled = true)]
-    public class CustomerAppService(ICustomerRepository customerRepository,
-        CustomerManager customerManager,
+    public class CustomerAppService(ICustomerRepository customerRepository, ICustomerNoteRepository customerNoteRepository,
+        IActivityRepository activityRepository, CustomerManager customerManager,
         IDistributedEventBus distributedEventBus) : CrmAppService, ICustomerAppService
     {
         #region Create
@@ -100,6 +103,26 @@ namespace Crm.Customers
             }
             customer.IsDeleted = true;
             await customerRepository.DeleteAsync(customer);
+        }
+        #endregion
+
+        #region GetCustomerPdfAsync
+        public async Task<CustomerFileDto> GetCustomerPdfAsync(Guid id)
+        {
+            var customer = await customerRepository.GetAsync(id);
+            var notes = await customerNoteRepository.GetListAsync(x => x.CustomerId == id);
+            var activities = await activityRepository.GetListAsync(x => x.CustomerId == id);
+
+            var customerDto = ObjectMapper.Map<Customer, CustomerDto>(customer);
+            var notesDto = ObjectMapper.Map<List<CustomerNote>, List<CustomerNoteDto>>(notes);
+            var activitiesDto = ObjectMapper.Map<List<Activity>, List<ActivityDto>>(activities);
+
+            var document = new CustomerReportDocument(customerDto, notesDto, activitiesDto);
+
+            var pdfBytes = document.GeneratePdf();
+            var fileName = $"{customerDto.Name}_{customerDto.Surname}_Report.pdf";
+
+            return new CustomerFileDto(fileName, pdfBytes);
         }
         #endregion
 

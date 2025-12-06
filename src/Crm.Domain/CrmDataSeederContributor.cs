@@ -56,8 +56,7 @@ public class CrmDataSeederContributor(
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
-        var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id)
-        );
+        var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
         var tasks = await SeedTasksAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
         var projectEmployees = await SeedProjectEmployeesAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));

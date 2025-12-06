@@ -21,16 +21,13 @@ namespace Crm.Blazor.Components.Pages.Customers
             customer = await CustomerAppService.GetAsync(Id);
             notes = await CustomerNoteAppService.GetListByCustomerAsync(Id);
             activities = await ActivityAppService.GetListByCustomerAsync(Id);
-        }
+        }        
 
-        void GoBack()
+        private Task DownloadPdf()
         {
-            if (Id == Guid.Empty)
-            {
-                Navigation.NavigateTo("/customers");
-                return;
-            }
-        }            
+            Navigation.NavigateTo($"/api/app/customers/{Id}/pdf", true);
+            return Task.CompletedTask;
+        }
 
     }
 }

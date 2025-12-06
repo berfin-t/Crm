@@ -17,5 +17,7 @@ namespace Crm.Customers
         Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input);
         Task<long> GetTotalCustomerCountAsync();
         Task DeleteAsync(Guid id);
+        Task<CustomerFileDto> GetCustomerPdfAsync(Guid id);
+
     }
 }

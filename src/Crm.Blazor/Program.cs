@@ -1,13 +1,14 @@
-using System;
-using System.Threading.Tasks;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuestPDF.Infrastructure;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.Threading.Tasks;
 
 namespace Crm.Blazor;
 
@@ -15,6 +16,7 @@ public class Program
 {
     public async static Task<int> Main(string[] args)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
             .MinimumLevel.Debug()

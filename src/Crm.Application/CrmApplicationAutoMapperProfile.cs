@@ -17,7 +17,7 @@ public class CrmApplicationAutoMapperProfile : Profile
 {
     public CrmApplicationAutoMapperProfile()
     {
-        CreateMap<Activity, ActivityDto>();
+        CreateMap<Activity, ActivityDto>().ReverseMap();
         CreateMap<ActivityCreateDto, Activity>();
         CreateMap<ActivityUpdateDto, Activity>();
         CreateMap<ActivityWithNavigationProperties, ActivityDto>().ReverseMap();

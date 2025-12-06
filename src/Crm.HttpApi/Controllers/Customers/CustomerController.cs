@@ -15,7 +15,7 @@ namespace Crm.Controllers.Customers
     [Area("app")]
     [ControllerName("Customer")]
     [Route("api/app/customers")]
-    public class CustomerController : CrmController, ICustomerAppService
+    public class CustomerController : CrmController
     {
         protected ICustomerAppService _customerAppService;
         public CustomerController(ICustomerAppService customerAppService) => _customerAppService = customerAppService;
@@ -48,5 +48,16 @@ namespace Crm.Controllers.Customers
         [Route("{id}")]
         public virtual Task DeleteAsync(Guid id) => _customerAppService.DeleteAsync(id);
 
+        [HttpGet("{id}/pdf")]
+        public async Task<IActionResult> DownloadCustomerPdf(Guid id)
+        {
+            var file = await _customerAppService.GetCustomerPdfAsync(id);
+
+            return File(
+                file.FileBytes,
+                "application/pdf",
+                file.FileName
+            );
+        }
     }
 }
