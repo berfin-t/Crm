@@ -40,6 +40,26 @@
                 <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
                 <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
                 <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn TItem="CustomerDto" Caption="Type">
+                    <DisplayTemplate>
+                        @{
+                            var type = context.CustomerType;
+                            var badgeClass = type switch
+                            {
+                                EnumCustomer.Lead => "badge bg-secondary",
+                                EnumCustomer.Prospect => "badge bg-info",
+                                EnumCustomer.ProposalStage => "badge bg-warning text-dark",
+                                EnumCustomer.Won => "badge bg-success",
+                                EnumCustomer.Lost => "badge bg-danger",
+                                EnumCustomer.ActiveProjectCustomer => "badge bg-primary",
+                                _ => "badge bg-light text-dark"
+                            };
+                        }
+
+                        <span class="@badgeClass">@type</span>
+                    </DisplayTemplate>
+                </DataGridColumn>
+
 
                 <DataGridColumn TItem="CustomerDto" Caption="Details">
                     <DisplayTemplate>

@@ -46,6 +46,26 @@
                                 <p><strong>Full Name:</strong> @customer.FullName</p>
                                 <p><Strong>Email:</Strong> @customer.Email</p>
                                 <p><Strong>Phone:</Strong> @customer.Phone</p>
+                                <p>
+                                    <Strong>Customer Type:</Strong>
+
+                                    @{
+                                        var type = customer.CustomerType;
+                                        var badgeClass = type switch
+                                        {
+                                            EnumCustomer.Lead => "badge bg-secondary",
+                                            EnumCustomer.Prospect => "badge bg-info",
+                                            EnumCustomer.ProposalStage => "badge bg-warning text-dark",
+                                            EnumCustomer.Won => "badge bg-success",
+                                            EnumCustomer.Lost => "badge bg-danger",
+                                            EnumCustomer.ActiveProjectCustomer => "badge bg-primary",
+                                            _ => "badge bg-light text-dark"
+                                        };
+                                    }
+
+                                    <span class="@badgeClass">@type</span>
+                                </p>
+
                             </CardBody>
                         </Card>
                     </Column>

@@ -3,6 +3,7 @@ using Crm.Customers;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Crm.Blazor.Components.Dialogs.Customers
 {
@@ -12,6 +13,8 @@ namespace Crm.Blazor.Components.Dialogs.Customers
         private Modal? modalRef;
         private CustomerUpdateDto CustomerUpdateDto { get; set; } = new CustomerUpdateDto();
         private EventCallback EventCallback { get; set; }
+        private EnumCustomer selectedType = Enum.GetValues(typeof(EnumCustomer)).Cast<EnumCustomer>().FirstOrDefault();
+
         #endregion
 
         public async Task ShowModal(CustomerDto customer, EventCallback eventCallback)
@@ -27,6 +30,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
                 CustomerUpdateDto.Phone = customer.Phone;
                 CustomerUpdateDto.Address = customer.Address;
                 CustomerUpdateDto.CompanyName = customer.CompanyName;
+                CustomerUpdateDto.CustomerType = customer.CustomerType;
             }
 
             await modalRef!.Show();

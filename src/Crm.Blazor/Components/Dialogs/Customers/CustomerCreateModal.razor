@@ -99,6 +99,20 @@
                         </Field>
                     </Validation>
 
+                    <!-- Type -->
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Type"]:</FieldLabel>
+                            <Select TValue="EnumCustomer" @bind-SelectedValue="CustomerCreateDto.CustomerType">
+
+                                @foreach (var type in Enum.GetValues(typeof(EnumCustomer)).Cast<EnumCustomer>())
+                                {
+                                    <SelectItem Value="@type">@type</SelectItem>
+                                }
+                            </Select>
+                        </Field>
+                    </Validation>                   
+
                 </Validations>
             </ModalBody>
 

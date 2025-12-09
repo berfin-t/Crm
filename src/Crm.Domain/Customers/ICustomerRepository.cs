@@ -12,10 +12,10 @@ namespace Crm.Customers
     {
         Task<List<Customer>> GetListAsync(string? name = null, string? surname = null,
             string? email = null, string? phone = null, string? address = null,
-            string? companyName= null,  string? sorting = null, 
+            string? companyName= null, EnumCustomer? customerType=null, string? sorting = null, 
             int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken =default);
         Task<long> GetCountAsync(string? name = null, string? surname = null,
             string? email = null, string? phone = null, string? address = null,
-            string? companyName = null, CancellationToken cancellationToken=default);
+            string? companyName = null, EnumCustomer? customerType=null, CancellationToken cancellationToken=default);
     }
 }

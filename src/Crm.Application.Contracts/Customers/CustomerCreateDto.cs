@@ -24,5 +24,8 @@ namespace Crm.Customers
 
         [Required]       
         public string? CompanyName { get; set; }
-    }
+
+        [Required]
+        public EnumCustomer CustomerType { get; set; }
+        }
 }

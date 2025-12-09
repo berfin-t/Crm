@@ -48,6 +48,19 @@
                         <InputText @bind-Value="CustomerUpdateDto.CompanyName" class="form-control" />
                     </Field>
                 </Card>
+
+                <Card>
+                    <Field>
+                        <FieldLabel>@L["Type"]:</FieldLabel>
+                        <Select @bind-SelectedValue="selectedType">
+                            @foreach (var type in Enum.GetValues(typeof(EnumCustomer)).Cast<EnumCustomer>())
+                            {
+                                <SelectItem Value="@type">@type</SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Card>
+
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>

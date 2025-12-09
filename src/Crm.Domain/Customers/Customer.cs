@@ -19,6 +19,8 @@ namespace Crm.Customers
         public virtual string? Address { get; private set; }
         [CanBeNull]
         public virtual string? CompanyName { get; private set; }
+        [NotNull]
+        public virtual EnumCustomer CustomerType { get; set; }
 
         protected Customer()
         {
@@ -28,8 +30,9 @@ namespace Crm.Customers
             Phone = string.Empty;
             Address = string.Empty;
             CompanyName = string.Empty;
+            CustomerType = EnumCustomer.Lead;
         }
-        public Customer(Guid id, string name, string surname, string email, string phone, string address, string companyName)
+        public Customer(Guid id, string name, string surname, string email, string phone, string address, string companyName, EnumCustomer customerType)
         {
             SetName(name);
             SetSurname(surname);
@@ -37,6 +40,7 @@ namespace Crm.Customers
             SetPhone(phone);
             SetAddress(address);
             SetCompanyName(companyName);
+            SetCustomerType(customerType);
         }
 
         public void SetName(string name) => Name = Check.NotNullOrWhiteSpace(name, nameof(name));
@@ -45,6 +49,7 @@ namespace Crm.Customers
         public void SetPhone(string phone) => Phone = Check.NotNullOrWhiteSpace(phone, nameof(phone));
         public void SetAddress(string address) => Address = address;
         public void SetCompanyName(string companyName) => CompanyName = companyName;
+        public void SetCustomerType(EnumCustomer customerType) => CustomerType = Check.NotNull(customerType, nameof(customerType));
 
     }
 }

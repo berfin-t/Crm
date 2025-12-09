@@ -142,7 +142,8 @@ public class CrmDataSeederContributor(
                 f.Person.Email,
                 f.Phone.PhoneNumber(),
                 f.Address.FullAddress(),
-                f.Company.CompanyName()
+                f.Company.CompanyName(),
+                f.PickRandom<EnumCustomer>()
                 ));
 
         var customers = faker.Generate(100);

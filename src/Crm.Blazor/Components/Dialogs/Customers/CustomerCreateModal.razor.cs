@@ -28,6 +28,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
             CustomerCreateDto.Phone = string.Empty;
             CustomerCreateDto.Address = string.Empty;
             CustomerCreateDto.CompanyName = string.Empty;
+            CustomerCreateDto.CustomerType = EnumCustomer.Lead;
 
             await modalRef!.Show();
         }

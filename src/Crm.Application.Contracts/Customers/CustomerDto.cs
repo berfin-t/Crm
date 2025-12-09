@@ -17,5 +17,7 @@ namespace Crm.Customers
         public string Address { get; set; }
         public string CompanyName { get; set; }
         public DateTime CreationTime { get; set; }
+        public EnumCustomer CustomerType { get; set; }
+
     }
 }

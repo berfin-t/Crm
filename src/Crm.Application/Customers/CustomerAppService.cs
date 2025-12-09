@@ -27,7 +27,7 @@ namespace Crm.Customers
         {
             var customer = await customerManager.CreateAsync(
                 input.Name, input.Surname, input.Email, input.Phone, input.Address!,
-                input.CompanyName!);
+                input.CompanyName!, input.CustomerType);
             
             await distributedEventBus.PublishAsync(new CustomerCreatedEto
             {
@@ -62,10 +62,10 @@ namespace Crm.Customers
         public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
         {
             var totalCount = await customerRepository.GetCountAsync(
-                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
 
             var items = await customerRepository.GetListAsync(
-                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
 
             return new PagedResultDto<CustomerDto>
             {
@@ -79,7 +79,7 @@ namespace Crm.Customers
         public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
         {
             var customer = await customerManager.UpdateAsync(
-                id, input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName);
+                id, input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
 
             return ObjectMapper.Map<Customer, CustomerDto>(customer);
 
