@@ -48,17 +48,11 @@ namespace Crm.Blazor.Components.Dialogs.Customers
 
             if (!isValid)
                 return;
-
-            try
-            {
+            
                 await CustomerAppService.CreateAsync(CustomerCreateDto);
                 await HideModal();
                 await EventCallback.InvokeAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            
         }
         #endregion
     }

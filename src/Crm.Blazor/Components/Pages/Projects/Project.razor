@@ -34,7 +34,7 @@
                 <Select TValue="EnumStatus?"
                          @bind-SelectedValue="selectedStatus"
                          @onkeydown="@OnEntered">
-                    <SelectItem Value="@(null as EnumStatus?)">All</SelectItem>
+                    <SelectItem Value="@(null as EnumStatus?)">@L["All"]</SelectItem>
                     @foreach (EnumStatus status in Enum.GetValues(typeof(EnumStatus)))
                     {
                         <SelectItem Value="@(status)">@status</SelectItem>
@@ -48,23 +48,9 @@
                 @if (canCreateProject)
                 {
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                        <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Project"]</Button>
+                        <Button Color="Color.Success" Style="width: 125px;" Clicked="@ShowCreateModal">@L["Add Project"]</Button>
                     </Field>      
-                }
-                @* <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <DatePicker TValue="DateTime?" 
-                        @bind-Dates="selectedDates"
-                        @onchange="@((_) => ApplyFilters())"
-                        InputMode="DateInputMode.Date"
-                        SelectionMode="DateInputSelectionMode.Range"/>
-                </Field> 
-                 <Select TValue="EnumStatus?" @bind-Value="SelectedStatus" @onchange="(_) => ApplyFilters()">
-                    <SelectItem Value="@(null as EnumStatus?)">Tümü</SelectItem>
-                    @foreach (var status in Enum.GetValues<EnumStatus>())
-                    {
-                        <SelectItem Value="@status">@status</SelectItem>
-                    }
-                </Select> *@
+                }                
             </Div>            
         </CardBody>
     </Card>

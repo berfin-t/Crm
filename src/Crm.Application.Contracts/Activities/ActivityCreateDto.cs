@@ -15,7 +15,6 @@ namespace Crm.Activities
         [Required]
         public string? Description { get; set; }
 
-        [Required]
         public DateTime Date { get; set; }
 
         [Required]

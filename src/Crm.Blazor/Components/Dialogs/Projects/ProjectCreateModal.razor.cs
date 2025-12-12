@@ -15,11 +15,12 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Reference 
         private EventCallback EventCallback { get; set; }
         private Modal? modalRef;
-        private ProjectEmployeeCreateDto ProjectCreateDto { get; set; } = new ProjectEmployeeCreateDto(); // ✔ DTO değişti
+        private ProjectEmployeeCreateDto ProjectCreateDto { get; set; } = new(); 
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<CustomerDto> Customers { get; set; } = new();
         public List<Guid> SelectedEmployeeIds { get; set; } = new();
         private Guid SelectedCustomerId { get; set; }
+        private Validations? validations;
         #endregion
 
         #region Form Fields
@@ -38,24 +39,25 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             Customers = await CustomerAppService.GetListAllAsync();
         }
 
-        public Task ShowModal(EventCallback eventCallback)
+        public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
 
-            Name = Name ?? string.Empty;
-            Description = Description ?? string.Empty;
-            StartTime = StartTime ?? DateTime.Now;
-            EndTime = EndTime ?? DateTime.Now;
-            Status = EnumStatus.Active;
-            Revenue = 0;
-            SuccesRate = 0;
+            if(validations is not null)
+                await validations.ClearAll();
 
-            SelectedEmployeeIds = new List<Guid>();   // ✔ MULTI SELECT RESET
+            ProjectCreateDto.Name = Name ?? string.Empty;
+            ProjectCreateDto.Description = Description ?? string.Empty;
+            ProjectCreateDto.StartTime = DateTime.Now;
+            ProjectCreateDto.EndTime = EndTime ?? DateTime.Now;
+            ProjectCreateDto.Statues = EnumStatus.Active;
+            ProjectCreateDto.Revenue = 0;
+            ProjectCreateDto.SuccesRate = 0;
+
+            SelectedEmployeeIds = new List<Guid>();   
             SelectedCustomerId = Guid.Empty;
 
-            ProjectCreateDto = new ProjectEmployeeCreateDto();
-
-            return modalRef!.Show();
+            await modalRef!.Show();
         }
 
         private Task HideModal()
@@ -66,27 +68,28 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Create Project       
         private async Task CreateProjectAsync()
         {
-            // ProjectEmployeeCreateDto’ya map et
-            ProjectCreateDto.Name = Name!;
-            ProjectCreateDto.Description = Description;
-            ProjectCreateDto.StartTime = StartTime;
-            ProjectCreateDto.EndTime = EndTime;
-            ProjectCreateDto.Statues = Status;
-            ProjectCreateDto.Revenue = Revenue;
-            ProjectCreateDto.SuccesRate = SuccesRate;
-            ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;   // ✔ Çoklu çalışan
-            ProjectCreateDto.CustomerId = SelectedCustomerId;
+            if(validations is null)
+                return;
 
-            try
-            {
+            var isValid = await validations.ValidateAll();
+
+            if (!isValid)
+                return;
+
+            //ProjectCreateDto.Name = Name!;
+            //ProjectCreateDto.Description = Description;
+            //ProjectCreateDto.StartTime = StartTime;
+            //ProjectCreateDto.EndTime = EndTime;
+            //ProjectCreateDto.Statues = Status;
+            //ProjectCreateDto.Revenue = Revenue;
+            //ProjectCreateDto.SuccesRate = SuccesRate;
+            //ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;   // ✔ Çoklu çalışan
+            //ProjectCreateDto.CustomerId = SelectedCustomerId;
+
                 await ProjectEmployeeAppService.CreateAsync(ProjectCreateDto);
                 await HideModal();
                 await EventCallback.InvokeAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Hata: {ex.Message}");
-            }
+            
         }
         #endregion        
     }

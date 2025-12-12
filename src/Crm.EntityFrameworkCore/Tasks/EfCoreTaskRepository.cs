@@ -35,17 +35,41 @@ namespace Crm.Tasks
         #endregion
 
         #region ApplyDataFilters
-        protected virtual IQueryable<Task> ApplyDataFilters(IQueryable<Task> query, string? title = null, string? description = null, DateTime? dueDate = null, ICollection<EnumPriority>? priorities = null, ICollection<EnumStatus>? statues = null, Guid? employeeId = null, Guid? projectId = null)
+        protected virtual IQueryable<Task> ApplyDataFilters(
+    IQueryable<Task> query,
+    string? title = null,
+    string? description = null,
+    DateTime? dueDate = null,
+    ICollection<EnumPriority>? priorities = null,
+    ICollection<EnumStatus>? statues = null,
+    Guid? employeeId = null,
+    Guid? projectId = null)
         {
-            query = query.WhereIf(!string.IsNullOrWhiteSpace(title), e => e.Title == title)
-                 .WhereIf(!string.IsNullOrWhiteSpace(description), e => e.Description == description)
-                 .WhereIf(dueDate != null, e => e.DueDate == dueDate)
-                 .WhereIf(priorities != null && priorities.Any(), e => priorities.Contains(e.Priority))
-                 .WhereIf(statues != null && statues.Any(), e => statues.Contains(e.Status))
-                 .WhereIf(employeeId != null, e => e.EmployeeId == employeeId)
-                 .WhereIf(projectId != null, e => e.ProjectId == projectId);
+            query = query
+                .WhereIf(!string.IsNullOrWhiteSpace(title),
+                    e => e.Title.Contains(title)) 
+
+                .WhereIf(!string.IsNullOrWhiteSpace(description),
+                    e => e.Description.Contains(description))
+
+                .WhereIf(dueDate != null && dueDate != DateTime.MinValue,
+                     e => e.DueDate.Date == dueDate.Value.Date)
+
+                .WhereIf(priorities != null && priorities.Any(),
+                    e => priorities.Contains(e.Priority))
+
+                .WhereIf(statues != null && statues.Any(),
+                    e => statues.Contains(e.Status))
+
+                .WhereIf(employeeId != null,
+                    e => e.EmployeeId == employeeId)
+
+                .WhereIf(projectId != null,
+                    e => e.ProjectId == projectId);
+
             return query;
         }
+
         #endregion
     }
 }

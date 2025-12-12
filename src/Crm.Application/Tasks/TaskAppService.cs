@@ -55,10 +55,10 @@ namespace Crm.Tasks
         public async Task<PagedResultDto<TaskDto>> GetListAsync(GetPagedTasksInput input)
         {
             var totalCount = await taskRepository.GetCountAsync(
-                input.Title, input.Description, input.DueDate, input.Priorities, input.Statuses, input.ProjectId, input.EmployeeId);
+                input.Title, input.Description, input.DueDate, input.Priorities, input.Statuses, input.EmployeeId, input.ProjectId);
 
             var items = await taskRepository.GetListAsync(
-                input.Title, input.Description, input.DueDate, input.Priorities, input.Statuses, input.ProjectId, input.EmployeeId);
+                input.Title, input.Description, input.DueDate, input.Priorities, input.Statuses, input.EmployeeId, input.ProjectId);
 
             return new PagedResultDto<TaskDto>
             {

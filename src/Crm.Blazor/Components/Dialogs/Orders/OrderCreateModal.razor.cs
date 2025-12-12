@@ -20,6 +20,7 @@ namespace Crm.Blazor.Components.Dialogs.Orders
         private EventCallback EventCallback { get; set; }
         private List<CustomerDto> Customers { get; set; } = new();
         private List<ProjectDto> Projects { get; set; } = new();
+        private Validations? validations;
         #endregion
 
         #region Form Fields
@@ -38,9 +39,12 @@ namespace Crm.Blazor.Components.Dialogs.Orders
             Projects = await ProjectAppService.GetListAllAsync();
         }       
 
-        public Task ShowModal(EventCallback eventCallback)
+        public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
+
+            if(validations is not null)
+                await validations.ClearAll();
 
             Status = EnumStatus.Pending;
             OrderDate = DateTime.Now;
@@ -50,7 +54,7 @@ namespace Crm.Blazor.Components.Dialogs.Orders
             SelectedCustomerId = Guid.Empty;
             SelectedProjectId = Guid.Empty;
 
-            return modalRef!.Show();
+            await modalRef!.Show();
         }
 
         private Task HideModal()
@@ -82,24 +86,26 @@ namespace Crm.Blazor.Components.Dialogs.Orders
         #region Create Order
         private async Task CreateOrderAsync()
         {
-            OrderCreateDto.Status = Status;
-            OrderCreateDto.OrderDate = OrderDate ?? DateTime.MinValue;
-            OrderCreateDto.DeliveryDate = DeliveryDate ?? DateTime.MinValue;
-            OrderCreateDto.TotalAmount = TotalAmount;
-            OrderCreateDto.OrderCode = OrderCode;
-            OrderCreateDto.CustomerId = SelectedCustomerId;
-            OrderCreateDto.ProjectId = SelectedProjectId;
+            if (validations is not null)
+                return;
 
-            try
-            {
+            var isValid = await validations!.ValidateAll();
+
+            if (!isValid)
+                return;
+
+            //OrderCreateDto.Status = Status;
+            //OrderCreateDto.OrderDate = OrderDate ?? DateTime.MinValue;
+            //OrderCreateDto.DeliveryDate = DeliveryDate ?? DateTime.MinValue;
+            //OrderCreateDto.TotalAmount = TotalAmount;
+            //OrderCreateDto.OrderCode = OrderCode;
+            //OrderCreateDto.CustomerId = SelectedCustomerId;
+            //OrderCreateDto.ProjectId = SelectedProjectId;
+
                 await OrderAppService.CreateAsync(OrderCreateDto);
                 await HideModal();
-                await EventCallback.InvokeAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating order: {ex.Message}");
-            }
+                await EventCallback.InvokeAsync();            
+            
         }
         #endregion
     }

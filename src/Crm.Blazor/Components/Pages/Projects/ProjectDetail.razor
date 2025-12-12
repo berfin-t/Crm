@@ -13,6 +13,7 @@
 @inject IEmployeeAppService EmployeeAppService
 @inject NavigationManager NavigationManager
 @inject IAuthorizationService AuthorizationService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 @if (project != null)
 {
@@ -22,21 +23,21 @@
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
-                        <Div class="top-label">Total Tasks</Div>
+                        <Div class="top-label">@L["Total Tasks"]</Div>
                         <Div class="field-label">@totalTasks</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
-                        <Div class="top-label">Tasks Completed</Div>
+                        <Div class="top-label">@L["Tasks Completed"]</Div>
                         <Div class="field-label">@completedTasks</Div>
                     </Div>
                 </Div>
                 <Div class="overview-item">
                     <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                     <Div>
-                        <Div class="top-label">Team Size</Div>
+                        <Div class="top-label">@L["Team Size"]</Div>
                         <Div class="field-label">@teamSize</Div>
                     </Div>
                 </Div>                
@@ -59,15 +60,9 @@
                         <DropdownToggle>
                             <span class="menu-icon">⋮</span>
                         </DropdownToggle>
-                        <DropdownMenu>
-                            @* @if (canEditProject)
-                            { *@
-                                <DropdownItem @onclick="() => OnSelectProjectForEdit(project)">Edit</DropdownItem>
-                            @* }
-                            @if (canDeleteProject)
-                            { *@
-                                <DropdownItem @onclick="() => isDeleteModalVisible = true">Delete</DropdownItem>
-                            @* } *@
+                        <DropdownMenu>                           
+                                <DropdownItem @onclick="() => OnSelectProjectForEdit(project)">@L["Edit"]</DropdownItem>                            
+                                <DropdownItem @onclick="() => isDeleteModalVisible = true">@L["Delete"]</DropdownItem>                            
                         </DropdownMenu>
                     </Dropdown>
                     }                    
@@ -78,17 +73,148 @@
 
             <Div class="project-dates">
                 <Div>
-                    <strong>Start Date</strong>
+                    <strong>@L["Start Date"]</strong>
                     <p>@(project.StartTime?.ToString("dd MMMM yyyy h:mm tt") ?? "-")</p>
                 </Div>
                 <Div>
-                    <strong>End Date</strong>
+                    <strong>@L["End Date"]</strong>
                     <p>@(project.EndTime?.ToString("dd MMMM yyyy h:mm tt") ?? "-")</p>
                 </Div>
             </Div>
 
-            <Div class="team-members">
-                <strong>Team Members:</strong>
+            <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
+                <Div class="team-members">
+                    <strong>@L["Team Members"]:</strong>
+
+                    @if (projectEmployees != null && projectEmployees.Any())
+                    {
+                        <Div class="member-avatars">
+                            @foreach (var emp in projectEmployees)
+                            {
+                                <Div class="member-avatar" title="@emp.EmployeeName">
+                                    <img src="@emp.PhotoPath" />
+                                </Div>
+                            }
+                        </Div>
+                    }
+                    else
+                    {
+                        <p>@L["No team members assigned"].</p>
+                    }
+                </Div>
+                <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
+                    <Button Color="Color.Success" Style="width: 125px;" Clicked="@ShowAddEmployeeModal">
+                        @L["Add Employee"]
+                    </Button>
+                </Field>
+            </Div>
+            
+
+        </CardBody>
+    </Card>
+
+    <Card>
+    <CardBody>
+        <CardTitle Size="5">@L["Project Tasks"]</CardTitle>
+
+        @if (projectTasks != null && projectTasks.Any())
+        {
+            <Table Striped Hoverable FullWidth>
+                <Thead>
+                    <Tr>
+                        <Th>@L["Project Name"]</Th>
+                        <Th>@L["Description"]</Th>
+                        <Th>@L["Status"]</Th>
+                        <Th>@L["Priority"]</Th>
+                        <Th>@L["Due Date"]</Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    @foreach (var task in projectTasks)
+                    {
+                        <Tr>
+                            <Td>@task.Name</Td>
+                            <Td>@task.Description</Td>
+                            <Td>
+                            @{
+                                var status = task.Status;
+                                var badgeClass = status switch
+                                {
+                                    EnumStatus.Active => "badge bg-primary",          
+                                    EnumStatus.Pending => "badge bg-warning text-dark", 
+                                    EnumStatus.Completed => "badge bg-success",       
+                                    EnumStatus.Canceled => "badge bg-danger",         
+                                    _ => "badge bg-light text-dark"
+                                };
+                            }
+                            <span class="@badgeClass">@status</span>
+                            </Td>
+                                <Td>
+                                    @{
+                                        var priority = task.Priority;
+                                        var priorityBadgeClass = priority switch
+                                        {
+                                            EnumPriority.Low => "badge bg-secondary",
+                                            EnumPriority.Medium => "badge bg-info",
+                                            EnumPriority.High => "badge bg-warning text-dark",
+                                            EnumPriority.Critical => "badge bg-danger",
+                                            _ => "badge bg-light text-dark"
+                                        };
+                                    }
+
+                                    <span class="@priorityBadgeClass">@priority</span>
+                                </Td>                            
+                            <Td>@task.DueDate.ToString("dd MMM yyyy HH:mm")</Td>
+                        </Tr>
+                    }
+                </Tbody>
+            </Table>
+        }
+        else
+        {
+            <p>@L["No tasks found for this project"]</p>
+        }
+    </CardBody>
+</Card>
+
+}
+else
+{
+    <p>@L["Loading project details"]...</p>
+}
+
+@* ********** PROJECT DELETE MODAl ********** *@
+<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>@L["Confirm"]</ModalTitle>
+            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+        </ModalHeader>
+        <ModalBody>
+            @L["Are you sure you want to delete"]?
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">@L["Delete"]</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">@L["Close"]</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@* ********** EDIT MODAL ********** *@
+<Crm.Blazor.Components.Dialogs.Projects.ProjectEditModal @ref="projectEditModal" />
+
+@* ********** ADD EMPLOYEE MODAL ********** *@
+<Modal @bind-Visible="isActivityModalVisible" Size="ModalSize.Medium"> 
+    <ModalContent>
+
+        <ModalHeader>
+            <ModalTitle>Add Employee</ModalTitle>
+            <CloseButton/>
+        </ModalHeader>
+
+        <ModalBody>
+            <Div class="team-members mb-3">
+                <strong>@L["Team Members"]:</strong>
 
                 @if (projectEmployees != null && projectEmployees.Any())
                 {
@@ -96,45 +222,41 @@
                         @foreach (var emp in projectEmployees)
                         {
                             <Div class="member-avatar" title="@emp.EmployeeName">
-                                 <img src="@emp.PhotoPath"/> 
-                                @* <span>@emp.EmployeeName.Substring(0, 1)</span> *@
+                                <img src="@emp.PhotoPath" />
                             </Div>
                         }
                     </Div>
                 }
                 else
                 {
-                    <p>No team members assigned.</p>
+                    <p>@L["No team members assigned"].</p>
                 }
             </Div>
 
-        </CardBody>
-    </Card>
-}
-else
-{
-    <p>Loading project details...</p>
-}
-
-@* ********** PROJECT DELETE MODAl ********** *@
-<Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
-    <ModalContent>
-        <ModalHeader>
-            <ModalTitle>Confirm</ModalTitle>
-            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
-        </ModalHeader>
-        <ModalBody>
-            Are you sure you want to delete?
+            <!-- Employee -->
+            <Div class="mt-3">
+                <Field>
+                    <FieldLabel>@L["Employees"]:</FieldLabel>
+                    <FieldBody>
+                        <Select TValue="Guid"
+                                Multiple="true"
+                                SelectedValues="SelectedEmployeeIds"
+                                SelectedValuesChanged="@(v => SelectedEmployeeIds = v.ToList())">
+                            @foreach (var employee in FilteredEmployees)
+                            {
+                                <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
+                            }
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </Div>            
         </ModalBody>
+
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
+            <Button Color="Color.Primary" @onclick="UpdateProjectTeam">@L["Add Employee"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
-
-@* ********** EDIT MODAL ********** *@
-<Crm.Blazor.Components.Dialogs.Projects.ProjectEditModal @ref="projectEditModal" />
 
 <style>
     .status-label {

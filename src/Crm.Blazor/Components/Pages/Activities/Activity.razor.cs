@@ -62,7 +62,7 @@ namespace Crm.Blazor.Components.Pages.Activities
         }
 
         #region Edit 
-        private async Task ShowEditModal(ActivityDto activity)
+        private async Task ShowDetailModal(ActivityDto activity)
         {
             selectedActivityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(activity.Id);
             selectedActivity = selectedActivityWithNav.Activity;

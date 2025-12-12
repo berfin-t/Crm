@@ -7,36 +7,37 @@
 @inject IEmployeeAppService EmployeeAppService
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
-                <ModalTitle>Edit Activity</ModalTitle>
+                <ModalTitle>@L["Edit Activity"]</ModalTitle>
             </ModalHeader>
             <ModalBody>
                 <Field>
-                    <FieldLabel>Name:</FieldLabel>
+                    <FieldLabel>@L["Name"]:</FieldLabel>
                     <InputText @bind-Value="ProjectUpdateDto.Name" class="form-control" />
                 </Field>
                 <Field>
-                    <FieldLabel>Description:</FieldLabel>
+                    <FieldLabel>@L["Description"]:</FieldLabel>
                     <InputText @bind-Value="ProjectUpdateDto.Description" class="form-control" />
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Start Time:</FieldLabel>
+                        <FieldLabel>@L["Start Time"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedStartTime" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Card>
                     <Field>
-                        <FieldLabel>End Time:</FieldLabel>
+                        <FieldLabel>@L["End Time"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedEndTime" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Field>                                   
-                    <FieldLabel>Status:</FieldLabel>
+                    <FieldLabel>@L["Status"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedStatus">
                         @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                         {
@@ -45,41 +46,28 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Revenue:</FieldLabel>
+                    <FieldLabel>@L["Revenue"]:</FieldLabel>
                     <InputNumber @bind-Value="ProjectUpdateDto.Revenue" class="form-control" />
                 </Field>
                 <Field>
-                    <FieldLabel>SuccessRate:</FieldLabel>
+                    <FieldLabel>@L["SuccessRate"]:</FieldLabel>
                     <InputNumber @bind-Value="ProjectUpdateDto.SuccessRate" class="form-control" />
-                </Field>
-                
-                @* <Field>
-                    <FieldLabel>Employees:</FieldLabel>
-                    <Select TValue="Guid"
-                            Multiple="true"
-                            SelectedValues="selectedEmployeeIds"
-                            SelectedValuesChanged="@(v => selectedEmployeeIds = v.ToList())">
-                        @foreach (var employee in EmployeeList)
-                        {
-                            <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
-                        }
-                    </Select>
-                </Field> *@
+                </Field>               
 
                 <Field>
-                    <FieldLabel>Customer:</FieldLabel>
+                    <FieldLabel>@L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="@selectedCustomerId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
                         @foreach (var customer in CustomerList)
                         {
-                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                            <SelectItem Value="@customer.Id">@customer.Name @customer.Surname</SelectItem>
                         }
                     </Select>
                 </Field>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@UpdateProjectAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateProjectAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

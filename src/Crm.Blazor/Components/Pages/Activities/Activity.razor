@@ -28,7 +28,7 @@
                         <span style="color: dodgerblue">@activity.Date.ToString("HH:mm")</span>
                     </h5>
                     <p>@activity.Description</p>
-                       <Button Color="Color.Primary" Clicked="@(() => ShowEditModal(activity))">Read more</Button>                    
+                       <Button Color="Color.Primary" Clicked="@(() => ShowDetailModal(activity))">Read more</Button>                    
                 </div>
             </iv>
         }
@@ -40,7 +40,7 @@
     <ModalContent>
         <ModalHeader>
             <ModalTitle>Activity Details</ModalTitle>
-            <Button CloseButton @onclick="() => isActivityModalVisible = false" />
+            <CloseButton/>
         </ModalHeader>
         <ModalBody>
             @if (selectedActivity != null)

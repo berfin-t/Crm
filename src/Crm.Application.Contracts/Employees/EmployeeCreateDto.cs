@@ -27,7 +27,6 @@ namespace Crm.Employees
         [Required]
         public string Address { get; set; } = string.Empty;
 
-        [Required]
         public DateTime BirthDate { get; set; }
 
         [Required]

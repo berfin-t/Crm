@@ -1,39 +1,22 @@
 ﻿using Crm.Common;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Crm.Projects
 {
-    public class ProjectEmployeeCreateDto
-    {                
+    public class ProjectEmployeeUpdateDto
+    {
         public List<Guid> EmployeeIds { get; set; } = new();
-
-        [Required]
-        public Guid CustomerId { get; set; }
-
-        [Required]
         public string Name { get; set; } = null!;
-
+        public Guid CustomerId { get; set; }
         public DateTime? StartTime { get; set; }
-
-        [Required(ErrorMessage = "End Time is required.")]
         public DateTime? EndTime { get; set; }
-
-        public EnumStatus Statues { get; set; }
-
-        [Required]
-        [Range(0.01, double.MaxValue)]
         public decimal Revenue { get; set; }
-
         public decimal SuccesRate { get; set; }
-
-        [Required]
         public string Description { get; set; }
-        
-
+        public EnumStatus Statues { get; set; }
     }
 }

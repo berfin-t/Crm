@@ -6,44 +6,70 @@
 @inject IOrderAppService OrderAppService
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
+
             <ModalHeader>
-                <ModalTitle>Add Order</ModalTitle>
+                <ModalTitle>@L["Add Order"]</ModalTitle>
                 <CloseButton />
             </ModalHeader>
+
             <ModalBody>
-                <Field>
-                    <FieldLabel>Order Status:</FieldLabel>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="OrderCreateDto">
+                
+                    <!-- Status -->
+                    <Validation>
+                    <Field>
+                    <FieldLabel>@L["Order Status"]:</FieldLabel>
+                    <FieldBody>
                     <Select @bind-SelectedValue="Status">
                         @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                         {
                             <SelectItem Value="@status">@status</SelectItem>
                         }
                     </Select>
+
+                            <ValidationError>
+                                @L["Order Status is required"]
+                            </ValidationError>
+
+                            </FieldBody>
                 </Field>
+                    </Validation>
+
+                    <!-- Order Date -->
                 <Card>
                     <Field>
-                        <FieldLabel>Order Date:</FieldLabel>
+                        <FieldLabel>@L["Order Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderDate" Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
-                
+
+                    <!-- Delivery Date -->
                 <Card>
                     <Field>
-                        <FieldLabel>Delivery Date:</FieldLabel>
+                        <FieldLabel>@L["Delivery Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="DeliveryDate" Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
 
+                <!-- Total Amount -->
+                <Validation>
                 <Card>
                     <Field>
-                        <FieldLabel>Total Amount:</FieldLabel>
+                        <FieldLabel>@L["Total Amount"]:</FieldLabel>
+                        <FieldBody>
                         <InputNumber @bind-Value="TotalAmount" class="form-control" />
+                    </FieldBody>
+                        <ValidationError>
+                            @L["Total Amount is required and must be greater than zero"]
+                                </ValidationError>
                     </Field>
                 </Card>
+                    </Validation>
 
                 <Card>
                     <Field>
@@ -73,12 +99,14 @@
                         }
                     </Select>
                 </Field>             
-
+                </Validations>
             </ModalBody>
+
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
                 <Button Color="Color.Primary" Clicked="@CreateOrderAsync">Save Changes</Button>
             </ModalFooter>
+
         </ModalContent>
     </Modal>
 </CascadingValue>
