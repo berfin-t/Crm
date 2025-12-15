@@ -34,7 +34,7 @@
             {
                 <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
-                    <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Employee</Button>
+                    <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Employee"]</Button>
                 </Field>               
             </Div>
             }
@@ -54,28 +54,28 @@
                         @if (canEditEmployee || canDeleteEmployee)
                         {
                             <Div style="position: absolute; top: 10px; right: 10px;">
-                                <Button @onclick="() => ToggleDropdown(employee.Id)" 
-                                style="background: none; border: none; cursor: pointer; font-size: 20px; line-height: 1;">
-                                    &#8942;
-                                </Button>
+                                <Dropdown>
+                                    <DropdownToggle>
+                                        <span class="menu-icon">⋮</span>
+                                    </DropdownToggle>
 
-                                @if (ActiveDropdownEmployeeId == employee.Id)
-                                {
-                                    <Div style="position: absolute; right: 0; top: 25px; background-color: white; 
-                                            border: 1px solid #ccc; border-radius: 4px; 
-                                            box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 100; min-width: 100px;">
-                                        <Button @onclick="() => OnSelectEmployeeForEdit(employee)" 
-                                        style="display: block; width: 100%; padding: 8px; background: none; 
-                                                   border: none; text-align: left; cursor: pointer;">
-                                            Edit
-                                        </Button>
-                                        <Button @onclick="() => OnSelectEmployeeForDelete(employee)" 
-                                        style="display: block; width: 100%; padding: 8px; background: none; 
-                                                   border: none; text-align: left; cursor: pointer; color: red;">
-                                            Delete
-                                        </Button>
-                                    </Div>
-                                }
+                                    <DropdownMenu>
+                                        @if (canEditEmployee)
+                                        {
+                                            <DropdownItem @onclick="() => OnSelectEmployeeForEdit(employee)">
+                                                @L["Edit"]
+                                            </DropdownItem>
+                                        }
+
+                                        @if (canDeleteEmployee)
+                                        {
+                                            <DropdownItem TextColor="TextColor.Danger"
+                                                          @onclick="() => OnSelectEmployeeForDelete(employee)">
+                                                @L["Delete"]
+                                            </DropdownItem>
+                                        }
+                                    </DropdownMenu>
+                                </Dropdown>
                             </Div>
                         }
 
@@ -109,15 +109,15 @@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Confirm</ModalTitle>
-            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+            <ModalTitle>@L["Confirm"]</ModalTitle>
+            <CloseButton />
         </ModalHeader>
         <ModalBody>
-            Are you sure you want to delete?
+            @L["Are you sure you want to delete"]?
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">@L["Delete"]</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>

@@ -6,6 +6,7 @@
 @using Crm.Blazor.Components.Dialogs.Customers
 @using Microsoft.AspNetCore.SignalR.Client
 
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 @inject ICustomerAppService CustomerAppService
 
 <Alert Color="Color.Success"
@@ -14,9 +15,9 @@
     Dismissed="@OnAlertDismissed">
     <div Class="d-flex justify-content-between align-items-center">
         <div>
-            📦 A new customer has been added: <strong>@latestCustomerName</strong>
-        </div>
-        <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
+            📦 @L["A new customer has been added"]: <strong>@latestCustomerName</strong>
+        </div>        
+        <CloseButton/>
     </div>
 </Alert>
 
@@ -35,12 +36,12 @@
                       FilterMethod="DataGridFilterMethod.StartsWith"
                       PagerPosition="DataGridPagerPosition.Bottom">
 
-                <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="Name" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith"/>
-                <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="Phone" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
-                <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="Email" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
-                <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="Address" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
-                <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="CompanyName" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
-                <DataGridColumn TItem="CustomerDto" Caption="Type">
+                <DataGridColumn Field="@nameof(CustomerDto.FullName)" Caption="@L["Name"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith"/>
+                <DataGridColumn Field="@nameof(CustomerDto.Phone)" Caption="@L["Phone"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.Email)" Caption="@L["Email"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.Address)" Caption="@L["Address"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn Field="@nameof(CustomerDto.CompanyName)" Caption="@L["Company Name"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn TItem="CustomerDto" Caption="@L["Type"]">
                     <DisplayTemplate>
                         @{
                             var type = context.CustomerType;
@@ -61,7 +62,7 @@
                 </DataGridColumn>
 
 
-                <DataGridColumn TItem="CustomerDto" Caption="Details">
+                <DataGridColumn TItem="CustomerDto" Caption="@L["Details"]">
                     <DisplayTemplate>
                         <Button Color="Color.Info" Clicked="@(() => ShowDetailModal(context))">
                             <i class="fa-solid fa-eye"></i>
@@ -73,7 +74,7 @@
                 <DataGridCommandColumn>  
                     <NewCommandTemplate>
                         <Field>
-                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Customer</Button>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Customer"]</Button>
                         </Field>                        
                     </NewCommandTemplate>
                     <EditCommandTemplate>
@@ -101,15 +102,15 @@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Confirm</ModalTitle>
-            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+            <ModalTitle>@L["Confirm"]</ModalTitle>
+            <CloseButton/>
         </ModalHeader>
         <ModalBody>
-            Are you sure you want to delete?
+            @L["Are you sure you want to delete"]?
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">@L["Delete"]</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>

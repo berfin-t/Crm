@@ -96,46 +96,36 @@ namespace Crm.Blazor.Components.Pages.Employees
         }
 
         #region Edit
-            private async Task EditEmployee(EmployeeDto employee)
-            {
-                isEmployeeModalVisible = false;
-                await employeeEditModal!.ShowModal(employee, EventCallback);
-            }
-            private async Task OnSelectEmployeeForEdit(EmployeeDto employee)
-            {
+        private async Task EditEmployee(EmployeeDto employee)
+        {
+            isEmployeeModalVisible = false;
+            await employeeEditModal!.ShowModal(employee, EventCallback);
+        }
+        private async Task OnSelectEmployeeForEdit(EmployeeDto employee)
+        {
                 selectedEmployee = employee;
                 await EditEmployee(employee);
-            }
+        }
             #endregion
 
-            #region Delete        
-            private async Task ConfirmDelete()
+        #region Delete        
+        private async Task ConfirmDelete()
+        {
+            if (selectedEmployee != null && selectedEmployee.Id != Guid.Empty)
             {
-                if (selectedEmployee != null && selectedEmployee.Id != Guid.Empty)
-                {
                     await EmployeeAppService.DeleteAsync(selectedEmployee.Id);
                     isDeleteModalVisible = false;
                     await OnInitializedAsync();
 
                     NavigationManager?.NavigateTo("/employees", forceLoad: true);
                 }
-            }
-            private void OnSelectEmployeeForDelete(EmployeeDto employee)
-            {
+        }
+        private void OnSelectEmployeeForDelete(EmployeeDto employee)
+        {
                 selectedEmployee = employee;
                 isDeleteModalVisible = true;
-            }
-            #endregion
-
-            private Guid? ActiveDropdownEmployeeId { get; set; }
-
-            private void ToggleDropdown(Guid employeeId)
-            {
-                if (ActiveDropdownEmployeeId == employeeId)
-                    ActiveDropdownEmployeeId = null;
-                else
-                    ActiveDropdownEmployeeId = employeeId;
-            }             
+        }
+        #endregion
 
     }
 

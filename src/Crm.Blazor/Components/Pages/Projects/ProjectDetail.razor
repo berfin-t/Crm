@@ -120,22 +120,22 @@
         @if (projectTasks != null && projectTasks.Any())
         {
             <Table Striped Hoverable FullWidth>
-                <Thead>
-                    <Tr>
-                        <Th>@L["Project Name"]</Th>
-                        <Th>@L["Description"]</Th>
-                        <Th>@L["Status"]</Th>
-                        <Th>@L["Priority"]</Th>
-                        <Th>@L["Due Date"]</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
+                <thead>
+                    <tr>
+                        <th>@L["Project Name"]</th>
+                        <th>@L["Description"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Priority"]</th>
+                        <th>@L["Due Date"]</th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach (var task in projectTasks)
                     {
-                        <Tr>
-                            <Td>@task.Name</Td>
-                            <Td>@task.Description</Td>
-                            <Td>
+                        <tr>
+                            <td>@task.Name</td>
+                            <td>@task.Description</td>
+                            <td>
                             @{
                                 var status = task.Status;
                                 var badgeClass = status switch
@@ -148,8 +148,8 @@
                                 };
                             }
                             <span class="@badgeClass">@status</span>
-                            </Td>
-                                <Td>
+                            </td>
+                                <td>
                                     @{
                                         var priority = task.Priority;
                                         var priorityBadgeClass = priority switch
@@ -163,11 +163,11 @@
                                     }
 
                                     <span class="@priorityBadgeClass">@priority</span>
-                                </Td>                            
-                            <Td>@task.DueDate.ToString("dd MMM yyyy HH:mm")</Td>
-                        </Tr>
+                                </td>                            
+                            <td>@task.DueDate.ToString("dd MMM yyyy HH:mm")</td>
+                        </tr>
                     }
-                </Tbody>
+                </tbody>
             </Table>
         }
         else

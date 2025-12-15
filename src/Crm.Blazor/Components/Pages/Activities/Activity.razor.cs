@@ -8,17 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Users;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Crm.Blazor.Components.Pages.Activities
 {
     public partial class Activity
     {
         [Inject] public NavigationManager? NavigationManager { get; set; }
-        [Parameter] public Guid ActivityId { get; set; }
-        
-
-
+        [Parameter] public Guid ActivityId { get; set; }     
 
         #region reference to the modal component
         private List<ActivityDto> activityList = new();

@@ -28,7 +28,7 @@
                         <span style="color: dodgerblue">@activity.Date.ToString("HH:mm")</span>
                     </h5>
                     <p>@activity.Description</p>
-                       <Button Color="Color.Primary" Clicked="@(() => ShowDetailModal(activity))">Read more</Button>                    
+                       <Button Color="Color.Primary" Clicked="@(() => ShowDetailModal(activity))">@L["Details"]</Button>                    
                 </div>
             </iv>
         }
@@ -39,31 +39,31 @@
 <Modal @bind-Visible="isActivityModalVisible" Size="ModalSize.Medium" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Activity Details</ModalTitle>
+            <ModalTitle>@L["Activity Details"]</ModalTitle>
             <CloseButton/>
         </ModalHeader>
         <ModalBody>
             @if (selectedActivity != null)
             {
                 <div>
-                    <p><strong>Description:</strong> @selectedActivity.Description</p>
-                    <p><strong>Date:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
-                    <p><strong>Customer ID:</strong> @selectedActivityWithNav!.Customer.FullName</p>
-                    <p><strong>Employee ID:</strong> @selectedActivityWithNav.Employee.FullName</p>
-                    <p><strong>Type:</strong> @selectedActivity.Type.ToString()</p>
+                    <p><strong>@L["Description"]:</strong> @selectedActivity.Description</p>
+                    <p><strong>@L["Date"]:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
+                    <p><strong>@L["Customer Name"]:</strong> @selectedActivityWithNav!.Customer.FullName</p>
+                    <p><strong>@L["Employee Name"]:</strong> @selectedActivityWithNav.Employee.FullName</p>
+                    <p><strong>@L["Type"]:</strong> @selectedActivity.Type.ToString()</p>
                 </div>
             }
         </ModalBody>
         <ModalFooter>
             @if (canEditActivity)
             {
-                <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity!))">Edit</Button>
+                <Button Color="Color.Warning" Clicked="@(() => EditActivity(selectedActivity!))">@L["Edit"]</Button>
             }
             @if (canDeleteActivity)
             {
-                <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">Delete</Button>
+                <Button Color="Color.Danger" @onclick="() => isDeleteModalVisible = true">@L["Delete"]</Button>
             }
-            <Button Color="Color.Secondary" @onclick="() => isActivityModalVisible = false">Close</Button>
+            <Button Color="Color.Secondary" @onclick="() => isActivityModalVisible = false">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
@@ -72,15 +72,15 @@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Confirm</ModalTitle>
-            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+            <ModalTitle>@L["Confirm"]</ModalTitle>
+            <CloseButton/>
         </ModalHeader>
         <ModalBody>
-            Are you sure yo want to delete?
+            @L["Are you sure yo want to delete"]?
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">@L["Delete"]</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>

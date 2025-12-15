@@ -29,4 +29,6 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.0.0" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>
