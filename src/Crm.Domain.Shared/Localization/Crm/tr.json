@@ -80,7 +80,7 @@
     "Team Members": "Takım Üyeleri",
     "No team members assigned.": "Takım üyesi atanmadı.",
     "Loading project details": "Proje detayları yükleniyor",
-    "Confirm": "Onaylamak",
+    "Confirm": "Onayla",
     "Are you sure you want to delete": "Silmek istediğinizden emin misiniz",
     "Tasks Completed": "Tamamlanan Görevler",
     "Prject Name": "Proje Adı",
@@ -112,6 +112,10 @@
     "A new customer has been added": "Yeni bir müşteri eklendi",
     "Details": "Detaylar",
     "Add Customer": "Müşteri Ekle",
-    "Personal Info": "Kişisel Bilgiler"
+    "Personal Info": "Kişisel Bilgiler",
+    "Order Code": "Sipariş Kodu",
+    "Project": "Proje",
+    "Edit Order": "Sipariş Güncelle"
+     
   }
 }

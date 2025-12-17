@@ -73,26 +73,26 @@
 
                 <Card>
                     <Field>
-                        <FieldLabel>Order Code:</FieldLabel>
+                        <FieldLabel>@L["Order Code"]:</FieldLabel>
                         <TextEdit @bind-Text="OrderCode" class="form-control" />
                     </Field>
                 </Card>             
 
                 <Field>
-                    <FieldLabel>Customers:</FieldLabel>
+                    <FieldLabel>@L["Customers"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedCustomerId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
                         @foreach (var customer in Customers)
                         {
-                            <SelectItem Value="@customer.Id">@customer.Name</SelectItem>
+                            <SelectItem Value="@customer.Id">@customer.Name @customer.Surname</SelectItem>
                         }
                     </Select>
                 </Field>
 
                 <Field>
-                    <FieldLabel>Projects:</FieldLabel>
+                    <FieldLabel>@L["Projects"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedProjectId">
-                        <SelectItem Value="Guid.Empty">Seçiniz</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
                         @foreach (var project in Projects)
                         {
                             <SelectItem Value="@project.Id">@project.Name</SelectItem>
@@ -103,8 +103,8 @@
             </ModalBody>
 
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@CreateOrderAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@CreateOrderAsync">@L["Save Changes"]</Button>
             </ModalFooter>
 
         </ModalContent>

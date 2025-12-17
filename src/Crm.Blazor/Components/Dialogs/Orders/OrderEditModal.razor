@@ -6,22 +6,24 @@
 @inject IOrderAppService OrderAppService
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
 <CascadingValue Value="this">
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
-                <ModalTitle>Edit Order</ModalTitle>
+                <ModalTitle>@L["Edit Order"]</ModalTitle>
+                <CloseButton />
             </ModalHeader>
             <ModalBody>
                 <Field>
-                    <FieldLabel>Order Code:</FieldLabel>
+                    <FieldLabel>@L["Order Code"]:</FieldLabel>
                     <InputText @bind-Value="OrderUpdateDto.OrderCode" class="form-control" />
                 </Field>
                 <Field>
-                    <FieldLabel>Customer:</FieldLabel>
+                    <FieldLabel>@L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.CustomerId">
-                        <SelectItem Value="Guid.Empty">Select Customer</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select Customer"]</SelectItem>
                         @foreach (var customer in CustomerList)
                         {
                             <SelectItem Value="@customer.Id">@customer.FullName</SelectItem>
@@ -29,9 +31,9 @@
                     </Select>
                 </Field>
                 <Field>
-                    <FieldLabel>Project:</FieldLabel>
+                    <FieldLabel>@L["Project"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.ProjectId">
-                        <SelectItem Value="Guid.Empty">Select Project</SelectItem>
+                        <SelectItem Value="Guid.Empty">@L["Select Project"]</SelectItem>
                         @foreach (var project in ProjectList)
                         {
                             <SelectItem Value="@project.Id">@project.Name</SelectItem>
@@ -40,18 +42,18 @@
                 </Field>
                 <Card>
                     <Field>
-                        <FieldLabel>Order Date:</FieldLabel>
+                        <FieldLabel>@L["Order Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.OrderDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Card>
                     <Field>
-                        <FieldLabel>Delivery Date:</FieldLabel>
+                        <FieldLabel>@L["Delivery Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.DeliveryDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
                 <Field>
-                    <FieldLabel>Status:</FieldLabel>
+                    <FieldLabel>@L["Status"]:</FieldLabel>
                     <Select @bind-SelectedValue="OrderUpdateDto.Status">
                         @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                         {
@@ -61,8 +63,8 @@
                 </Field>
             </ModalBody>
             <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-                <Button Color="Color.Primary" Clicked="@UpdateOrderAsync">Save Changes</Button>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateOrderAsync">@L["Save Changes"]</Button>
             </ModalFooter>
         </ModalContent>
     </Modal>

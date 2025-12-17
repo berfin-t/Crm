@@ -10,6 +10,7 @@
 @inject IOrderAppService OrderAppService
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 
     <Alert Color="Color.Success"
            Visible="@showAlert"
@@ -28,26 +29,28 @@
         <CardBody>
             <DataGrid 
                 TItem="OrderDto"
-            Data="@OrderList"            
-            Editable
-            Responsive
-            ShowPager
-            PagerPosition="DataGridPagerPosition.Bottom">
+                Data="@OrderList"            
+                Editable
+                Responsive
+                ShowPager
+                PagerPosition="DataGridPagerPosition.Bottom"
+                Filterable
+                FilterMethod="DataGridFilterMethod.StartsWith">
 
                 <DataGridColumn Field="@nameof(OrderDto.OrderCode)" Caption="Order Code" Editable/>
-                <DataGridColumn Caption="Customer">
+                <DataGridColumn Caption="@L["Customer"]">
                     <DisplayTemplate Context="order">
-                        @((CustomerList.FirstOrDefault(c => c.Id == order.CustomerId)?.FullName) ?? "N/A")
+                        @CustomerList.FirstOrDefault(c => c.Id == order.CustomerId)?.FullName
                     </DisplayTemplate>
                 </DataGridColumn>
-                <DataGridColumn Caption="Project">
+                <DataGridColumn Caption="@L["Project"]">
                     <DisplayTemplate Context="order">
-                        @((ProjectList!.FirstOrDefault(p => p.Id == order.ProjectId)?.Name) ?? "N/A")
+                        @ProjectList!.FirstOrDefault(p => p.Id == order.ProjectId)?.Name
                     </DisplayTemplate>
                 </DataGridColumn>
-                <DataGridColumn Field="@nameof(OrderDto.OrderDate)" Caption="Order Date" Editable />
-                <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="Delivery Date" Editable />
-                <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="Status" Editable>
+                <DataGridColumn Field="@nameof(OrderDto.OrderDate)" Caption="@L["Order Date"]" Editable />
+                <DataGridColumn Field="@nameof(OrderDto.DeliveryDate)" Caption="@L["Delivery Date"]" Editable />
+                <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="@L["Status"]" Editable>
                     <DisplayTemplate Context="order">
                         <span class="status-label status-@order.Status.ToString().ToLower()">
                             @order.Status
@@ -58,7 +61,7 @@
                 <DataGridCommandColumn>
                     <NewCommandTemplate>
                         <Field>
-                            <Button Color="Color.Success" Clicked="@ShowCreateModal">Add Order</Button>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Order"]</Button>
                         </Field>
                     </NewCommandTemplate>
 
@@ -89,15 +92,15 @@
 <Modal @bind-Visible="isDeleteModalVisible" Size="ModalSize.Small" BackdropClick="true">
     <ModalContent>
         <ModalHeader>
-            <ModalTitle>Confirm</ModalTitle>
-            <Button CloseButton @onclick="() => isDeleteModalVisible = false" />
+            <ModalTitle>@L["Confirm"]</ModalTitle>
+            <CloseButton/>
         </ModalHeader>
         <ModalBody>
-            Are you sure you want to delete?
+            @L["Are you sure you want to delete"]?
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Danger" @onclick="ConfirmDelete">Delete</Button>
-            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">Close</Button>
+            <Button Color="Color.Danger" @onclick="ConfirmDelete">@L["Delete"]</Button>
+            <Button Color="Color.Secondary" @onclick="() => isDeleteModalVisible = false">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
