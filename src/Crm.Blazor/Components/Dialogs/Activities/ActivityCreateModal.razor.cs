@@ -17,8 +17,6 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private List<CustomerDto> Customers { get; set; } = new();
         private List<EmployeeDto> Employees { get; set; } = new();
         private ActivityCreateDto ActivityCreateDto { get; set; } = new();
-        private Guid SelectedEmployeeId { get; set; }
-        private Guid SelectedCustomerId { get; set; }
         private Validations? validations;
         #endregion
 
@@ -57,18 +55,13 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             var isValid = await validations.ValidateAll();
 
             if(!isValid)
-                return;            
+                return;          
             
-            try
-            {
-                await ActivityAppService.CreateAsync(ActivityCreateDto);
-                await HideModal();
-                await EventCallback.InvokeAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            await ActivityAppService.CreateAsync(ActivityCreateDto);
+            await HideModal();
+            await EventCallback.InvokeAsync();
+            
+            
 
         }
         #endregion

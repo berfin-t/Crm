@@ -3,19 +3,28 @@
 @using Crm.Common
 @using Crm.Tasks
 @using Microsoft.AspNetCore.SignalR.Client
-@inject ITaskAppService TaskAppService
 
+@inject ITaskAppService TaskAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+    
 <Alert Color="Color.Success"
     Visible="@showAlert"
     Dismisable
     Dismissed="@(()=> showAlert = false)">
     <div Class="d-flex justify-content-between align-items-center">
         <div>
-            🆕 A new task has been added: <strong>@latestTaskName</strong>
+            🆕 @L["New task has been added"]: <strong>@latestTaskName</strong>
         </div>
         <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
     </div>
 </Alert>
+
+<Div class="d-flex justify-content-end mb-3">
+    <Button Color="Color.Primary"  Clicked="@ShowCreateModal">
+        @L["Create Task"]
+    </Button>
+</Div>
+
 
 @if (items != null && items.Any())
 {
@@ -73,88 +82,6 @@
 
 <TaskDetailModal @ref="taskDetailModal" Task="@selectedTask" />
 
-@code {
-    [Inject] public NavigationManager? NavigationManager { get; set; }
-    private List<TaskDto> items = new List<TaskDto>{};
-    private TaskDto? selectedTask;
-    private TaskDetailModal? taskDetailModal;
-    [Parameter] public TaskDto? TaskPriority { get; set; }
-    private HubConnection? hubConnection;
-    private bool showAlert = false;
-    private string latestTaskName = string.Empty;
+@* ********** CREATE MODAL ********** *@
+<TaskCreateModal @ref="taskCreateModal"/>
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
-    {
-        items = (await TaskAppService.GetListAllAsync()).OrderByDescending(x=>x.Priority).ToList();
-        
-        hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{NavigationManager!.BaseUri}crmhub")
-                .WithAutomaticReconnect()
-                .Build();
-
-        hubConnection.On<TaskDto>("TaskCreated", async (task) =>
-    {
-        items?.Add(task);
-        latestTaskName = task.Name ?? "New Task";
-        showAlert = true;
-        await InvokeAsync(StateHasChanged);
-    });
-        await hubConnection.StartAsync();
-
-        StateHasChanged();
-    }
-
-    private async System.Threading.Tasks.Task ItemDropped(DraggableDroppedEventArgs<TaskDto> dropItem)
-    {
-        dropItem.Item.Group = dropItem.DropZoneName;
-        var updateDto = new TaskUpdateDto
-        {
-            Name = dropItem.Item.Name!,
-            Description = dropItem.Item.Description!,
-            DueDate = dropItem.Item.DueDate,
-            Priority = dropItem.Item.Priority,
-            Group = dropItem.DropZoneName,
-            ProjectId = dropItem.Item.ProjectId,
-            EmployeeId = dropItem.Item.EmployeeId,
-            Status = MapStatus(dropItem.DropZoneName)
-        };
-        await TaskAppService.UpdateAsync(dropItem.Item.Id, updateDto);
-        items = (await TaskAppService.GetListAllAsync()).OrderByDescending(x=>x.Priority).ToList();
-        StateHasChanged();
-        return; 
-    }
-    
-    private void OnCardClick(TaskDto task)
-    {
-        selectedTask = task;
-        taskDetailModal?.Show();  
-    }   
-
-    private string GetPriorityBorderStyle(TaskDto task)
-    {
-        if (task == null)
-            return "border-left: 5px solid #D1D5DB; background-color: #FFFFFF;"; 
-
-        return task.Priority switch
-        {
-            EnumPriority.Low => "border-left: 5px solid #22C55E; background-color: #FFFFFF;",      // Yeşil
-            EnumPriority.Medium => "border-left: 5px solid #FACC15; background-color: #FFFFFF;",   // Sarı
-            EnumPriority.High => "border-left: 5px solid #F97316; background-color: #FFFFFF;",     // Turuncu
-            EnumPriority.Critical => "border-left: 5px solid #EF4444; background-color: #FFFFFF;", // Kırmızı
-            _ => "border-left: 5px solid #D1D5DB; background-color: #FFFFFF;"
-        };
-    }
-
-    private EnumStatus MapStatus(string zone)
-    {
-        return zone switch
-        {
-            "Pending" => EnumStatus.Pending,
-            "Active" => EnumStatus.Active,
-            "Completed" => EnumStatus.Completed,
-            _ => EnumStatus.Pending
-        };
-    }
-
-
-}

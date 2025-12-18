@@ -62,27 +62,6 @@ namespace Crm.Blazor.Components.Dialogs.Orders
             return modalRef!.Hide();
         }
 
-        //#region Customers and Projects Select      
-
-        //private async Task CustomerSelect(ChangeEventArgs e)
-        //{
-        //    if (Guid.TryParse(e.Value?.ToString(), out var customerId))
-        //    {
-        //        SelectedCustomerId = customerId;
-        //        await InvokeAsync(StateHasChanged);
-        //    }
-        //}
-
-        //private async Task ProjectSelect(ChangeEventArgs e)
-        //{
-        //    if (Guid.TryParse(e.Value?.ToString(), out var projectId))
-        //    {
-        //        SelectedProjectId = projectId;
-        //        await InvokeAsync(StateHasChanged);
-        //    }
-        //}
-        //#endregion
-
         #region Create Order
         private async Task CreateOrderAsync()
         {
@@ -93,14 +72,6 @@ namespace Crm.Blazor.Components.Dialogs.Orders
 
             if (!isValid)
                 return;
-
-            //OrderCreateDto.Status = Status;
-            //OrderCreateDto.OrderDate = OrderDate ?? DateTime.MinValue;
-            //OrderCreateDto.DeliveryDate = DeliveryDate ?? DateTime.MinValue;
-            //OrderCreateDto.TotalAmount = TotalAmount;
-            //OrderCreateDto.OrderCode = OrderCode;
-            //OrderCreateDto.CustomerId = SelectedCustomerId;
-            //OrderCreateDto.ProjectId = SelectedProjectId;
 
                 await OrderAppService.CreateAsync(OrderCreateDto);
                 await HideModal();

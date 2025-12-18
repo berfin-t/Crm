@@ -42,13 +42,7 @@ namespace Crm.Blazor.Components.Pages.Activities
             {
                 activityList = allActivities.Where(a => a.Date > DateTime.Now).OrderBy(a => a.Date).ToList();
             }
-        }
-        
-        public async Task ReloadActivities()
-        {
-            activityList.Clear();
-            await InvokeAsync(StateHasChanged);
-        }
+        }        
         public async Task ShowCreateModal()
         {
             if (activityCreateModal != null)

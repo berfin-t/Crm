@@ -13,7 +13,6 @@ namespace Crm.Tasks
         [Required]
         public string? Name { get; set; }
 
-        [Required]
         public string? Group { get; set; }
 
         [Required]

@@ -33,7 +33,7 @@
                 </Field>  
                     
                 <!-- Description -->
-                <Validation>
+                    <Validation Validator="ValidationRule.IsNotEmpty">
                 <Field>
                     <FieldLabel>@L["Description"]:</FieldLabel>                    
                     <FieldBody>
@@ -102,8 +102,7 @@
             </ModalBody>
 
             <ModalFooter>
-                <Button Color="Color.Danger" Clicked="@HideModal">
-                    @L["Close"]</Button>
+                <Button Color="Color.Danger" Clicked="@HideModal">@L["Close"]</Button>
                 <Button Color="Color.Success" Clicked="@CreateActivityAsync">@L["Save Changes"]</Button>
             </ModalFooter>
 

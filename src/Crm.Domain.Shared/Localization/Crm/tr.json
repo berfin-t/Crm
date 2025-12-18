@@ -115,7 +115,13 @@
     "Personal Info": "Kişisel Bilgiler",
     "Order Code": "Sipariş Kodu",
     "Project": "Proje",
-    "Edit Order": "Sipariş Güncelle"
-     
+    "Edit Order": "Sipariş Güncelle",
+    "Add Task": "Görev Ekle",
+    "New task has been added": "Yeni görev eklendi",
+    "Task name is required": "Görev ismi gerekli",
+    "Description is required": "Açıklama gerekli",
+    "Group is required": "Grup gerekli",
+    "Project is required": "Proje gerekli"
+
   }
 }

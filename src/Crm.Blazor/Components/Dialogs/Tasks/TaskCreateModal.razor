@@ -1,0 +1,141 @@
+﻿@using Crm.Common
+@using Crm.Tasks;
+@using Crm.Projects;
+@using Crm.Employees;
+
+@inject ITaskAppService TaskAppService
+@inject IEmployeeAppService EmployeeAppService
+@inject IProjectAppService ProjectAppService
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+
+            <ModalHeader>
+                <ModalTitle>@L["Add Task"]</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+
+            <ModalBody>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="TaskCreateDto">
+
+                    <!-- Name -->
+                    <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field>
+                    <FieldLabel>@L["Task Title"]:</FieldLabel>
+                    <FieldBody>
+                            <TextEdit @bind-Text="TaskCreateDto.Name">
+                                <Feedback>
+                                    <ValidationError>
+                                        @L["Task Title is required"]
+                                    </ValidationError>
+                                </Feedback>
+                            </TextEdit >
+                        </FieldBody>
+                </Field>
+                    </Validation>                    
+
+                    <!-- Description -->
+                    <Validation Validator="ValidationRule.IsNotEmpty">
+                        <Field>
+                            <FieldLabel>@L["Description"]:</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="TaskCreateDto.Description">
+                                    <Feedback>
+                                        <ValidationError>@L["Description is required"]</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Due Date -->
+                <Card>
+                    <Field>
+                        <FieldLabel>@L["Due Date"]:</FieldLabel>
+                            <DatePicker TValue="DateTime"
+                                        InputMode="DateInputMode.DateTime"
+                                        @bind-Date="TaskCreateDto.DueDate"
+                                        Format="yyyy-MM-dd HH:mm" />
+                    </Field>
+                </Card>
+
+                <!-- Priority -->
+                        <Field>
+                            <FieldLabel>@L["Priority"]:</FieldLabel>
+                            <FieldBody>
+                                <Select @bind-SelectedValue="TaskCreateDto.Priority">
+                                    @foreach (var priority in Enum.GetValues(typeof(EnumPriority)).Cast<EnumPriority>())
+                                    {
+                                        <SelectItem Value="@priority">@priority</SelectItem>
+                                    }
+                                </Select>
+                            </FieldBody>
+                        </Field>
+
+                    <!-- Status -->
+                    <Field>
+                        <FieldLabel>@L["Status"]:</FieldLabel>
+                        <FieldBody>
+                            <Select @bind-SelectedValue="TaskCreateDto.Status">
+                                @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                                {
+                                    <SelectItem Value="@status">@status</SelectItem>
+                                }
+                            </Select>
+                        </FieldBody>
+                    </Field>
+
+                    <!-- Employee -->
+                    <Validation Validator="ValidateEmployee">
+                        <Field>
+                            <FieldLabel>@L["Employees"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="TaskCreateDto.EmployeeId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var employee in Employees)
+                                    {
+                                        <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Employee is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                    <!-- Project -->
+                    <Validation Validator="ValidateProject">
+                        <Field>
+                            <FieldLabel>@L["Project"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="TaskCreateDto.ProjectId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var project in Projects)
+                                    {
+                                        <SelectItem Value="@project.Id">@project.Name</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Project is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="HideModal">@L["Cancel"]</Button>
+                <Button Color="Color.Primary" Clicked="CreateTaskAsync">@L["Save Changes"]</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+</CascadingValue>
+
+
