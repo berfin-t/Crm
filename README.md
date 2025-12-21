@@ -153,17 +153,6 @@ The application uses **SignalR** to enable real-time communication between the s
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome and appreciated.
-
-1. Fork the repository  
-2. Create a new branch (`feature/new-feature`)  
-3. Commit your changes  
-4. Open a Pull Request  
-
----
-
 ## 📄 License
 
 This project is licensed under the **MIT License**.  
