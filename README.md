@@ -91,7 +91,7 @@ docker compose -f migrator-compose.yml run --rm -d migrator
 
 #### 🌐 Access the Application
 Once the services are running, open your browser and navigate to:
-- **Blazor UI:** [http://localhost:3232/](http://localhost:3232/)
+- **Blazor UI:** [http://localhost:3232/](http://localhost:44376/)
 
 ---
 
