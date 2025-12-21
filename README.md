@@ -95,6 +95,36 @@ Once the services are running, open your browser and navigate to:
 
 ---
 
+---
+
+## 🔐 Default User Credentials
+
+The application comes with predefined users for testing and development purposes.
+
+### 👑 Admin User
+- **Username:** admin
+- **Password:** 1q2w3E*
+
+**Permissions:**
+- Full system access
+- User & role management
+- Customer and employee management
+
+---
+
+### 👤 Employee User
+- **Username:** employee_berfin
+- **Password:** 1q2w3E*
+
+**Permissions:**
+- Customer management
+- Limited system access based on role
+
+> ⚠️ **Security Notice:**  
+> These credentials are intended for **development and testing only**.  
+> Make sure to change default passwords before deploying to a production environment.
+
+
 ## 🔔 Real-Time Communication
 
 The application uses **SignalR** to enable real-time communication between the server and clients.
