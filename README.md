@@ -95,8 +95,6 @@ Once the services are running, open your browser and navigate to:
 
 ---
 
----
-
 ## 🔐 Default User Credentials
 
 The application comes with predefined users for testing and development purposes.
