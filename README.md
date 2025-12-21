@@ -53,7 +53,7 @@ The project leverages ABP’s **layered and modular architecture**, providing a 
 ├── docker-compose.yml
 ├── migrator-compose.yml
 └── README.md
-
+```
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
