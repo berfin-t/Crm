@@ -54,6 +54,41 @@ The project leverages ABP’s **layered and modular architecture**, providing a 
 ├── migrator-compose.yml
 └── README.md
 ```
+## 🧩 Design Patterns & Architecture
+
+The project applies enterprise design patterns aligned with ABP Framework best practices:
+
+### ✔ Core Patterns
+
+#### Layered Architecture
+Separation of Domain, Application, Infrastructure, and Presentation layers.
+
+#### Repository Pattern
+Abstracts data access logic using IRepository<TEntity, TKey>.
+
+#### Unit of Work Pattern
+Automatically managed by ABP to ensure transactional consistency.
+
+#### Application Service Pattern
+Use-case–oriented services orchestrating domain logic.
+
+#### Domain Service Pattern
+Encapsulation of complex business rules (e.g. ActivityManager, EmployeeManager).
+
+#### DTO Pattern
+Isolates domain entities from external layers with AutoMapper support.
+
+#### Dependency Injection (DI)
+Loose coupling via ABP’s built-in IoC container.
+
+#### Soft Delete Pattern
+Logical deletion using ABP’s soft delete mechanism.
+
+#### CQRS (Lightweight)
+Clear separation of read and write operations at service level.
+
+---
+
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
