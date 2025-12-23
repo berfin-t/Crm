@@ -60,31 +60,31 @@ The project applies enterprise design patterns aligned with ABP Framework best p
 
 ### ✔ Core Patterns
 
-#### Layered Architecture
+#### - Layered Architecture
 Separation of Domain, Application, Infrastructure, and Presentation layers.
 
-#### Repository Pattern
+#### - Repository Pattern
 Abstracts data access logic using IRepository<TEntity, TKey>.
 
-#### Unit of Work Pattern
+#### - Unit of Work Pattern
 Automatically managed by ABP to ensure transactional consistency.
 
-#### Application Service Pattern
+#### - Application Service Pattern
 Use-case–oriented services orchestrating domain logic.
 
-#### Domain Service Pattern
+#### - Domain Service Pattern
 Encapsulation of complex business rules (e.g. ActivityManager, EmployeeManager).
 
-#### DTO Pattern
+#### - DTO Pattern
 Isolates domain entities from external layers with AutoMapper support.
 
-#### Dependency Injection (DI)
+#### - Dependency Injection (DI)
 Loose coupling via ABP’s built-in IoC container.
 
-#### Soft Delete Pattern
+#### - Soft Delete Pattern
 Logical deletion using ABP’s soft delete mechanism.
 
-#### CQRS (Lightweight)
+#### - CQRS (Lightweight)
 Clear separation of read and write operations at service level.
 
 ---
