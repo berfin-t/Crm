@@ -1,4 +1,4 @@
-@page "/"
+﻿@page "/"
 @attribute [Authorize]
 @using Crm.Permissions
 @using Volo.Abp.MultiTenancy
@@ -99,6 +99,51 @@
     </div>
 </div>
 
+<div class="row mt-4">
+    <div class="col-md-6">
+        <Card>
+            <CardBody>
+                <Div class="top-label mb-2">
+                    📅 Number of Tasks Assigned This Month (Employee Based)
+                </Div>
+
+                <div class="table-responsive scroll-table">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Employee</th>
+                                <th class="text-end">Task</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (employeeMonthlyTasks.Any())
+                            {
+                                @foreach (var item in employeeMonthlyTasks)
+                                {
+                                    <tr>
+                                        <td>@item.EmployeeName</td>
+                                        <td class="text-end">@item.TaskCount</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">
+                                        No data found
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </CardBody>
+        </Card>
+    </div>
+</div>
+
+
+
 @code {
     
     private long totalProjects;
@@ -107,13 +152,14 @@
     private decimal totalSuccessRate;  
     private decimal? successRate = null;
     private bool CanViewCustomers;    
+    private List<EmployeeMonthlyTaskCountDto> employeeMonthlyTasks = new();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        // ABP izin kontrol�
+        // ABP izin kontrolü
         var isAdmin = user.IsInRole("Admin");
         var canViewCustomersResult = await AuthorizationService.AuthorizeAsync(user, CrmPermissions.Customers.Default);
         CanViewCustomers = isAdmin || canViewCustomersResult.Succeeded;
@@ -134,6 +180,9 @@
         totalSuccessRate = await ProjectAppService.GetSuccessRateAverageAsync(null);
         var allTasks = await TasksAppService.GetListAllAsync();
         activeTasks = allTasks.Count(t => t.Status == EnumStatus.Active);
+
+        employeeMonthlyTasks = await EmployeeAppService.GetMonthlyAssignedTaskCountsAsync();
+
     }
 
     private int newCustomersThisMonth;  
@@ -205,4 +254,19 @@
         font: bold;
         color: black;
     }
+
+    .scroll-table {
+        max-height: 220px; 
+        overflow-y: auto;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+    }
+
+    .table-sm td,
+    .table-sm th {
+        padding: 0.35rem;
+        font-size: 13px;
+    }
+
+
 </style>

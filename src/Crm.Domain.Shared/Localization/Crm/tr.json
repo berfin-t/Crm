@@ -121,7 +121,8 @@
     "Task name is required": "Görev ismi gerekli",
     "Description is required": "Açıklama gerekli",
     "Group is required": "Grup gerekli",
-    "Project is required": "Proje gerekli"
+    "Project is required": "Proje gerekli",
+    "Number of Tasks Assigned This Month (Employee Based)": "Bu Ay Alınan Task Sayısı (Employee Bazlı)"
 
   }
 }

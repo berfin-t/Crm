@@ -65,5 +65,9 @@ namespace Crm.Controllers.Employees
         [HttpPut]
         [Route("update-user/{userId}")]
         public virtual Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input) => _employeeAppService.UpdateUserAsync(userId, input);
+    
+        [HttpGet]
+        [Route("monthly-assigned-task-counts")]
+        public virtual Task<List<EmployeeMonthlyTaskCountDto>> GetMonthlyAssignedTaskCountsAsync() => _employeeAppService.GetMonthlyAssignedTaskCountsAsync();
     }
 }

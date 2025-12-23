@@ -1,5 +1,9 @@
-﻿using Crm.Permissions;
+﻿using AutoMapper;
+using Crm.GlobalExceptions;
+using Crm.Permissions;
 using Crm.Projects;
+using Crm.Tasks;
+using Crm.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -10,10 +14,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
-using Crm.Users;
 using Volo.Abp.Identity;
-using Crm.GlobalExceptions;
-using AutoMapper;
 
 namespace Crm.Employees
 {
@@ -23,6 +24,7 @@ namespace Crm.Employees
         EmployeeManager employeeManager,
         IUserRules userRules,
         IdentityUserManager userManager,
+        ITaskRepository taskRepository,
         IMapper _mapper) : CrmAppService, IEmployeeAppService
     {
         #region Create
@@ -159,7 +161,7 @@ namespace Crm.Employees
 
         #region Delete
         [Authorize(CrmPermissions.Employees.Delete)]
-        public virtual async Task DeleteAsync(Guid id)
+        public virtual async System.Threading.Tasks.Task DeleteAsync(Guid id)
         {
             var employee = await employeeRepository.GetAsync(id);
             if (employee == null)
@@ -227,6 +229,32 @@ namespace Crm.Employees
             GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
 
             return result.Succeeded;
-        }        
+        }
+
+        [AllowAnonymous]
+        public async Task<List<EmployeeMonthlyTaskCountDto>> GetMonthlyAssignedTaskCountsAsync()
+        {
+            var now = DateTime.Now;
+            var startOfMonth = new DateTime(now.Year, now.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+
+            var tasks = await taskRepository.GetQueryableAsync();
+            var employees = await employeeRepository.GetQueryableAsync();            
+
+            var query =
+                from task in tasks
+                where task.CreationTime >= startOfMonth
+                && task.CreationTime < endOfMonth
+                join emp in employees on task.EmployeeId equals emp.Id
+                group task by new { emp.Id, emp.FirstName, emp.LastName } into taskcount
+                select new EmployeeMonthlyTaskCountDto
+                {
+                    Id = taskcount.Key.Id,
+                    EmployeeName = taskcount.Key.FirstName + " " + taskcount.Key.LastName,
+                    TaskCount = taskcount.Count()
+                };
+
+            return await AsyncExecuter.ToListAsync(query);
+        }
     }
 }

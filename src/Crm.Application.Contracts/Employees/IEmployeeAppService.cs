@@ -21,5 +21,6 @@ namespace Crm.Employees
         Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId);
         Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input);
         Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input);
+        Task<List<EmployeeMonthlyTaskCountDto>> GetMonthlyAssignedTaskCountsAsync();
     }
 }
