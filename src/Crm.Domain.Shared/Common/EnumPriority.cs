@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crm.Tasks
+namespace Crm.Common
 {
     public enum EnumPriority
     {

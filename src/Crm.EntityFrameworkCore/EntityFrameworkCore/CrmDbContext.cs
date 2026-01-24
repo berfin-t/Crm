@@ -22,6 +22,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Crm.Tasks;
+using Crm.Support;
 
 namespace Crm.EntityFrameworkCore;
 
@@ -44,6 +45,7 @@ public class CrmDbContext :
     public DbSet<Position> Positions { get; set; }
     public DbSet<Task> Tasks { get; set; }
     public DbSet<ProjectEmployee> ProjectEmployees { get; set; }
+    public DbSet<SupportTicket> SupportTickets { get; set; }
 
     #region Entities from the modules
 
