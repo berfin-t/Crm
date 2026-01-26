@@ -737,9 +737,8 @@ namespace Crm.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ClosedTime")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("ClosedTime");
+                    b.Property<DateTime?>("ClosedTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -769,10 +768,9 @@ namespace Crm.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Description");
+                        .HasColumnType("text");
 
-                    b.Property<Guid>("EmployeeId")
+                    b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ExtraProperties")
@@ -794,22 +792,18 @@ namespace Crm.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<DateTime>("LastResponseTime")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("LastResponseTime");
+                    b.Property<DateTime?>("LastResponseTime")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer")
-                        .HasColumnName("Priority");
+                    b.Property<int?>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Subject");
+                        .HasColumnType("text");
 
-                    b.Property<int>("TicketStatus")
-                        .HasColumnType("integer")
-                        .HasColumnName("TicketStatus");
+                    b.Property<int?>("TicketStatus")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -2742,8 +2736,7 @@ namespace Crm.Migrations
                     b.HasOne("Crm.Employees.Employee", null)
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("Crm.Tasks.Task", b =>

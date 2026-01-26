@@ -136,6 +136,16 @@ public class CrmMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                CrmMenus.Supports,
+                l["Menu:Supports"],
+                icon: "fas fa-supports",
+                url: "/supports",
+                order: 1
+            )
+        );
+
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

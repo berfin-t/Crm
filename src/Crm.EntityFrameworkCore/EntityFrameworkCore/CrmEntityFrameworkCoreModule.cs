@@ -21,6 +21,7 @@ using Crm.Employees;
 using Crm.Orders;
 using Crm.Positions;
 using Crm.Tasks;
+using Crm.Support;
 
 namespace Crm.EntityFrameworkCore;
 
@@ -64,6 +65,7 @@ public class CrmEntityFrameworkCoreModule : AbpModule
             options.AddRepository<Project, EfCoreProjectRepository>();
             options.AddRepository<Task, EfCoreTaskRepository>();
             options.AddRepository<ProjectEmployee, EfCoreProjectEmployeeRepository>();
+            options.AddRepository<SupportTicket, EfCoreSupportTicketRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>

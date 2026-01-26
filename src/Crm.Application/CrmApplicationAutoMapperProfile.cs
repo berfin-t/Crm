@@ -8,6 +8,7 @@ using Crm.Employees;
 using Crm.Orders;
 using Crm.Positions;
 using Crm.Projects;
+using Crm.Support;
 using Crm.Tasks;
 using System;
 
@@ -87,5 +88,7 @@ public class CrmApplicationAutoMapperProfile : Profile
                         ? (EnumStatus)int.Parse(src.Group)
                         : EnumStatus.Pending))
                 .ReverseMap();
+
+        CreateMap<SupportTicket, SupportTicketDto>();
     }
 }

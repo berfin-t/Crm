@@ -423,6 +423,7 @@ namespace Crm.Migrations
                     Phone = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: true),
                     CompanyName = table.Column<string>(type: "text", nullable: true),
+                    CustomerType = table.Column<int>(type: "integer", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -1041,6 +1042,44 @@ namespace Crm.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppSupportTickets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Subject = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    TicketStatus = table.Column<int>(type: "integer", nullable: true),
+                    Priority = table.Column<int>(type: "integer", nullable: true),
+                    LastResponseTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ClosedTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ExtraProperties = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppSupportTickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppSupportTickets_AppCustomers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AppCustomers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppSupportTickets_AppEmployees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "AppEmployees",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppTasks",
                 columns: table => new
                 {
@@ -1382,6 +1421,16 @@ namespace Crm.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AppSupportTickets_CustomerId",
+                table: "AppSupportTickets",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppSupportTickets_EmployeeId",
+                table: "AppSupportTickets",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppTasks_EmployeeId",
                 table: "AppTasks",
                 column: "EmployeeId");
@@ -1511,6 +1560,9 @@ namespace Crm.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppProjectEmployees");
+
+            migrationBuilder.DropTable(
+                name: "AppSupportTickets");
 
             migrationBuilder.DropTable(
                 name: "AppTasks");

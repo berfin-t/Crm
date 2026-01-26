@@ -16,5 +16,6 @@ public class CrmMenus
     //public const string Positions = Prefix + ".Positions";
     public const string Tasks = Prefix + ".Tasks";
     public const string Dashboard = Prefix + ".Dashboard";
+    public const string Supports = Prefix + ".Supports";
 
 }
