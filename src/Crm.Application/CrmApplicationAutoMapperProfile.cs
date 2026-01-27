@@ -90,5 +90,6 @@ public class CrmApplicationAutoMapperProfile : Profile
                 .ReverseMap();
 
         CreateMap<SupportTicket, SupportTicketDto>();
+        CreateMap<SupportTicket, SupportTicketUpdateDto>();
     }
 }

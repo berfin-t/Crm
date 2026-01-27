@@ -1,1 +1,140 @@
-﻿
+﻿@page "/support-tickets"
+
+@using Crm.Common
+@using Crm.Support
+@using Crm.Employees
+
+@inject ISupportTicketAppService SupportTicketAppService
+@inject IEmployeeAppService EmployeeAppService
+@inject NavigationManager NavigationManager
+
+<DataGrid TItem="SupportTicketDto"
+          Data="SupportTickets"
+          Responsive
+          Striped
+          Hoverable>
+
+    <DataGridColumns>
+        <DataGridColumn TItem="SupportTicketDto" Field="@nameof(SupportTicketDto.Subject)" Caption="Subject" />
+        <DataGridColumn TItem="SupportTicketDto" Field="@nameof(SupportTicketDto.TicketStatus)" Caption="Status" />
+        <DataGridColumn TItem="SupportTicketDto" Field="@nameof(SupportTicketDto.Priority)" Caption="Priority" />
+
+        <DataGridColumn TItem="SupportTicketDto" Caption="İşlem">
+            <DisplayTemplate Context="ticket">
+                <Button Color="Color.Primary"
+                        Clicked="() => EditTicket(ticket)">
+                    Düzenle
+                </Button>
+            </DisplayTemplate>
+        </DataGridColumn>
+
+
+    </DataGridColumns>
+</DataGrid>
+
+
+@if (SelectedTicket != null)
+{
+    <Card class="mt-4">
+        <CardHeader>
+            <strong>Ticket Düzenle</strong>
+        </CardHeader>
+
+        <CardBody>
+            <Field>
+                <Label>Employee</Label>
+                <Select TValue="Guid?"
+                        @bind-SelectedValue="supportTicketUpdateDto.EmployeeId">
+
+                    <SelectItem TValue="Guid?" Value="null">
+                        -- Seçiniz --
+                    </SelectItem>
+
+                    @foreach (var employee in Employees)
+                    {
+                        <SelectItem TValue="Guid?" Value="employee.Id">
+                            @employee.FullName
+                        </SelectItem>
+                    }
+                </Select>
+
+            </Field>
+
+            <Field>
+                <Label>Status</Label>
+                <Select TValue="EnumTicketStatus"
+                        @bind-SelectedValue="supportTicketUpdateDto.TicketStatus">
+                    @foreach (var status in Enum.GetValues<EnumTicketStatus>())
+                    {
+                        <SelectItem Value="status">@status</SelectItem>
+                    }
+                </Select>
+            </Field>
+
+            <Field>
+                <Label>Öncelik</Label>
+                <Select TValue="EnumPriority?"
+                        @bind-SelectedValue="supportTicketUpdateDto.Priority">
+
+                    <SelectItem TValue="EnumPriority?" Value="null">
+                        -- Seçiniz --
+                    </SelectItem>
+
+                    @foreach (var priority in Enum.GetValues<EnumPriority>())
+                    {
+                        <SelectItem TValue="EnumPriority?" Value="priority">
+                            @priority
+                        </SelectItem>
+                    }
+                </Select>
+
+            </Field>
+
+            <Button Color="Color.Success" Clicked="Save">
+                Kaydet
+            </Button>
+        </CardBody>
+    </Card>
+}
+
+@code {
+    private IReadOnlyList<SupportTicketDto> SupportTickets = [];
+    private IReadOnlyList<EmployeeDto> Employees = [];
+
+    private SupportTicketDto? SelectedTicket;
+    private SupportTicketUpdateDto supportTicketUpdateDto = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SupportTickets = await SupportTicketAppService.GetListAllAsync();
+        Employees = await EmployeeAppService.GetListAllAsync();
+    }
+
+    private void EditTicket(SupportTicketDto ticket)
+    {
+        SelectedTicket = ticket;
+
+        supportTicketUpdateDto = new SupportTicketUpdateDto
+        {
+            TicketStatus = ticket.TicketStatus.Value,
+            Priority = ticket.Priority,
+            EmployeeId = ticket.EmployeeId
+        };
+    }
+
+    private async Task Save()
+    {
+        if (SelectedTicket is null)
+            return;
+
+        await SupportTicketAppService.UpdateAsync(
+            SelectedTicket.Id,
+            supportTicketUpdateDto
+        );
+
+        // listeyi yenile
+        SupportTickets = await SupportTicketAppService.GetListAllAsync();
+        SelectedTicket = null;
+    }
+}
+

@@ -140,10 +140,10 @@ public class CrmMenuContributor : IMenuContributor
             new ApplicationMenuItem(
                 CrmMenus.Supports,
                 l["Menu:Supports"],
-                icon: "fas fa-supports",
+                icon: "fas fa-life-ring",
                 url: "/supports",
                 order: 1
-            )
+                )
         );
 
         if (MultiTenancyConsts.IsEnabled)

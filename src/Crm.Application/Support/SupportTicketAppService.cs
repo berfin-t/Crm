@@ -51,6 +51,28 @@ namespace Crm.Support
             return customer.Id;
         }
 
+        #region GetListAll
+        [AllowAnonymous]
+        public async Task<List<SupportTicketDto>> GetListAllAsync()
+        {
+            var items = await supportTicketRepository.GetListAsync();
+            return ObjectMapper.Map<List<SupportTicket>, List<SupportTicketDto>>(items);
+        }
+        #endregion
+
+        #region Update
+        public async Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input)
+        {
+            var ticket = await supportTicketManager.AdminUpdateAsync(
+                id,
+                input.TicketStatus,
+                input.Priority,
+                input.EmployeeId
+            );
+
+            return ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
+        }
+        #endregion
 
         //#region Create
         //public async Task<SupportTicketDto> CreateAsync(SupportTicketCreateDto input)

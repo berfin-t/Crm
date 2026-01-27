@@ -9,8 +9,8 @@ namespace Crm.Support
 {
     public class SupportTicketUpdateDto
     {
-        public Guid EmployeeId { get; set; }
+        public Guid? EmployeeId { get; set; }
         public EnumTicketStatus TicketStatus { get; set; }
-        public EnumPriority Priority { get; set; }
+        public EnumPriority? Priority { get; set; }
     }
 }
