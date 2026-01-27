@@ -1,0 +1,100 @@
+﻿@page "/supports"
+@using Crm.Common
+@using Crm.Support
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+@inject ISupportTicketAppService SupportTicketAppService 
+
+<Container>
+    <Card>
+        <CardHeader>
+
+        </CardHeader>
+        <CardBody>
+            <DataGrid TItem="SupportTicketDto"
+                      Data="@supportTicketList"
+                      Editable
+                      Responsive
+                      ShowPager
+                      Filterable
+                      FilterMethod="DataGridFilterMethod.StartsWith"
+                      PagerPosition="DataGridPagerPosition.Bottom">
+
+                <DataGridColumn Field="@nameof(SupportTicketDto.Subject)" Caption="@L["Subject"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
+                <DataGridColumn TItem="SupportTicketDto" Caption="@L["Status"]">
+                    <DisplayTemplate>
+                        @{
+                            var status = context.TicketStatus;
+                            var badgeClass = status switch
+                            {
+                                EnumTicketStatus.Open => "badge bg-secondary",
+                                EnumTicketStatus.InProgress => "badge bg-info",
+                                EnumTicketStatus.WaitingForCustomer => "badge bg-warning text-dark",
+                                EnumTicketStatus.Resolved => "badge bg-success",
+                                EnumTicketStatus.Closed => "badge bg-danger",
+                                _ => "badge bg-light text-dark"
+                            };
+                        }
+
+                        <span class="@badgeClass">@status</span>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="SupportTicketDto" Caption="@L["Priority"]">
+                    <DisplayTemplate>
+                        @{
+                            var priority = context.Priority;
+                            var badgeClass = priority switch
+                            {
+                                EnumPriority.Low => "badge bg-secondary",
+                                EnumPriority.Medium => "badge bg-info",
+                                EnumPriority.High => "badge bg-warning text-dark",
+                                EnumPriority.Critical => "badge bg-danger",
+                                _ => "badge bg-light text-dark"
+                            };
+                        }
+
+                        <span class="@badgeClass">@priority</span>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn Field="@nameof(SupportTicketDto.LastResponseTime)" Caption="@L["Last Response Time"]" Editable />
+                <DataGridColumn Field="@nameof(SupportTicketDto.ClosedTime)" Caption="@L["Closed Time"]" Editable />
+
+                <DataGridColumn TItem="SupportTicketDto" Caption="@L["Details"]">
+                    <DisplayTemplate>
+                        <Button Color="Color.Info">
+                            <i class="fa-solid fa-eye"></i>
+                        </Button>
+                    </DisplayTemplate>
+                </DataGridColumn>
+
+
+                @* <DataGridCommandColumn>
+                     <NewCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Customer"]</Button>
+                        </Field>
+                    </NewCommandTemplate> 
+                    <EditCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Primary" 
+                             Clicked="@(() => ShowEditModal(context.Item))" 
+                            >
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </Button>
+                        </Field>
+                    </EditCommandTemplate>
+                    <DeleteCommandTemplate>
+                        <Field>
+                            <Button Color="Color.Danger"
+                             @onclick="() => OnDeleteClicked(context.Item)" 
+                            >
+                                <i class="fa-regular fa-trash-can"></i>
+                            </Button>
+                        </Field>
+                    </DeleteCommandTemplate>
+                </DataGridCommandColumn> *@
+
+            </DataGrid>
+        </CardBody>
+    </Card>
+</Container>

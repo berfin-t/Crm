@@ -9,6 +9,7 @@ using Crm.Employees;
 using Crm.Orders;
 using Crm.Positions;
 using Crm.Projects;
+using Crm.Support;
 using Crm.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -40,6 +41,7 @@ public class CrmDataSeederContributor(
     IOrderRepository orderRepository,
     ITaskRepository taskRepository,
     IProjectEmployeeRepository projectEmployeeRepository,
+    ISupportTicketRepository supportTicketRepository,
     UserManager<IdentityUser> userManager,
     RoleManager<IdentityRole> roleManager,
     IPermissionManager permissionManager,
@@ -60,6 +62,7 @@ public class CrmDataSeederContributor(
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
         var tasks = await SeedTasksAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
         var projectEmployees = await SeedProjectEmployeesAsync(projects.Select(p => p.Id), employees.Select(e => e.Id));
+        var supportTickets = await SeedSupportTicketsAsync(customers.Select(c=>c.Id), employees.Select(e=>e.Id));
     }
 
     #region User
@@ -100,6 +103,48 @@ public class CrmDataSeederContributor(
         }
 
         return user;
+    }
+    #endregion
+
+    #region SupportTickets
+    private async Task<IEnumerable<SupportTicket>> SeedSupportTicketsAsync(
+        IEnumerable<Guid> customers,
+        IEnumerable<Guid> employees)
+    {
+        var faker = new Faker<SupportTicket>("tr")
+    .CustomInstantiator(f =>
+    {
+        var ticket = new SupportTicket(
+            guidGenerator.Create(),
+            f.PickRandom(customers),
+            f.PickRandom(
+                "Sisteme giriş yapamıyorum",
+                "Fatura hatalı görünüyor",
+                "Hesabım askıya alındı",
+                "Şifre sıfırlama sorunu",
+                "Yetki problemim var",
+                "Destek talebi oluşturulamıyor",
+                "Performans çok yavaş"
+            ),
+            f.Lorem.Paragraph()
+        );
+
+        var status = f.PickRandom<EnumTicketStatus>();
+        var priority = f.PickRandom<EnumPriority>();
+
+        Guid? employeeId = employees.Any() && f.Random.Bool(0.6f)
+            ? f.PickRandom(employees)
+            : null;
+
+        ticket.AdminUpdate(status, priority, employeeId);
+
+        return ticket;
+    });
+
+        var supportTickets = faker.Generate(50);
+
+        await supportTicketRepository.InsertManyAsync(supportTickets, true);
+        return supportTickets;
     }
     #endregion
 
@@ -334,7 +379,6 @@ public class CrmDataSeederContributor(
     }
 
     #endregion
-
 
     #region Project Employees
     private async Task<IEnumerable<ProjectEmployee>> SeedProjectEmployeesAsync(IEnumerable<Guid> projects, IEnumerable<Guid> employees)
