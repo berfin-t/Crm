@@ -45,6 +45,23 @@ namespace Crm.Support
             EmployeeId = null;
         }
 
+        public void AdminUpdate(
+            EnumTicketStatus status,
+            EnumPriority? priority,
+            Guid? employeeId)
+        {
+            TicketStatus = status;
+            Priority = priority;
+            EmployeeId = employeeId;
+
+            LastResponseTime = DateTime.Now;
+
+            if (status == EnumTicketStatus.Closed)
+                ClosedTime = DateTime.Now;
+            else
+                ClosedTime = null;
+        }
+
         public void AssignEmployee(Guid employeeId)
         {
             EmployeeId = employeeId;
