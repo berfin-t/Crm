@@ -59,6 +59,12 @@ public class CrmPermissionDefinitionProvider : PermissionDefinitionProvider
         taskPermission.AddChild(CrmPermissions.Tasks.Create, L("Permission:Create"));
         taskPermission.AddChild(CrmPermissions.Tasks.Edit, L("Permission:Edit"));
         taskPermission.AddChild(CrmPermissions.Tasks.Delete, L("Permission:Delete"));
+
+        var supportTicketPermission = myGroup.AddPermission(CrmPermissions.SupportTickets.Default, L("Permission:SupportTickets"));
+        supportTicketPermission.AddChild(CrmPermissions.SupportTickets.Menu, L("Permission:Menu"));
+        supportTicketPermission.AddChild(CrmPermissions.SupportTickets.Create, L("Permission:Create"));
+        supportTicketPermission.AddChild(CrmPermissions.SupportTickets.Edit, L("Permission:Edit"));
+        supportTicketPermission.AddChild(CrmPermissions.SupportTickets.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

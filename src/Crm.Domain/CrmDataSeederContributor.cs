@@ -54,7 +54,7 @@ public class CrmDataSeederContributor(
         await SeedUserAsync("Berfin", "Tek", "employee_berfin", "berfin@gmail.com", "1q2w3E*", "employee");
         var customers = await SeedCustomersAsync();
         var positions = await SeedPositionsAsync();
-        var employees = await SeedEmployeesAsync(positions.Select(p => p.Id));        
+        var employees = await SeedEmployeesAsync(positions);
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
@@ -189,7 +189,7 @@ public class CrmDataSeederContributor(
                 f.Address.FullAddress(),
                 f.Company.CompanyName(),
                 f.PickRandom<EnumCustomer>()
-                ));
+                ));        
 
         var customers = faker.Generate(100);
         await customerRepository.InsertManyAsync(customers, true);
@@ -200,16 +200,80 @@ public class CrmDataSeederContributor(
     #region Positions
     private async Task<IEnumerable<Position>> SeedPositionsAsync()
     {
-        var faker = new Faker<Position>("tr")
-            .CustomInstantiator(f => new Position(
-                guidGenerator.Create(),
-                f.Name.JobTitle(),
-                f.Lorem.Sentence(),
-                f.Random.Decimal(1000, 5000),
-                f.Random.Int(1, 5),
-                f.Random.Int(6, 10)
-                ));
-        var positions = faker.Generate(20);
+        if (await positionRepository.AnyAsync())
+        {
+            return await positionRepository.GetListAsync();
+        }
+        var positions = new List<Position>
+    {
+        // ===== PROJE & YÖNETİM =====
+        new Position(guidGenerator.Create(), "Proje Yöneticisi",
+            "CRM projesinin planlanması ve yönetilmesi.", 7500, 5, 10),
+
+        new Position(guidGenerator.Create(), "Teknik Proje Yöneticisi",
+            "Teknik ekip ve iş birimleri arasındaki koordinasyonu sağlar.", 8000, 5, 10),
+
+        new Position(guidGenerator.Create(), "Ürün Sahibi (Product Owner)",
+            "CRM ürün gereksinimlerini ve önceliklerini belirler.", 7800, 4, 8),
+
+        new Position(guidGenerator.Create(), "BT Müdürü",
+            "Yazılım ve destek ekiplerinin genel yönetiminden sorumludur.", 9500, 8, 15),
+
+        // ===== ANALİZ =====
+        new Position(guidGenerator.Create(), "İş Analisti",
+            "İş gereksinimlerini analiz eder ve dokümante eder.", 6200, 3, 7),
+
+        new Position(guidGenerator.Create(), "Sistem Analisti",
+            "CRM sistem mimarisini ve entegrasyonları analiz eder.", 6500, 3, 7),
+
+        new Position(guidGenerator.Create(), "CRM Analisti",
+            "CRM verilerini analiz eder ve raporlar oluşturur.", 6000, 2, 6),
+
+        // ===== YAZILIM GELİŞTİRME =====
+        new Position(guidGenerator.Create(), "CRM Yazılım Geliştirici",
+            "CRM modüllerinin geliştirilmesini sağlar.", 6000, 2, 5),
+
+        new Position(guidGenerator.Create(), "Kıdemli Yazılım Geliştirici",
+            "Mimari kararlar alır ve ekibe mentorluk yapar.", 8000, 5, 10),
+
+        new Position(guidGenerator.Create(), "Backend Developer (.NET)",
+            ".NET tabanlı servis ve API geliştirme.", 6800, 2, 6),
+
+        new Position(guidGenerator.Create(), "Frontend Developer (React)",
+            "CRM kullanıcı arayüzlerinin geliştirilmesi.", 6500, 2, 6),
+
+        new Position(guidGenerator.Create(), "Full Stack Developer",
+            "CRM sisteminin uçtan uca geliştirilmesi.", 7200, 3, 7),
+
+        new Position(guidGenerator.Create(), "Entegrasyon Geliştiricisi",
+            "CRM ile diğer sistemler arasındaki entegrasyonları geliştirir.", 7000, 3, 7),
+
+        // ===== DEVOPS & TEST =====
+        new Position(guidGenerator.Create(), "DevOps Mühendisi",
+            "CI/CD süreçlerini ve canlıya alma operasyonlarını yönetir.", 8000, 3, 8),
+
+        new Position(guidGenerator.Create(), "Test / QA Mühendisi",
+            "Yazılım test süreçlerini yürütür.", 5500, 1, 4),
+
+        // ===== DESTEK & OPERASYON =====
+        new Position(guidGenerator.Create(), "Teknik Destek Uzmanı",
+            "Kullanıcı kaynaklı teknik sorunları çözer.", 4200, 1, 4),
+
+        new Position(guidGenerator.Create(), "Kıdemli Teknik Destek Uzmanı",
+            "Karmaşık destek taleplerini çözer ve rehberlik eder.", 5200, 4, 8),
+
+        new Position(guidGenerator.Create(), "Uygulama Destek Uzmanı",
+            "Canlı ortam CRM uygulamalarının desteklenmesi.", 5000, 2, 5),
+
+        new Position(guidGenerator.Create(), "Canlı Ortam (Production) Destek Uzmanı",
+            "Canlı sistemde oluşan kritik hatalara müdahale eder.", 5600, 3, 7),
+
+        new Position(guidGenerator.Create(), "Destek Ekibi Lideri",
+            "Destek ekibinin yönetilmesi ve süreçlerin iyileştirilmesi.", 6500, 5, 10),
+
+        new Position(guidGenerator.Create(), "Çağrı Merkezi Destek Personeli",
+            "Müşteri taleplerini ilk seviyede karşılar.", 3500, 0, 2)
+    };
 
         await positionRepository.InsertManyAsync(positions, true);
         return positions;
@@ -217,7 +281,7 @@ public class CrmDataSeederContributor(
     #endregion
 
     #region Employees
-    private async Task<IEnumerable<Employee>> SeedEmployeesAsync(IEnumerable<Guid> positionIds)
+    private async Task<IEnumerable<Employee>> SeedEmployeesAsync(IEnumerable<Position> positions)
     {
         if (await employeeRepository.AnyAsync())
         {
@@ -225,46 +289,72 @@ public class CrmDataSeederContributor(
         }
 
         var faker = new Faker("tr");
-        List<Employee> employees = new List<Employee>();
+        var employees = new List<Employee>();
 
         string[] crmPermissions = ["Activity", "Task", "Meeting", "Note"];
 
-        foreach (var positionId in positionIds)
+        foreach (var position in positions)
         {
-            int employeeCount = faker.Random.Int(2, 3);
+            int employeeCount = position.Name switch
+            {
+                var name when name.Contains("Müdür") ||
+                                name.Contains("Yönetici") ||
+                                name.Contains("Product Owner") => 1,
+
+                var name when name.Contains("Analist") ||
+                                name.Contains("Lider") ||
+                                name.Contains("QA") ||
+                                name.Contains("DevOps") => faker.Random.Int(1, 2),
+
+                var name when name.Contains("Developer") ||
+                                name.Contains("Geliştirici") => faker.Random.Int(2, 4),
+
+                var name when name.Contains("Destek") ||
+                                name.Contains("Çağrı") => faker.Random.Int(3, 5),
+
+                _ => faker.Random.Int(1, 2)
+            };
+
             for (int i = 0; i < employeeCount; i++)
             {
                 var gender = faker.PickRandom<Name.Gender>();
-                var enumGender = gender == Name.Gender.Male ? EnumGender.Male : EnumGender.Female;
+                var enumGender = gender == Name.Gender.Male
+                    ? EnumGender.Male
+                    : EnumGender.Female;
+
                 var firstName = faker.Name.FirstName(gender);
                 var lastName = faker.Name.LastName(gender);
+
                 var email = faker.Internet.Email(firstName, lastName);
                 var phone = faker.Phone.PhoneNumber();
                 var address = faker.Address.FullAddress();
+
                 var birthDate = faker.Date.Past(30, DateTime.Now.AddYears(-18));
-                var photoPath = enumGender == EnumGender.Male ? "/images/profile/male.jpg" : "/images/profile/female.jpg";
+                var photoPath = enumGender == EnumGender.Male
+                    ? "/images/profile/male.jpg"
+                    : "/images/profile/female.jpg";
 
                 var user = await SeedUserAsync(
-                firstName,
-                lastName,
-                faker.Internet.UserName(firstName, lastName),
-                faker.Internet.Email(firstName, lastName),
-                "1q2w3E*",
-                "employee",
-                crmPermissions
-            );
+                    firstName,
+                    lastName,
+                    faker.Internet.UserName(firstName, lastName),
+                    email,
+                    "1q2w3E*",
+                    "employee",
+                    crmPermissions
+                );
 
                 var employee = new Employee(
-            guidGenerator.Create(),
-            firstName,
-            lastName,
-            faker.Phone.PhoneNumber(),
-            faker.Address.FullAddress(),
-            birthDate,
-            photoPath,
-            enumGender,
-            positionId
-        );
+                    guidGenerator.Create(),
+                    firstName,
+                    lastName,
+                    phone,
+                    address,
+                    birthDate,
+                    photoPath,
+                    enumGender,
+                    position.Id
+                );
 
                 employee.SetUserId(user.Id);
                 employees.Add(employee);
@@ -272,7 +362,6 @@ public class CrmDataSeederContributor(
         }
 
         await employeeRepository.InsertManyAsync(employees, true);
-
         return employees;
     }
     #endregion
