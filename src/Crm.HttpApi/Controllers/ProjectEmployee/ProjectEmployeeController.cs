@@ -22,6 +22,6 @@ namespace Crm.Controllers.ProjectEmployee
 
         [HttpPost]
         [Route("create")]
-        public virtual Task<ProjectDto> CreateAsync(ProjectEmployeeCreateDto input) => _projectEmployeeAppService.CreateAsync(input);
+        public virtual Task<ProjectDto> CreateAsync(ProjectCreateDto input) => _projectEmployeeAppService.CreateAsync(input);
     }
 }

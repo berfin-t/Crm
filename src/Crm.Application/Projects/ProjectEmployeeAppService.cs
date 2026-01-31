@@ -16,7 +16,7 @@ namespace Crm.Projects
     {
         #region Create
         [Authorize(CrmPermissions.Projects.Create)]
-        public virtual async Task<ProjectDto> CreateAsync(ProjectEmployeeCreateDto input)
+        public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await projectEmployeeManager.CreateAsync(
                 input.EmployeeIds,          

@@ -3,6 +3,7 @@ using Crm.Common;
 using Crm.Customers;
 using Crm.Employees;
 using Crm.Projects;
+using DeviceDetectorNET;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Reference 
         private EventCallback EventCallback { get; set; }
         private Modal? modalRef;
-        private ProjectEmployeeCreateDto ProjectCreateDto { get; set; } = new(); 
+        private ProjectCreateDto ProjectCreateDto { get; set; } = new(); 
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<CustomerDto> Customers { get; set; } = new();
         public List<Guid> SelectedEmployeeIds { get; set; } = new();
@@ -39,6 +40,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             Customers = await CustomerAppService.GetListAllAsync();
         }
 
+        #region Show and Hide Modal
         public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -49,7 +51,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             ProjectCreateDto.Name = Name ?? string.Empty;
             ProjectCreateDto.Description = Description ?? string.Empty;
             ProjectCreateDto.StartTime = DateTime.Now;
-            ProjectCreateDto.EndTime = EndTime ?? DateTime.Now;
+            ProjectCreateDto.EndTime = DateTime.Now;
             ProjectCreateDto.Statues = EnumStatus.Active;
             ProjectCreateDto.Revenue = 0;
             ProjectCreateDto.SuccesRate = 0;
@@ -58,12 +60,13 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             SelectedCustomerId = Guid.Empty;
 
             await modalRef!.Show();
-        }
+        }       
 
         private Task HideModal()
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Create Project       
         private async Task CreateProjectAsync()
@@ -76,21 +79,76 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             if (!isValid)
                 return;
 
-            //ProjectCreateDto.Name = Name!;
-            //ProjectCreateDto.Description = Description;
-            //ProjectCreateDto.StartTime = StartTime;
-            //ProjectCreateDto.EndTime = EndTime;
-            //ProjectCreateDto.Statues = Status;
-            //ProjectCreateDto.Revenue = Revenue;
-            //ProjectCreateDto.SuccesRate = SuccesRate;
-            //ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;   // ✔ Çoklu çalışan
-            //ProjectCreateDto.CustomerId = SelectedCustomerId;
+            if (SelectedCustomerId == Guid.Empty)
+                return;
+            ProjectCreateDto.CustomerId = SelectedCustomerId;
+            ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;
+            ProjectCreateDto.Statues = Status;
+            ProjectCreateDto.Revenue = Revenue;
+            ProjectCreateDto.SuccesRate = SuccesRate;
 
-                await ProjectEmployeeAppService.CreateAsync(ProjectCreateDto);
+            await ProjectEmployeeAppService.CreateAsync(ProjectCreateDto);
                 await HideModal();
                 await EventCallback.InvokeAsync();
             
         }
-        #endregion        
+        #endregion
+
+        #region Validate
+        private void ValidateEmployee(ValidatorEventArgs e)
+        {
+            var values = e.Value as List<Guid>;
+
+            if (values == null || !values.Any())
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+
+        private void ValidateCustomer(ValidatorEventArgs e)
+        {
+            var value = (Guid?)e.Value;
+
+            if (value == null || value == Guid.Empty)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+        private void ValidateRevenue(ValidatorEventArgs e)
+        {
+            var value = (decimal?)e.Value;
+
+            if (!value.HasValue || value <= 0)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+
+        private void ValidateSuccesRate(ValidatorEventArgs e)
+        {
+            var value = (decimal?)e.Value;
+
+            if (!value.HasValue || value <= 0)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+        #endregion
     }
 }

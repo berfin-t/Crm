@@ -64,7 +64,7 @@
                             <Field>
                                 <FieldLabel>@L["End Time"]:</FieldLabel>
                                 <FieldBody>
-                                    <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="EndTime" />                                                              
+                                    <DatePicker TValue="DateTime?" InputMode="DateInputMode.Date" @bind-Date="ProjectCreateDto.EndTime" />                                                              
                                 </FieldBody>
                             </Field>
                         </Card>
@@ -80,39 +80,61 @@
                     </Select>
                 </Field>
 
-                <!-- Revenue -->                
+                    <!-- Revenue -->
+                    <Validation Validator="ValidateRevenue"> 
                         <Field>
                             <FieldLabel>@L["Revenue"]:</FieldLabel>
                             <FieldBody>
-                                <NumericEdit @bind-Value="Revenue" class="form-control" />
+                                <NumericEdit TValue="decimal"
+                                             @bind-Value="Revenue"
+                                             class="form-control"/>
+                                <ValidationError />
                             </FieldBody>
+                            <ValidationError>
+                                @L["Revenue must be greater than 0"]
+                            </ValidationError>
                         </Field>
-                
-                <!-- Succes Rate -->                
-                        <Field>
-                            <FieldLabel>@L["Succes Rate"]:</FieldLabel>
-                            <FieldBody>
-                                <InputNumber @bind-Value="SuccesRate" class="form-control" />                               
-                            </FieldBody>                            
-                        </Field>              
+                    </Validation>
+                    
+
+                    <!-- Success Rate -->
+                    <Validation Validator="ValidateSuccesRate"> 
+                    <Field>
+                        <FieldLabel>@L["Succes Rate"]:</FieldLabel>
+                        <FieldBody>
+                            <NumericEdit TValue="decimal"
+                                         @bind-Value="SuccesRate"
+                                         class="form-control"
+                                         Validator="ValidateSuccesRate" />                            
+                        </FieldBody>
+                            <ValidationError>
+                                @L["Success Rate must be greater than 0"]
+                            </ValidationError> 
+                    </Field>
+                   </Validation> 
                 
                 <!-- Employee -->
+                <Validation Validator="ValidateEmployee"> 
                         <Field>
                             <FieldLabel>@L["Employees"]:</FieldLabel>
                             <FieldBody>
-                                <Select TValue="Guid"
-                                        Multiple="true"
-                                        SelectedValues="SelectedEmployeeIds"
+                                <Select TValue="Guid" Multiple="true" SelectedValues="SelectedEmployeeIds"
                                         SelectedValuesChanged="@(v => SelectedEmployeeIds = v.ToList())">
                                     @foreach (var employee in Employees)
                                     {
                                         <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
                                     }
                                 </Select>
+
+                                <ValidationError>
+                                    @L["Employee is required"]
+                                </ValidationError> 
                             </FieldBody>                            
                         </Field>
+                    </Validation> 
 
                 <!-- Customer -->
+               <Validation Validator="ValidateCustomer"> 
                         <Field>
                             <FieldLabel>@L["Customer"]:</FieldLabel>
                             <FieldBody>
@@ -124,8 +146,13 @@
 
                                     }
                                 </Select>
+
+                                <ValidationError>
+                                    @L["Customer is required"]
+                                </ValidationError> 
                             </FieldBody>                            
                         </Field>
+                   </Validation> 
 
                 </Validations>
             </ModalBody>

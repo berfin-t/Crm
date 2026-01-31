@@ -9,6 +9,6 @@ namespace Crm.Projects
 {
     public interface IProjectEmployeeAppService:IApplicationService
     {
-        Task<ProjectDto> CreateAsync(ProjectEmployeeCreateDto input);
+        Task<ProjectDto> CreateAsync(ProjectCreateDto input);
     }
 }
