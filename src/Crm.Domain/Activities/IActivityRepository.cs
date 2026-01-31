@@ -23,5 +23,8 @@ namespace Crm.Activities
         Task<List<Activity>> GetListByCustomerAsync(
             Guid? customerId = null,
             CancellationToken cancellationToken = default);
+
+        Task<List<Activity>> GetListByEmployeeIdAsync(Guid employeeId);
+        
     }
 }

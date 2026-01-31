@@ -20,17 +20,17 @@ namespace Crm.Controllers.Activities
         protected IActivityAppService _activityAppService;
         public ActivityController(IActivityAppService activityAppService) => _activityAppService = activityAppService;
 
-        [HttpGet]
-        [Route("{id}")]
-        public virtual Task<ActivityDto> GetAsync(Guid id) => _activityAppService.GetAsync(id);
+        //[HttpGet]
+        //[Route("{id}")]
+        //public virtual Task<ActivityDto> GetAsync(Guid id) => _activityAppService.GetAsync(id);
 
         [HttpGet]
         [Route("all")]
         public virtual Task<List<ActivityDto>> GetListAllAsync() => _activityAppService.GetListAllAsync();
 
-        [HttpGet]
-        [Route("paged")]
-        public virtual Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input) => _activityAppService.GetListAsync(input);
+        //[HttpGet]
+        //[Route("paged")]
+        //public virtual Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input) => _activityAppService.GetListAsync(input);
 
         [HttpPost]
         [Route("create")]
@@ -53,5 +53,10 @@ namespace Crm.Controllers.Activities
         [Route("by-customer/{customerId}")]
         public virtual Task<List<ActivityDto>> GetListByCustomerAsync(Guid customerId)
             => _activityAppService.GetListByCustomerAsync(customerId);
+
+        [HttpGet]
+        [Route("by-employee")]
+        public virtual Task<List<ActivityDto>> GetListByEmployeeAsync()
+            => _activityAppService.GetListByEmployeeAsync();
     }
 }

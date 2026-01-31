@@ -8,13 +8,14 @@ namespace Crm.Activities
 {
     public interface IActivityAppService:IApplicationService
     {
-        Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input);
+        //Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input);
         Task<List<ActivityDto>> GetListAllAsync();
-        Task<ActivityDto> GetAsync(Guid id);
+        //Task<ActivityDto> GetAsync(Guid id);
         Task<ActivityDto> CreateAsync(ActivityCreateDto input);
         Task<ActivityDto> UpdateAsync(Guid id, ActivityUpdateDto input);
         Task DeleteAsync(Guid id);
         Task<ActivityWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id);
         Task<List<ActivityDto>> GetListByCustomerAsync(Guid customerId);
+        Task<List<ActivityDto>> GetListByEmployeeAsync();
     }
 }

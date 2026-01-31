@@ -37,10 +37,14 @@ namespace Crm.Blazor.Components.Pages.Activities
             canEditActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Edit);
             canDeleteActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Delete);
 
-            var allActivities = await ActivityAppService.GetListAllAsync();
-            if (allActivities != null)
+            var activities = await ActivityAppService.GetListByEmployeeAsync();
+
+            if (activities != null)
             {
-                activityList = allActivities.Where(a => a.Date > DateTime.Now).OrderBy(a => a.Date).ToList();
+                activityList = activities
+                    .Where(a => a.Date > DateTime.Now)
+                    .OrderBy(a => a.Date)
+                    .ToList();
             }
         }        
         public async Task ShowCreateModal()

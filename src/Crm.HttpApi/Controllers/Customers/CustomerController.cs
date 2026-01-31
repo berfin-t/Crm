@@ -3,11 +3,8 @@ using Crm.Customers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Dtos;
 
 namespace Crm.Controllers.Customers
 {
@@ -28,9 +25,9 @@ namespace Crm.Controllers.Customers
         [Route("all")]
         public virtual Task<List<CustomerDto>> GetListAllAsync() => _customerAppService.GetListAllAsync();
 
-        [HttpGet]
-        [Route("paged")]
-        public virtual Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input) => _customerAppService.GetListAsync(input);
+        //[HttpGet]
+        //[Route("paged")]
+        //public virtual Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input) => _customerAppService.GetListAsync(input);
 
         [HttpPost]
         [Route("create")]
@@ -48,16 +45,16 @@ namespace Crm.Controllers.Customers
         [Route("{id}")]
         public virtual Task DeleteAsync(Guid id) => _customerAppService.DeleteAsync(id);
 
-        [HttpGet("{id}/pdf")]
-        public async Task<IActionResult> DownloadCustomerPdf(Guid id)
-        {
-            var file = await _customerAppService.GetCustomerPdfAsync(id);
+        //[HttpGet("{id}/pdf")]
+        //public async Task<IActionResult> DownloadCustomerPdf(Guid id)
+        //{
+        //    var file = await _customerAppService.GetCustomerPdfAsync(id);
 
-            return File(
-                file.FileBytes,
-                "application/pdf",
-                file.FileName
-            );
-        }
+        //    return File(
+        //        file.FileBytes,
+        //        "application/pdf",
+        //        file.FileName
+        //    );
+        //}
     }
 }

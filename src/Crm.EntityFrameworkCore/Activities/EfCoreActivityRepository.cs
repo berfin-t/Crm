@@ -95,5 +95,12 @@ namespace Crm.Activities
                 .ToListAsync(cancellationToken);
         }
         #endregion
+
+        #region GetListByEmployeeIdAsync
+        public async Task<List<Activity>> GetListByEmployeeIdAsync(Guid employeeId)
+        {
+            return await GetListAsync(a => a.EmployeeId == employeeId);
+        }
+        #endregion
     }
 }

@@ -1,14 +1,10 @@
 ﻿using Crm.Activities;
 using Crm.CustomerNotes;
 using Crm.Customers.Events;
-using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -57,23 +53,23 @@ namespace Crm.Customers
         }
         #endregion
 
-        #region GetListPaged
-        [AllowAnonymous]
-        public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
-        {
-            var totalCount = await customerRepository.GetCountAsync(
-                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
+        //#region GetListPaged
+        //[AllowAnonymous]
+        //public async Task<PagedResultDto<CustomerDto>> GetListAsync(GetPagedCustomersInput input)
+        //{
+        //    var totalCount = await customerRepository.GetCountAsync(
+        //        input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
 
-            var items = await customerRepository.GetListAsync(
-                input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
+        //    var items = await customerRepository.GetListAsync(
+        //        input.Name, input.Surname, input.Email, input.Phone, input.Address, input.CompanyName, input.CustomerType);
 
-            return new PagedResultDto<CustomerDto>
-            {
-                TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(items)
-            };
-        }
-        #endregion
+        //    return new PagedResultDto<CustomerDto>
+        //    {
+        //        TotalCount = totalCount,
+        //        Items = ObjectMapper.Map<List<Customer>, List<CustomerDto>>(items)
+        //    };
+        //}
+        //#endregion
 
         #region Update
         public async Task<CustomerDto> UpdateAsync(Guid id, CustomerUpdateDto input)
@@ -106,25 +102,25 @@ namespace Crm.Customers
         }
         #endregion
 
-        #region GetCustomerPdfAsync
-        public async Task<CustomerFileDto> GetCustomerPdfAsync(Guid id)
-        {
-            var customer = await customerRepository.GetAsync(id);
-            var notes = await customerNoteRepository.GetListAsync(x => x.CustomerId == id);
-            var activities = await activityRepository.GetListAsync(x => x.CustomerId == id);
+        //#region GetCustomerPdfAsync
+        //public async Task<CustomerFileDto> GetCustomerPdfAsync(Guid id)
+        //{
+        //    var customer = await customerRepository.GetAsync(id);
+        //    var notes = await customerNoteRepository.GetListAsync(x => x.CustomerId == id);
+        //    var activities = await activityRepository.GetListAsync(x => x.CustomerId == id);
 
-            var customerDto = ObjectMapper.Map<Customer, CustomerDto>(customer);
-            var notesDto = ObjectMapper.Map<List<CustomerNote>, List<CustomerNoteDto>>(notes);
-            var activitiesDto = ObjectMapper.Map<List<Activity>, List<ActivityDto>>(activities);
+        //    var customerDto = ObjectMapper.Map<Customer, CustomerDto>(customer);
+        //    var notesDto = ObjectMapper.Map<List<CustomerNote>, List<CustomerNoteDto>>(notes);
+        //    var activitiesDto = ObjectMapper.Map<List<Activity>, List<ActivityDto>>(activities);
 
-            var document = new CustomerReportDocument(customerDto, notesDto, activitiesDto);
+        //    var document = new CustomerReportDocument(customerDto, notesDto, activitiesDto);
 
-            var pdfBytes = document.GeneratePdf();
-            var fileName = $"{customerDto.Name}_{customerDto.Surname}_Report.pdf";
+        //    var pdfBytes = document.GeneratePdf();
+        //    var fileName = $"{customerDto.Name}_{customerDto.Surname}_Report.pdf";
 
-            return new CustomerFileDto(fileName, pdfBytes);
-        }
-        #endregion
+        //    return new CustomerFileDto(fileName, pdfBytes);
+        //}
+        //#endregion
 
     }
 }

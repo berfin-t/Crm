@@ -1,19 +1,18 @@
-﻿using Crm.Permissions;
+﻿using Crm.Employees;
+using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Dtos;
-using Volo.Abp.Authorization;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Repositories;
 
 namespace Crm.Activities
 {
     [RemoteService(IsEnabled = false)]
-    public class ActivityAppService(IActivityRepository activityRepository,
+    public class ActivityAppService(IActivityRepository activityRepository, IEmployeeRepository employeeRepository,
         ActivityManager activityManager) : CrmAppService, IActivityAppService
     {
         #region Create
@@ -28,13 +27,13 @@ namespace Crm.Activities
         }
         #endregion
 
-        #region Get
-        [AllowAnonymous]
-        public async Task<ActivityDto> GetAsync(Guid id)
-        {
-            return ObjectMapper.Map<Activity, ActivityDto>(await activityRepository.GetAsync(id));
-        }
-        #endregion
+        //#region Get
+        //[AllowAnonymous]
+        //public async Task<ActivityDto> GetAsync(Guid id)
+        //{
+        //    return ObjectMapper.Map<Activity, ActivityDto>(await activityRepository.GetAsync(id));
+        //}
+        //#endregion
 
         #region GetListAll
         [AllowAnonymous]
@@ -58,25 +57,45 @@ namespace Crm.Activities
         }
         #endregion
 
-        #region GetListPaged
-        [AllowAnonymous]
-        public virtual async Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input)
+        #region GetListByEmployeeAsync
+        [Authorize]
+        public async Task<List<ActivityDto>> GetListByEmployeeAsync()
         {
-            var totalCount = await activityRepository.GetCountAsync(
-                input.Type, input.Description, input.Date,
-                input.CustomerId, input.EmployeeId);
+            var employee = await employeeRepository
+                .FirstOrDefaultAsync(e => e.UserId == CurrentUser.Id);
 
-            var items = await activityRepository.GetListAllAsync(
-                input.Type, input.Description, input.Date,
-                input.CustomerId, input.EmployeeId);
-
-            return new PagedResultDto<ActivityDto>
+            if (employee == null)
             {
-                TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Activity>, List<ActivityDto>>(items)
-            };
+                var allItems = await activityRepository.GetListAsync();
+                return ObjectMapper.Map<List<Activity>, List<ActivityDto>>(allItems);
+            }
+
+            var items = await activityRepository
+                .GetListByEmployeeIdAsync(employee.Id);
+
+            return ObjectMapper.Map<List<Activity>, List<ActivityDto>>(items);
         }
         #endregion
+
+        //#region GetListPaged
+        //[AllowAnonymous]
+        //public virtual async Task<PagedResultDto<ActivityDto>> GetListAsync(GetPagedActivitiesInput input)
+        //{
+        //    var totalCount = await activityRepository.GetCountAsync(
+        //        input.Type, input.Description, input.Date,
+        //        input.CustomerId, input.EmployeeId);
+
+        //    var items = await activityRepository.GetListAllAsync(
+        //        input.Type, input.Description, input.Date,
+        //        input.CustomerId, input.EmployeeId);
+
+        //    return new PagedResultDto<ActivityDto>
+        //    {
+        //        TotalCount = totalCount,
+        //        Items = ObjectMapper.Map<List<Activity>, List<ActivityDto>>(items)
+        //    };
+        //}
+        //#endregion
 
         #region Update
         [Authorize(CrmPermissions.Activities.Edit)]
