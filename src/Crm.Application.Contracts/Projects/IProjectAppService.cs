@@ -10,7 +10,7 @@ namespace Crm.Projects
 {
     public interface IProjectAppService:IApplicationService
     {
-        Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input);
+        //Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input);
         Task<List<ProjectDto>> GetListAllAsync();
         Task<ProjectDto> GetAsync(Guid id);
         Task<ProjectDto> CreateAsync(ProjectCreateDto input);
@@ -18,6 +18,6 @@ namespace Crm.Projects
         Task<long> GetTotalProjectCountAsync();
         Task<decimal> GetSuccessRateAverageAsync(decimal? succesRate);
         Task DeleteAsync(Guid id);
-        Task<List<ProjectDto>> SearchByNameAsync(string name);
+        //Task<List<ProjectDto>> SearchByNameAsync(string name);
     }
 }

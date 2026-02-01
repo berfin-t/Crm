@@ -21,17 +21,17 @@ namespace Crm.Controllers.Employees
         protected IEmployeeAppService _employeeAppService;
         public EmployeeController(IEmployeeAppService employeeAppService) => _employeeAppService = employeeAppService;
 
-        [HttpGet]
-        [Route("{id}")]
-        public virtual Task<EmployeeDto> GetAsync(GetEmployeeInput input) => _employeeAppService.GetAsync(input);
+        //[HttpGet]
+        //[Route("{id}")]
+        //public virtual Task<EmployeeDto> GetAsync(GetEmployeeInput input) => _employeeAppService.GetAsync(input);
 
         [HttpGet]
         [Route("all")]
         public virtual Task<List<EmployeeDto>> GetListAllAsync() => _employeeAppService.GetListAllAsync();
 
-        [HttpGet]
-        [Route("paged")]
-        public virtual Task<PagedResultDto<EmployeeDto>> GetListAsync(GetPagedEmployeesInput input) => _employeeAppService.GetListAsync(input);
+        //[HttpGet]
+        //[Route("paged")]
+        //public virtual Task<PagedResultDto<EmployeeDto>> GetListAsync(GetPagedEmployeesInput input) => _employeeAppService.GetListAsync(input);
 
         [HttpPost]
         [Route("create")]
@@ -48,23 +48,23 @@ namespace Crm.Controllers.Employees
         [Route("{id}")]
         public virtual Task DeleteAsync(Guid id) => _employeeAppService.DeleteAsync(id);
 
-        [HttpGet]
-        [Route("with-navigation-properties/{id}")]
-        public virtual Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) => _employeeAppService.GetWithNavigationPropertiesAsync(id);
+        //[HttpGet]
+        //[Route("with-navigation-properties/{id}")]
+        //public virtual Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) => _employeeAppService.GetWithNavigationPropertiesAsync(id);
 
         [HttpGet]
         public virtual Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId) => _employeeAppService.GetEmployeesByProjectIdAsync(projectId);
 
-        [HttpGet]
-        [Route("user/{userId}")]
-        public virtual Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId) => _employeeAppService.GetEmployeeUserAsync(userId);
+        //[HttpGet]
+        //[Route("user/{userId}")]
+        //public virtual Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId) => _employeeAppService.GetEmployeeUserAsync(userId);
 
-        [HttpPost]
-        [Route("change-password/{userId}")]
-        public virtual Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input) => _employeeAppService.ChangePasswordAsync(userId, input);
-        [HttpPut]
-        [Route("update-user/{userId}")]
-        public virtual Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input) => _employeeAppService.UpdateUserAsync(userId, input);
+        //[HttpPost]
+        //[Route("change-password/{userId}")]
+        //public virtual Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input) => _employeeAppService.ChangePasswordAsync(userId, input);
+        //[HttpPut]
+        //[Route("update-user/{userId}")]
+        //public virtual Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input) => _employeeAppService.UpdateUserAsync(userId, input);
     
         [HttpGet]
         [Route("monthly-assigned-task-counts")]

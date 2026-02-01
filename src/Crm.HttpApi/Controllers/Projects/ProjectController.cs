@@ -27,9 +27,9 @@ namespace Crm.Controllers.Projects
         [Route("all")]
         public virtual Task<List<ProjectDto>> GetListAllAsync() => _projectAppService.GetListAllAsync();
        
-        [HttpGet]
-        [Route("paged")]
-        public virtual Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input) => _projectAppService.GetListAsync(input);
+        //[HttpGet]
+        //[Route("paged")]
+        //public virtual Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input) => _projectAppService.GetListAsync(input);
         
         [HttpPost]
         [Route("create")]
@@ -51,8 +51,8 @@ namespace Crm.Controllers.Projects
         [Route("{id}")]
         public virtual Task DeleteAsync(Guid id) => _projectAppService.DeleteAsync(id);
 
-        [HttpGet]
-        [Route("search")]
-        public virtual Task<List<ProjectDto>> SearchByNameAsync(string name) => _projectAppService.SearchByNameAsync(name);
+        //[HttpGet]
+        //[Route("search")]
+        //public virtual Task<List<ProjectDto>> SearchByNameAsync(string name) => _projectAppService.SearchByNameAsync(name);
     }
 }

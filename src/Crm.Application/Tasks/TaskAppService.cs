@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using Crm.Common;
-using Crm.Permissions;
-using Crm.Projects;
 using Crm.Tasks.Events;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,12 +32,12 @@ namespace Crm.Tasks
         }
         #endregion
 
-        #region Get
-        public async Task<TaskDto> GetAsync(Guid id)
-        {
-            return ObjectMapper.Map<Task, TaskDto>(await taskRepository.GetAsync(id));
-        }
-        #endregion
+        //#region Get
+        //public async Task<TaskDto> GetAsync(Guid id)
+        //{
+        //    return ObjectMapper.Map<Task, TaskDto>(await taskRepository.GetAsync(id));
+        //}
+        //#endregion
 
         #region GetListAll
         public async Task<List<TaskDto>> GetListAllAsync()
@@ -100,15 +96,15 @@ namespace Crm.Tasks
         }
         #endregion
 
-        #region UpdateStatus
-        public async Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus)
-        {
-            var task = await taskRepository.GetAsync(id);
-            task.SetStatus(newStatus);
+        //#region UpdateStatus
+        //public async Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus)
+        //{
+        //    var task = await taskRepository.GetAsync(id);
+        //    task.SetStatus(newStatus);
 
-            await taskRepository.UpdateAsync(task);
-            return _mapper.Map<TaskDto>(task);
-        }
-        #endregion
+        //    await taskRepository.UpdateAsync(task);
+        //    return _mapper.Map<TaskDto>(task);
+        //}
+        //#endregion
     }
 }

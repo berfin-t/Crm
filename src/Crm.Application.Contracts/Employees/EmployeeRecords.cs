@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
-namespace Crm.Employees;
+//namespace Crm.Employees;
 
-public record GetEmployeeInput(Guid? EmployeeId = null, Guid? UserId = null);
+//public record GetEmployeeInput(Guid? EmployeeId = null, Guid? UserId = null);
 
-public record SendEmployeeNotificationInput(Guid EmployeeId, string Message);
+//public record SendEmployeeNotificationInput(Guid EmployeeId, string Message);

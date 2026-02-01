@@ -13,12 +13,12 @@ namespace Crm.Tasks
     {
         Task<PagedResultDto<TaskDto>> GetListAsync(GetPagedTasksInput input);
         Task<List<TaskDto>> GetListAllAsync();
-        Task<TaskDto> GetAsync(Guid id);
+        //Task<TaskDto> GetAsync(Guid id);
         Task<TaskDto> CreateAsync(TaskCreateDto input);
         Task<TaskDto> UpdateAsync(Guid id, TaskUpdateDto input);
         Task<long> GetTotalTaskCountAsync();
         Task<long> GetTotalTaskCountByProjectIdAsync(Guid projectId);
         Task<long> GetCompletedTasksByProjectId(Guid projectId);
-        Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus);
+        //Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus);
     }
 }

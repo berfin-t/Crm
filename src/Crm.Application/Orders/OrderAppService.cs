@@ -1,5 +1,4 @@
-﻿using Crm.Employees;
-using Crm.Orders.Events;
+﻿using Crm.Orders.Events;
 using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -9,8 +8,8 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.EventBus.Distributed;
-namespace Crm.Orders
 
+namespace Crm.Orders
 {
     [RemoteService(IsEnabled = false)]
     public class OrderAppService(IOrderRepository orderRepository,
@@ -34,13 +33,13 @@ namespace Crm.Orders
         }
         #endregion
 
-        #region Get
-        [AllowAnonymous]
-        public async Task<OrderDto> GetAsync(Guid id)
-        {
-            return ObjectMapper.Map<Order, OrderDto>(await orderRepository.GetAsync(id));
-        }
-        #endregion
+        //#region Get
+        //[AllowAnonymous]
+        //public async Task<OrderDto> GetAsync(Guid id)
+        //{
+        //    return ObjectMapper.Map<Order, OrderDto>(await orderRepository.GetAsync(id));
+        //}
+        //#endregion
 
         #region GetListAll
         [AllowAnonymous]
@@ -51,23 +50,23 @@ namespace Crm.Orders
         }
         #endregion
 
-        #region GetListPaged
-        [AllowAnonymous]
-        public async Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input)
-        {
-            var totalCount = await orderRepository.GetCountAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
+        //#region GetListPaged
+        //[AllowAnonymous]
+        //public async Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input)
+        //{
+        //    var totalCount = await orderRepository.GetCountAsync(
+        //        input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
-            var items = await orderRepository.GetListAsync(
-                input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
+        //    var items = await orderRepository.GetListAsync(
+        //        input.Status, input.OrderDate, input.DeliveryDate, input.TotalAmount, input.OrderCode, input.CustomerId, input.ProjectId);
 
-            return new PagedResultDto<OrderDto>
-            {
-                TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Order>, List<OrderDto>>(items)
-            };
-        }
-        #endregion
+        //    return new PagedResultDto<OrderDto>
+        //    {
+        //        TotalCount = totalCount,
+        //        Items = ObjectMapper.Map<List<Order>, List<OrderDto>>(items)
+        //    };
+        //}
+        //#endregion
 
         #region Update
         [Authorize(CrmPermissions.Orders.Edit)]

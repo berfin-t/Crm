@@ -1,11 +1,8 @@
 ﻿using Asp.Versioning;
-using Crm.Common;
 using Crm.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -21,9 +18,9 @@ namespace Crm.Controllers.Tasks
         protected ITaskAppService _taskAppService;
         public TaskController(ITaskAppService taskAppService) => _taskAppService = taskAppService;
 
-        [HttpGet]
-        [Route("{id}")]
-        public virtual Task<TaskDto> GetAsync(Guid id) => _taskAppService.GetAsync(id);
+        //[HttpGet]
+        //[Route("{id}")]
+        //public virtual Task<TaskDto> GetAsync(Guid id) => _taskAppService.GetAsync(id);
 
         [HttpGet]
         [Route("all")]
@@ -53,9 +50,9 @@ namespace Crm.Controllers.Tasks
         [Route("completed/project/{projectId}")]
         public virtual Task<long> GetCompletedTasksByProjectId(Guid projectId) => _taskAppService.GetCompletedTasksByProjectId(projectId);
     
-        [HttpPut]
-        [Route("update-status/{id}")]
-        public virtual Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus) => _taskAppService.UpdateStatusAsync(id, newStatus);
+        //[HttpPut]
+        //[Route("update-status/{id}")]
+        //public virtual Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus) => _taskAppService.UpdateStatusAsync(id, newStatus);
     }
     
 }

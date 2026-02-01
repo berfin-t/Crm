@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Crm.GlobalExceptions;
 using Crm.Permissions;
 using Crm.Projects;
 using Crm.Tasks;
@@ -12,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Identity;
 
@@ -45,23 +43,23 @@ namespace Crm.Employees
         }
         #endregion
 
-        #region Get
-        [AllowAnonymous]
-        public virtual async Task<EmployeeDto> GetAsync(GetEmployeeInput input)
-        {
-            var employee = await employeeRepository.GetAsync(input.EmployeeId, input.UserId);
-            var dto = ObjectMapper.Map<Employee, EmployeeDto>(employee);
-            var user = await userManager.FindByIdAsync(employee.UserId.ToString());
-            dto.Email = user?.Email!;
-            return dto;
-        }
-        public async Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId)
-        {
-            var user = await userManager.FindByIdAsync(userId.ToString());
-            GlobalException.ThrowIf(user == null, "Employee user not found");
-            return ObjectMapper.Map<IdentityUser, IdentityUserDto>(user!);
-        }
-        #endregion
+        //#region Get
+        //[AllowAnonymous]
+        //public virtual async Task<EmployeeDto> GetAsync(GetEmployeeInput input)
+        //{
+        //    var employee = await employeeRepository.GetAsync(input.EmployeeId, input.UserId);
+        //    var dto = ObjectMapper.Map<Employee, EmployeeDto>(employee);
+        //    var user = await userManager.FindByIdAsync(employee.UserId.ToString());
+        //    dto.Email = user?.Email!;
+        //    return dto;
+        //}
+        //public async Task<IdentityUserDto?> GetEmployeeUserAsync(Guid userId)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId.ToString());
+        //    GlobalException.ThrowIf(user == null, "Employee user not found");
+        //    return ObjectMapper.Map<IdentityUser, IdentityUserDto>(user!);
+        //}
+        //#endregion
 
         #region GetListAll
         [AllowAnonymous]
@@ -78,23 +76,23 @@ namespace Crm.Employees
         }
         #endregion
 
-        #region GetListPaged
-        [AllowAnonymous]
-        public async Task<PagedResultDto<EmployeeDto>> GetListAsync(GetPagedEmployeesInput input)
-        {
-            var totalCount = await employeeRepository.GetCountAsync(
-                input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address, input.BirthDate, input.PhotoPath, input.Gender, input.PositionId);
+        //#region GetListPaged
+        //[AllowAnonymous]
+        //public async Task<PagedResultDto<EmployeeDto>> GetListAsync(GetPagedEmployeesInput input)
+        //{
+        //    var totalCount = await employeeRepository.GetCountAsync(
+        //        input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address, input.BirthDate, input.PhotoPath, input.Gender, input.PositionId);
 
-            var items = await employeeRepository.GetListAsync(
-                input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address, input.BirthDate, input.PhotoPath, input.Gender, input.PositionId);
+        //    var items = await employeeRepository.GetListAsync(
+        //        input.FirstName, input.LastName, input.Email, input.PhoneNumber, input.Address, input.BirthDate, input.PhotoPath, input.Gender, input.PositionId);
 
-            return new PagedResultDto<EmployeeDto>
-            {
-                TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Employee>, List<EmployeeDto>>(items)
-            };
-        }
-        #endregion
+        //    return new PagedResultDto<EmployeeDto>
+        //    {
+        //        TotalCount = totalCount,
+        //        Items = ObjectMapper.Map<List<Employee>, List<EmployeeDto>>(items)
+        //    };
+        //}
+        //#endregion
 
         #region Update
         [Authorize(CrmPermissions.Employees.Edit)]
@@ -173,14 +171,15 @@ namespace Crm.Employees
         }
         #endregion
 
-        #region GetWithNavigationProperties
-        [AllowAnonymous]
-        public virtual async Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
-        ObjectMapper.Map<EmployeeWithNavigationProperties, EmployeeWithNavigationPropertyDto>
-            (await employeeRepository.GetWithNavigationPropertiesAsync(id));
+        //#region GetWithNavigationProperties
+        //[AllowAnonymous]
+        //public virtual async Task<EmployeeWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
+        //ObjectMapper.Map<EmployeeWithNavigationProperties, EmployeeWithNavigationPropertyDto>
+        //    (await employeeRepository.GetWithNavigationPropertiesAsync(id));
 
-        #endregion        
+        //#endregion        
 
+        #region Get Employee By Project Id
         [AllowAnonymous]
         public async Task<List<ProjectEmployeeDto>> GetEmployeesByProjectIdAsync(Guid projectId)
         {
@@ -201,36 +200,40 @@ namespace Crm.Employees
 
             return result;
         }
-        [AllowAnonymous]        
-        public async Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input)
-        {
-            var user = await userManager.FindByIdAsync(userId.ToString());
-            GlobalException.ThrowIf(
-            !await userManager.CheckPasswordAsync(user!, input.CurrentPassword), "Current password is incorrect."
-        );
+        #endregion
 
-            var result = await userManager.ChangePasswordAsync(user!, input.CurrentPassword, input.NewPassword);
-            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+        //[AllowAnonymous]        
+        //public async Task<bool> ChangePasswordAsync(Guid userId, EmployeeUserPasswordUpdateDto input)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId.ToString());
+        //    GlobalException.ThrowIf(
+        //    !await userManager.CheckPasswordAsync(user!, input.CurrentPassword), "Current password is incorrect."
+        //);
 
-            return result.Succeeded;
-        }
-        [AllowAnonymous]
-        public async Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input)
-        {
-            var user = await userManager.FindByIdAsync(userId.ToString());
+        //    var result = await userManager.ChangePasswordAsync(user!, input.CurrentPassword, input.NewPassword);
+        //    GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
 
-            await userRules.EnsureUsernameNotExistForOthersAsync(input.UserName, userId);
-            await userRules.EnsureEmailNotExistForOthersAsync(input.Email, userId);
+        //    return result.Succeeded;
+        //}
 
-            var result = await userManager.SetUserNameAsync(user!, input.UserName);
-            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+        //[AllowAnonymous]
+        //public async Task<bool> UpdateUserAsync(Guid userId, EmployeeUserInformationUpdateDto input)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId.ToString());
 
-            result = await userManager.SetEmailAsync(user!, input.Email);
-            GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+        //    await userRules.EnsureUsernameNotExistForOthersAsync(input.UserName, userId);
+        //    await userRules.EnsureEmailNotExistForOthersAsync(input.Email, userId);
 
-            return result.Succeeded;
-        }
+        //    var result = await userManager.SetUserNameAsync(user!, input.UserName);
+        //    GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
 
+        //    result = await userManager.SetEmailAsync(user!, input.Email);
+        //    GlobalException.ThrowIf(!result.Succeeded, result.Errors.Select(e => e.Description));
+
+        //    return result.Succeeded;
+        //}
+
+        #region Get Monthly Assigned Task Counts 
         [AllowAnonymous]
         public async Task<List<EmployeeMonthlyTaskCountDto>> GetMonthlyAssignedTaskCountsAsync()
         {
@@ -256,5 +259,6 @@ namespace Crm.Employees
 
             return await AsyncExecuter.ToListAsync(query);
         }
+        #endregion
     }
 }

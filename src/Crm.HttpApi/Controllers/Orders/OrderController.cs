@@ -3,11 +3,8 @@ using Crm.Orders;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Dtos;
 
 namespace Crm.Controllers.Orders
 {
@@ -20,17 +17,17 @@ namespace Crm.Controllers.Orders
         protected IOrderAppService _orderAppService;
         public OrderController(IOrderAppService orderAppService) => _orderAppService = orderAppService;
 
-        [HttpGet]
-        [Route("{id}")]
-        public virtual Task<OrderDto> GetAsync(Guid id) => _orderAppService.GetAsync(id);
+        //[HttpGet]
+        //[Route("{id}")]
+        //public virtual Task<OrderDto> GetAsync(Guid id) => _orderAppService.GetAsync(id);
 
         [HttpGet]
         [Route("all")]
         public virtual Task<List<OrderDto>> GetListAllAsync() => _orderAppService.GetListAllAsync();
 
-        [HttpGet]
-        [Route("paged")]
-        public virtual Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input) => _orderAppService.GetListAsync(input);
+        //[HttpGet]
+        //[Route("paged")]
+        //public virtual Task<PagedResultDto<OrderDto>> GetListAsync(GetPagedOrdersInput input) => _orderAppService.GetListAsync(input);
 
         [HttpPost]
         [Route("create")]

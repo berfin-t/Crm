@@ -7,28 +7,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Volo.Abp.Users;
 
 namespace Crm.Blazor.Components.Pages.Activities
 {
     public partial class Activity
     {
-        [Inject] public NavigationManager? NavigationManager { get; set; }
-        [Parameter] public Guid ActivityId { get; set; }     
-
-        #region reference to the modal component
+        #region Referances 
         private List<ActivityDto> activityList = new();
-        private bool isActivityModalVisible = false;
+
+        private bool isActivityModalVisible;
+        private bool isDeleteModalVisible;
+
         private ActivityDto? selectedActivity;
         private ActivityWithNavigationPropertyDto? selectedActivityWithNav;
-        private bool isDeleteModalVisible = false;
+
         private ActivityCreateModal? activityCreateModal;
         private ActivityEditModal? activityEditModal;
-        private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
 
         private bool canCreateActivity;
         private bool canEditActivity;
         private bool canDeleteActivity;
+
+        private EventCallback RefreshCallback =>
+            EventCallback.Factory.Create(this, ReloadActivitiesAsync);
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -37,49 +38,63 @@ namespace Crm.Blazor.Components.Pages.Activities
             canEditActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Edit);
             canDeleteActivity = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Activities.Delete);
 
-            var activities = await ActivityAppService.GetListByEmployeeAsync();
-
-            if (activities != null)
-            {
-                activityList = activities
-                    .Where(a => a.Date > DateTime.Now)
-                    .OrderBy(a => a.Date)
-                    .ToList();
-            }
-        }        
-        public async Task ShowCreateModal()
-        {
-            if (activityCreateModal != null)
-            {
-                await activityCreateModal.ShowModal(EventCallback);
-            }
+            await ReloadActivitiesAsync();
         }
 
-        #region Edit 
-        private async Task ShowDetailModal(ActivityDto activity)
+        #region Reload Activities
+        private async Task ReloadActivitiesAsync()
         {
-            selectedActivityWithNav = await ActivityAppService.GetWithNavigationPropertiesAsync(activity.Id);
-            selectedActivity = selectedActivityWithNav.Activity;
-            isActivityModalVisible = true;
-        }        
+            var activities = await ActivityAppService.GetListByEmployeeAsync();
 
-        private async Task EditActivity(ActivityDto activity)
-        {
-            await activityEditModal!.ShowModal(activity, EventCallback);
+            activityList = activities
+                .Where(a => a.Date > DateTime.Now)
+                .OrderBy(a => a.Date)
+                .ToList();
         }
         #endregion
 
-        #region Delete 
+        #region Modal
+        private async Task ShowCreateModal()
+        {
+            if (activityCreateModal != null)
+            {
+                await activityCreateModal.ShowModal(RefreshCallback);
+            }
+        }
+
+        private async Task ShowDetailModal(ActivityDto activity)
+        {
+            selectedActivityWithNav =
+                await ActivityAppService.GetWithNavigationPropertiesAsync(activity.Id);
+
+            selectedActivity = selectedActivityWithNav.Activity;
+            isActivityModalVisible = true;
+        }
+        private async Task CloseDetailModal()
+        {
+            isActivityModalVisible = false;
+            await ReloadActivitiesAsync();
+        }
+        #endregion
+
+        #region Edit
+        private async Task EditActivity(ActivityDto activity)
+        {
+            await activityEditModal!.ShowModal(activity, RefreshCallback);
+        }
+        #endregion
+
+        #region Delete
         private async Task ConfirmDelete()
         {
-            if (selectedActivity != null && selectedActivity.Id != Guid.Empty)
-            {
-                await ActivityAppService.DeleteAsync(selectedActivity.Id);
-                isDeleteModalVisible = false;
-                isActivityModalVisible = false;
+            if (selectedActivity == null) return;
 
-                NavigationManager?.NavigateTo("/activities", forceLoad: true);
-            }
+            await ActivityAppService.DeleteAsync(selectedActivity.Id);
+
+            isDeleteModalVisible = false;
+            isActivityModalVisible = false;
+
+            await ReloadActivitiesAsync();
         }
         #endregion
     }

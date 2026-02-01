@@ -6,7 +6,6 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 public class CustomerReportDocument : IDocument
 {
@@ -20,12 +19,6 @@ public class CustomerReportDocument : IDocument
         _notes = notes ?? new List<CustomerNoteDto>();
         _activities = activities ?? new List<ActivityDto>();
     }
-
-    public DocumentMetadata GetMetadata() => new DocumentMetadata()
-    {
-        Author = "CRM System",
-        Title = $"{_customer?.Name} {_customer?.Surname} Report"
-    };
 
     public void Compose(IDocumentContainer container)
     {
@@ -238,21 +231,5 @@ public class CustomerReportDocument : IDocument
         if (type.Contains("task")) return "✅";
         if (type.Contains("note")) return "📝";
         return "🔔";
-    }
-
-    public string GetFileName()
-    {
-        var safeName = $"{(_customer?.Name ?? "Customer")}-{(_customer?.Surname ?? "Report")}"
-            .Replace(" ", "_");
-        return $"{safeName}.pdf";
-    }
-
-    public byte[] GeneratePdfBytes()
-    {
-        using (var ms = new MemoryStream())
-        {
-            Document.Create(container => Compose(container)).GeneratePdf(ms);
-            return ms.ToArray();
-        }
     }
 }

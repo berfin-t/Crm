@@ -1,7 +1,6 @@
 ﻿using Blazorise;
 using Crm.Employees;
 using Crm.Positions;
-using Crm.Projects;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
@@ -14,53 +13,64 @@ namespace Crm.Blazor.Components.Dialogs.Employees
 {
     public partial class EmployeeCreateModal
     {
-        #region references 
-        private EventCallback EventCallback { get; set; }
+        #region Fields
+
         private Modal? modalRef;
-        private Guid SelectedPositionId { get; set; }
-        private List<PositionDto> Positions { get; set; } = new();
         private Validations? validations;
+
+        private EventCallback OnCreated { get; set; }
+
+        private List<PositionDto> Positions { get; set; } = new();
+
         private EmployeeCreateDto EmployeeCreateDto { get; set; } = new();
-        private string PhotoPath { get; set; }
-        private IBrowserFile SelectedPhoto { get; set; }      
-        private string? FirstName { get; set; }
-        private string? LastName { get; set; }
-        private DateTime? BirthDate { get; set; }
-        private EnumGender Gender { get; set; }
+
         #endregion
+
+        #region Lifecycle
 
         protected override async Task OnInitializedAsync()
         {
             Positions = await PositionAppService.GetListAllAsync();
         }
-        public async Task ShowModal(EventCallback eventCallback)
-        {
-            EventCallback = eventCallback;
 
-            if(validations is not null)
+        #endregion
+
+        #region Modal
+
+        public async Task ShowModal(EventCallback onCreated)
+        {
+            OnCreated = onCreated;
+
+            if (validations is not null)
                 await validations.ClearAll();
 
-            EmployeeCreateDto.FirstName = string.Empty;
-            EmployeeCreateDto.LastName = string.Empty;
-            EmployeeCreateDto.Email = string.Empty;
-            EmployeeCreateDto.PhoneNumber = string.Empty;
-            EmployeeCreateDto.Address = string.Empty;
-            EmployeeCreateDto.BirthDate = BirthDate ?? DateTime.Now;
-            EmployeeCreateDto.PositionId = Guid.Empty;
-            EmployeeCreateDto.PhotoPath = string.Empty;
-            EmployeeCreateDto.Gender = EnumGender.Female;
+            EmployeeCreateDto = new EmployeeCreateDto
+            {
+                BirthDate = DateTime.Now,
+                Gender = EnumGender.Female,
+                PositionId = Guid.Empty
+            };
 
             await modalRef!.Show();
         }
+
         private Task HideModal()
-        {
-            return modalRef!.Hide();
-        }
+            => modalRef!.Hide();
+
+        #endregion
+
+        #region File Upload
+
         private async Task HandleFileSelected(InputFileChangeEventArgs e)
         {
             var file = e.File;
 
-            var uploadFolder = Path.Combine(Environment.CurrentDirectory, "wwwroot", "images", "profile");
+            var uploadFolder = Path.Combine(
+                Environment.CurrentDirectory,
+                "wwwroot",
+                "images",
+                "profile"
+            );
 
             if (!Directory.Exists(uploadFolder))
                 Directory.CreateDirectory(uploadFolder);
@@ -68,37 +78,27 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             var fileName = $"{DateTime.Now.Ticks}_{file.Name}";
             var filePath = Path.Combine(uploadFolder, fileName);
 
-            await using (var stream = File.Create(filePath))
-            {
-                await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(stream);
-            }
+            await using var stream = File.Create(filePath);
+            await file.OpenReadStream(5 * 1024 * 1024).CopyToAsync(stream);
 
-            PhotoPath = $"/images/profile/{fileName}";
+            EmployeeCreateDto.PhotoPath = $"/images/profile/{fileName}";
         }
-        #region Create Employee        
+
+        #endregion
+
+        #region Create Employee
+
         private async Task CreateEmployeeAsync()
         {
             if (validations is null)
                 return;
 
-            var isValid = await validations.ValidateAll();
-
-            if (!isValid)
+            if (!await validations.ValidateAll())
                 return;
-
-            //EmployeeCreateDto.FirstName = FirstName ?? string.Empty;
-            //EmployeeCreateDto.LastName = LastName ?? string.Empty;
-            //EmployeeCreateDto.Email = Email ?? $"{FirstName}.{LastName}@example.com".ToLower();
-            //EmployeeCreateDto.PhoneNumber = PhoneNumber ?? string.Empty;
-            //EmployeeCreateDto.Address = EmployeeAddress ?? string.Empty;
-            //EmployeeCreateDto.BirthDate = BirthDate ?? DateTime.Now;
-            //EmployeeCreateDto.PositionId = SelectedPositionId != Guid.Empty ? SelectedPositionId : Guid.NewGuid();
-            //EmployeeCreateDto.PhotoPath = PhotoPath ?? string.Empty;
-            //EmployeeCreateDto.Gender = Gender;
 
             EmployeeCreateDto.User = new IdentityUserCreateDto
             {
-                UserName = $"{FirstName}.{LastName}".ToLower(),
+                UserName = $"{EmployeeCreateDto.FirstName}.{EmployeeCreateDto.LastName}".ToLower(),
                 Email = EmployeeCreateDto.Email,
                 Name = EmployeeCreateDto.FirstName,
                 Surname = EmployeeCreateDto.LastName,
@@ -106,14 +106,19 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             };
 
             await EmployeeAppService.CreateAsync(EmployeeCreateDto);
+
             await HideModal();
-            await EventCallback.InvokeAsync();
+            await OnCreated.InvokeAsync();
         }
+
         #endregion
+
+        #region Validation
 
         private void ValidatePosition(ValidatorEventArgs e)
         {
             var value = (Guid?)e.Value;
+
             if (value == null || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
@@ -123,8 +128,8 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             {
                 e.Status = ValidationStatus.Success;
             }
-        }               
+        }
 
+        #endregion
     }
 }
-

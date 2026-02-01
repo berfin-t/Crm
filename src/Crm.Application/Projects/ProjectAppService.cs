@@ -1,12 +1,9 @@
-﻿using Crm.Employees;
-using Crm.Permissions;
+﻿using Crm.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.Uow;
 using AutoMapper;
 
@@ -29,30 +26,30 @@ namespace Crm.Projects
             _projectManager = projectManager;
         }
 
-        #region GetListPaged
-        [AllowAnonymous]
-        public virtual async Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input)
-        {
-            var totalCount = await _projectRepository.GetCountAsync(
-                input.Name, input.Description, input.StartTime,
-                input.EndTime, input.Statues,
-                input.Revenue, input.SuccesRate,
-                input.EmployeeIds, input.CustomerId);
+        //#region GetListPaged
+        //[AllowAnonymous]
+        //public virtual async Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input)
+        //{
+        //    var totalCount = await _projectRepository.GetCountAsync(
+        //        input.Name, input.Description, input.StartTime,
+        //        input.EndTime, input.Statues,
+        //        input.Revenue, input.SuccesRate,
+        //        input.EmployeeIds, input.CustomerId);
 
-            var items = await _projectRepository.GetListAllAsync(
-                input.Name, input.Description, input.StartTime,
-                input.EndTime, input.Statues,
-                input.Revenue, input.SuccesRate,
-                input.EmployeeIds, input.CustomerId,
-                input.Sorting, input.MaxResultCount, input.SkipCount);
+        //    var items = await _projectRepository.GetListAllAsync(
+        //        input.Name, input.Description, input.StartTime,
+        //        input.EndTime, input.Statues,
+        //        input.Revenue, input.SuccesRate,
+        //        input.EmployeeIds, input.CustomerId,
+        //        input.Sorting, input.MaxResultCount, input.SkipCount);
 
-            return new PagedResultDto<ProjectDto>
-            {
-                TotalCount = totalCount,
-                Items = _mapper.Map<List<ProjectDto>>(items)
-            };
-        }
-        #endregion
+        //    return new PagedResultDto<ProjectDto>
+        //    {
+        //        TotalCount = totalCount,
+        //        Items = _mapper.Map<List<ProjectDto>>(items)
+        //    };
+        //}
+        //#endregion
 
         #region GetListAll
         [AllowAnonymous]
@@ -141,15 +138,15 @@ namespace Crm.Projects
         }
         #endregion
 
-        #region Search By Name
-        [AllowAnonymous]
-        public virtual async Task<List<ProjectDto>> SearchByNameAsync(string name)
-        {
-            var query = await _projectRepository.GetQueryableAsync();
-            var filteredQuery = _projectRepository.ApplyDataFilters(query, name: name);
-            var projects = filteredQuery.ToList();
-            return _mapper.Map<List<ProjectDto>>(projects);
-        }
-        #endregion
+        //#region Search By Name
+        //[AllowAnonymous]
+        //public virtual async Task<List<ProjectDto>> SearchByNameAsync(string name)
+        //{
+        //    var query = await _projectRepository.GetQueryableAsync();
+        //    var filteredQuery = _projectRepository.ApplyDataFilters(query, name: name);
+        //    var projects = filteredQuery.ToList();
+        //    return _mapper.Map<List<ProjectDto>>(projects);
+        //}
+        //#endregion
     }
 }

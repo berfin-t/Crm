@@ -1,10 +1,7 @@
 ﻿using Asp.Versioning;
 using Crm.Support;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp;
 
@@ -24,8 +21,8 @@ namespace Crm.Controllers.Support
         [Route("all")]
         public virtual Task<List<SupportTicketDto>> GetListAllAsync() => _supportTicketAppService.GetListAllAsync();
 
-        [HttpPut]
-        [Route("update/{id}")]
-        public virtual Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input) => _supportTicketAppService.UpdateAsync(id, input);
+        //[HttpPut]
+        //[Route("update/{id}")]
+        //public virtual Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input) => _supportTicketAppService.UpdateAsync(id, input);
     }
 }
