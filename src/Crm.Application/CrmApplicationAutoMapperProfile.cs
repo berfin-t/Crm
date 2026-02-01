@@ -64,30 +64,23 @@ public class CrmApplicationAutoMapperProfile : Profile
         CreateMap<Employee, ProjectEmployeeDto>().ReverseMap();
         CreateMap<ProjectEmployeeCreateDto, ProjectEmployee>();
 
-
-        //CreateMap<Task, TaskDto>();
-        //CreateMap<TaskCreateDto, Task>();
-        //CreateMap<TaskUpdateDto, Task>();
-
         CreateMap<Task, TaskDto>()
-    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Title))
-    .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.Status.ToString()))
-    .ReverseMap();
-
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Group, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ReverseMap();
 
         CreateMap<TaskCreateDto, Task>()
-    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
-    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<EnumStatus>(src.Group)))
-    .ReverseMap();
-
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<EnumStatus>(src.Group)))
+            .ReverseMap();
 
         CreateMap<TaskUpdateDto, Task>()
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
+             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
                     Enum.IsDefined(typeof(EnumStatus), int.Parse(src.Group))
                         ? (EnumStatus)int.Parse(src.Group)
                         : EnumStatus.Pending))
-                .ReverseMap();
+             .ReverseMap();
 
         CreateMap<SupportTicket, SupportTicketDto>();
         CreateMap<SupportTicket, SupportTicketUpdateDto>();

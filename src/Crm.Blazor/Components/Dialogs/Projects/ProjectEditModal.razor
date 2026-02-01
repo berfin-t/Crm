@@ -16,26 +16,36 @@
                 <ModalTitle>@L["Edit Activity"]</ModalTitle>
             </ModalHeader>
             <ModalBody>
+
+                <!--Name-->
                 <Field>
                     <FieldLabel>@L["Name"]:</FieldLabel>
                     <InputText @bind-Value="ProjectUpdateDto.Name" class="form-control" />
                 </Field>
+
+                <!--Description-->
                 <Field>
                     <FieldLabel>@L["Description"]:</FieldLabel>
                     <InputText @bind-Value="ProjectUpdateDto.Description" class="form-control" />
                 </Field>
+
+                <!--Start Time-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Start Time"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedStartTime" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
+
+                <!--End Time-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["End Time"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedEndTime" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
+
+                <!--Status-->
                 <Field>                                   
                     <FieldLabel>@L["Status"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedStatus">
@@ -45,15 +55,20 @@
                         }
                     </Select>
                 </Field>
+
+                <!--Revenue-->
                 <Field>
                     <FieldLabel>@L["Revenue"]:</FieldLabel>
                     <InputNumber @bind-Value="ProjectUpdateDto.Revenue" class="form-control" />
                 </Field>
+
+                <!--Success Rate-->
                 <Field>
                     <FieldLabel>@L["SuccessRate"]:</FieldLabel>
                     <InputNumber @bind-Value="ProjectUpdateDto.SuccessRate" class="form-control" />
                 </Field>               
 
+                <!--Customer-->
                 <Field>
                     <FieldLabel>@L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="@selectedCustomerId">
@@ -64,6 +79,7 @@
                         }
                     </Select>
                 </Field>
+
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>

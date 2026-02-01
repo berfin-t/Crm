@@ -37,13 +37,13 @@
                 Filterable
                 FilterMethod="DataGridFilterMethod.StartsWith">
 
-                <DataGridColumn Field="@nameof(OrderDto.OrderCode)" Caption="Order Code" Editable/>
-                <DataGridColumn Caption="@L["Customer"]">
+                <DataGridColumn Field="@nameof(OrderDto.OrderCode)" Caption="@L["Order Code"]" Editable/>
+                <DataGridColumn Field="@nameof(OrderDto.CustomerFullName)" Caption="@L["Customer"]">
                     <DisplayTemplate Context="order">
                         @CustomerList.FirstOrDefault(c => c.Id == order.CustomerId)?.FullName
                     </DisplayTemplate>
                 </DataGridColumn>
-                <DataGridColumn Caption="@L["Project"]">
+                <DataGridColumn Field="@nameof(OrderDto.ProjectName)" Caption="@L["Project"]">
                     <DisplayTemplate Context="order">
                         @ProjectList!.FirstOrDefault(p => p.Id == order.ProjectId)?.Name
                     </DisplayTemplate>

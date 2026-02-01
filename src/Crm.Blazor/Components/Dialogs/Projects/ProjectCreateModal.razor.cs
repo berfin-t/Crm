@@ -27,8 +27,6 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         #region Form Fields
         private string? Name { get; set; }
         private string? Description { get; set; }
-        private DateTime? StartTime { get; set; }
-        private DateTime? EndTime { get; set; }
         private EnumStatus Status { get; set; }
         private decimal Revenue { get; set; }
         private decimal SuccesRate { get; set; }

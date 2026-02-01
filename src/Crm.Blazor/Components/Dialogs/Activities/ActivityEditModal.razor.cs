@@ -22,15 +22,15 @@ namespace Crm.Blazor.Components.Dialogs.Activities
         private List<EmployeeDto> EmployeeList { get; set; } = new();
         private List<CustomerDto> CustomerList { get; set; } = new();
         private EventCallback EventCallback { get; set; }
-
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
             EmployeeList = await EmployeeAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
-        }        
+        }
 
+        #region Modal Methods
         public async Task ShowModal(ActivityDto activity, EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -49,17 +49,16 @@ namespace Crm.Blazor.Components.Dialogs.Activities
                 selectedCustomerId = activity.CustomerId;
             }
             await modalRef!.Show();
-        }
-        
+        }        
         private Task HideModal()
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Update Activity
         private async Task UpdateActivityAsync()
-        {
-            
+        {            
             try
             {
                 ActivityUpdateDto.Type = selectedType;

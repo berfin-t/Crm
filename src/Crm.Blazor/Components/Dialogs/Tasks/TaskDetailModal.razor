@@ -1,5 +1,7 @@
 ﻿@using Crm.Common
 @using Crm.Tasks
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 @inherits ComponentBase
 
 <Modal @ref="modalRef">
@@ -15,43 +17,20 @@
         <ModalBody>
             @if (Task != null)
             {
-                <p><strong>Açıklama:</strong> @Task.Description</p>
-                <p><strong>Durum:</strong> @Task.Group</p>
-                <p><strong>Öncelik:</strong> 
+                <p><strong>@L["Description"]:</strong> @Task.Description</p>
+                <p><strong>@L["Status"]:</strong> @Task.Group</p>
+                <p><strong>@L["Priority"]:</strong> 
                     <span style="font-weight:bold; color:@GetPriorityTextColor();">
                         @Task.Priority
                     </span>
                 </p>
-                <p><strong>Teslim Tarihi:</strong> @Task.DueDate.ToShortDateString()</p>
-                <p><strong>Oluşturulma:</strong> @Task.CreationTime.ToString("g")</p>
+                <p><strong>@L["Due Date"]:</strong> @Task.DueDate.ToShortDateString()</p>
+                <p><strong>@L["Creation Time"]:</strong> @Task.CreationTime.ToString("g")</p>
             }
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Secondary" @onclick="Hide">Kapat</Button>
+            <Button Color="Color.Secondary" @onclick="Hide">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
-@code {
-    private Modal? modalRef;
-
-    [Parameter] public TaskDto? Task { get; set; }
-
-    public void Show() => modalRef?.Show();
-    public void Hide() => modalRef?.Hide();    
-
-    private string GetPriorityTextColor()
-    {
-        if (Task == null)
-            return "#111827"; 
-
-        return Task.Priority switch
-        {
-            EnumPriority.Low => "#00FF11",       
-            EnumPriority.Medium => "#EEFF00",    
-            EnumPriority.High => "#FF7B00",      
-            EnumPriority.Critical => "#FF0000",  
-            _ => "#111827"
-        };
-    }
-}

@@ -11,14 +11,14 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
 {
     public partial class TaskCreateModal
     {
+        #region References
         private Modal? modalRef;
         private EventCallback<TaskDto> EventCallback;
         private Validations? validations;
-
         private TaskCreateDto TaskCreateDto { get; set; } = new();
-
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<ProjectDto> Projects { get; set; } = new();
+        #endregion
 
         protected override async System.Threading.Tasks.Task OnInitializedAsync()
         {
@@ -26,6 +26,7 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
             Projects = await ProjectAppService.GetListAllAsync();
         }
 
+        #region Modal Methods
         public async System.Threading.Tasks.Task ShowModal(EventCallback<TaskDto> eventCallback)
         {
             EventCallback = eventCallback;
@@ -47,10 +48,10 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
 
             await modalRef!.Show();
         }
+        private System.Threading.Tasks.Task HideModal() => modalRef!.Hide();
+        #endregion
 
-        private System.Threading.Tasks.Task HideModal()
-            => modalRef!.Hide();
-
+        #region Create Task
         private async System.Threading.Tasks.Task CreateTaskAsync()
         {
             if (validations is null)
@@ -59,7 +60,6 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
             if (!await validations.ValidateAll())
                 return;
 
-            // 🔥 CREATED TASK GERİ ALINIYOR
             var createdTask = await TaskAppService.CreateAsync(TaskCreateDto);
 
             await HideModal();
@@ -67,31 +67,31 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
             if (EventCallback.HasDelegate)
                 await EventCallback.InvokeAsync(createdTask);
         }
+        #endregion
 
+        #region Validation Methods
         private void ValidateEmployee(ValidatorEventArgs e)
         {
             if (e.Value is not Guid value || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
-                e.ErrorText = L["Employee is required"];
             }
             else
             {
                 e.Status = ValidationStatus.Success;
             }
         }
-
         private void ValidateProject(ValidatorEventArgs e)
         {
             if (e.Value is not Guid value || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
-                e.ErrorText = L["Project is required"];
             }
             else
             {
                 e.Status = ValidationStatus.Success;
             }
         }
+        #endregion
     }
 }

@@ -14,29 +14,19 @@ namespace Crm.Blazor.Components.Dialogs.Employees
     public partial class EmployeeCreateModal
     {
         #region Fields
-
         private Modal? modalRef;
         private Validations? validations;
-
         private EventCallback OnCreated { get; set; }
-
         private List<PositionDto> Positions { get; set; } = new();
-
         private EmployeeCreateDto EmployeeCreateDto { get; set; } = new();
-
-        #endregion
-
-        #region Lifecycle
+        #endregion        
 
         protected override async Task OnInitializedAsync()
         {
             Positions = await PositionAppService.GetListAllAsync();
         }
 
-        #endregion
-
         #region Modal
-
         public async Task ShowModal(EventCallback onCreated)
         {
             OnCreated = onCreated;
@@ -54,13 +44,10 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             await modalRef!.Show();
         }
 
-        private Task HideModal()
-            => modalRef!.Hide();
-
+        private Task HideModal() => modalRef!.Hide();
         #endregion
 
         #region File Upload
-
         private async Task HandleFileSelected(InputFileChangeEventArgs e)
         {
             var file = e.File;
@@ -83,11 +70,9 @@ namespace Crm.Blazor.Components.Dialogs.Employees
 
             EmployeeCreateDto.PhotoPath = $"/images/profile/{fileName}";
         }
-
         #endregion
 
         #region Create Employee
-
         private async Task CreateEmployeeAsync()
         {
             if (validations is null)
@@ -110,11 +95,9 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             await HideModal();
             await OnCreated.InvokeAsync();
         }
-
         #endregion
 
         #region Validation
-
         private void ValidatePosition(ValidatorEventArgs e)
         {
             var value = (Guid?)e.Value;
@@ -122,14 +105,12 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             if (value == null || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
-                e.ErrorText = "Position is required.";
             }
             else
             {
                 e.Status = ValidationStatus.Success;
             }
         }
-
         #endregion
     }
 }

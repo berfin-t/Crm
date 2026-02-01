@@ -14,7 +14,7 @@ namespace Crm.Blazor.Components.Dialogs.Employees
         #region reference to the modal component
         private Modal? modalRef;
         private EmployeeUpdateDto EmployeeUpdateDto { get; set; } = new EmployeeUpdateDto();
-        private EnumGender selectedGender = Enum.GetValues(typeof(EnumGender)).Cast<EnumGender>().FirstOrDefault();
+        private EnumGender selectedGender { get; set; }
         private DateTime? selectedBirthDate { get; set; }
         private Guid SelectedPositionId { get; set; }
         private List<PositionDto> PositionList { get; set; } = new();
@@ -26,6 +26,7 @@ namespace Crm.Blazor.Components.Dialogs.Employees
             PositionList = await PositionAppService.GetListAllAsync();
         }
 
+        #region Modal Methods
         public async Task ShowModal(EmployeeDto employee, EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -55,25 +56,19 @@ namespace Crm.Blazor.Components.Dialogs.Employees
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Update Employee
         private async Task UpdateEmployeeAsync()
-        {
-            try
-            {
+        {            
                 EmployeeUpdateDto.Gender = selectedGender;
                 EmployeeUpdateDto.BirthDate = selectedBirthDate ?? DateTime.MinValue;
                 EmployeeUpdateDto.PositionId = SelectedPositionId;
 
                 await EmployeeAppService.UpdateAsync(EmployeeUpdateDto.Id, EmployeeUpdateDto);
                 await EventCallback.InvokeAsync();
-                await HideModal();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating employee: {ex.Message}");
-            }
+                await HideModal();            
         }
-            #endregion
-        }
+        #endregion
+    }
 }

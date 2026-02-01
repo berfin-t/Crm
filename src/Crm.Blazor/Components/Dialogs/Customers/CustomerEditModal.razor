@@ -13,14 +13,20 @@
             </ModalHeader>
 
             <ModalBody>
+
+                <!--Name-->
                 <Field>
                     <FieldLabel>@L["Customer Name"]:</FieldLabel>
                     <InputText @bind-Value="CustomerUpdateDto.Name" class="form-control" />
                 </Field>
+
+                <!--Surname-->
                 <Field>
                     <FieldLabel>@L["Customer Surname"]:</FieldLabel>
                     <InputText @bind-Value="CustomerUpdateDto.Surname" class="form-control" />
                 </Field>
+
+                <!--Email-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Email"]:</FieldLabel>
@@ -28,6 +34,7 @@
                     </Field>
                 </Card>
 
+                <!--Phone-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Phone Number"]:</FieldLabel>
@@ -35,6 +42,7 @@
                     </Field>
                 </Card>
 
+                <!--Address-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Address"]:</FieldLabel>
@@ -42,6 +50,7 @@
                     </Field>
                 </Card>
 
+                <!--Company Name-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Company Name"]:</FieldLabel>
@@ -49,6 +58,7 @@
                     </Field>
                 </Card>
 
+                <!--Type-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Type"]:</FieldLabel>

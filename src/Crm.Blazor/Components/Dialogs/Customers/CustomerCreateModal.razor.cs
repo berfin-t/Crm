@@ -15,6 +15,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
         private Validations? validations;
         #endregion
 
+        #region Modal
         public async Task ShowModal(EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -37,6 +38,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Create Customer       
         private async Task CreateCustomerAsync()
@@ -51,8 +53,7 @@ namespace Crm.Blazor.Components.Dialogs.Customers
             
                 await CustomerAppService.CreateAsync(CustomerCreateDto);
                 await HideModal();
-                await EventCallback.InvokeAsync();
-            
+                await EventCallback.InvokeAsync();            
         }
         #endregion
     }

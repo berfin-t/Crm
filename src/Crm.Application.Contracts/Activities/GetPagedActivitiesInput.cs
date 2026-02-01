@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Crm.Activities
 {
@@ -10,7 +7,7 @@ namespace Crm.Activities
     {
         public GetPagedActivitiesInput() { }
         public ICollection<EnumType>? Type { get; set; } = null;
-        public string Description { get; set; } = null;
+        public string Description { get; set; }
         public DateTime? Date { get; set; } = null;
         public Guid? CustomerId { get; set; } = null;
         public Guid? EmployeeId { get; set; } = null;

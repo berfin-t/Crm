@@ -15,33 +15,46 @@
             </ModalHeader>
 
             <ModalBody>
+
+                <!--Name-->
                 <Field>
                     <FieldLabel>@L["First Name"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.FirstName" class="form-control" />
-
                 </Field>
+
+                <!--Surname-->
                 <Field>
                     <FieldLabel>@L["Last Name"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.LastName" class="form-control" />
-                </Field>                
+                </Field> 
+                
+                <!--Email-->
                 <Field>
                     <FieldLabel>@L["Email"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.Email" class="form-control" />
                 </Field>  
+
+                <!--Phone-->
                 <Field>
                     <FieldLabel>@L["Phone Number"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.PhoneNumber" class="form-control" />
                 </Field>
+
+                <!--Address-->
                 <Field>
                     <FieldLabel>@L["Address"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.Address" class="form-control" />
                 </Field>
+
+                <!--Birth Date-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Birth Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedBirthDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
+
+                <!--Position-->
                 <Field>
                     <FieldLabel>@L["Position"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="SelectedPositionId">
@@ -51,6 +64,8 @@
                         }
                     </Select>
                 </Field>
+
+                <!--Gender-->
                 <Field>
                     <FieldLabel>@L["Gender"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedGender">
@@ -60,10 +75,13 @@
                         }
                     </Select>
                 </Field>
+
+                <!--Photo-->
                 <Field>
                     <FieldLabel>@L["Photo"]:</FieldLabel>
                     <InputText @bind-Value="EmployeeUpdateDto.PhotoPath" class="form-control" />
                 </Field>
+
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>

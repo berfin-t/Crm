@@ -14,70 +14,85 @@ namespace Crm.Blazor.Components.Dialogs.Orders
     {
         #region reference to the modal component
         private Modal? modalRef;
-        private Guid SelectedCustomerId { get; set; }
-        private Guid SelectedProjectId { get; set; }
-        private OrderCreateDto OrderCreateDto { get; set; } = new OrderCreateDto();
-        private EventCallback EventCallback { get; set; }
+        private Validations? validations;
+        private OrderCreateDto OrderCreateDto { get; set; } = new();
         private List<CustomerDto> Customers { get; set; } = new();
         private List<ProjectDto> Projects { get; set; } = new();
-        private Validations? validations;
-        #endregion
-
-        #region Form Fields
-        private EnumStatus Status { get; set; } = EnumStatus.Pending;
-        private DateTime? OrderDate { get; set; }
-        private DateTime? DeliveryDate { get; set; }
-        private decimal TotalAmount { get; set; }
-        private string? OrderCode { get; set; }
-        private string? Customer { get; set; }
-        private string? Project { get; set; }
+        private EventCallback EventCallback { get; set; }
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
             Customers = await CustomerAppService.GetListAllAsync();
             Projects = await ProjectAppService.GetListAllAsync();
-        }       
+        }
 
-        public async Task ShowModal(EventCallback eventCallback)
+        #region Modal
+        public async Task ShowModal(EventCallback callback)
         {
-            EventCallback = eventCallback;
+            EventCallback = callback;
 
-            if(validations is not null)
+            if (validations is not null)
                 await validations.ClearAll();
 
-            Status = EnumStatus.Pending;
-            OrderDate = DateTime.Now;
-            DeliveryDate = DateTime.Now;
-            TotalAmount = 0;
-            OrderCode = string.Empty;
-            SelectedCustomerId = Guid.Empty;
-            SelectedProjectId = Guid.Empty;
+            OrderCreateDto.Status = EnumStatus.Pending;
+            OrderCreateDto.OrderDate = DateTime.Now;
+            OrderCreateDto.DeliveryDate = DateTime.Now;
+            OrderCreateDto.TotalAmount = 0;
+            OrderCreateDto.OrderCode = string.Empty;
+            OrderCreateDto.CustomerId = Guid.Empty;
+            OrderCreateDto.ProjectId = Guid.Empty;
 
             await modalRef!.Show();
         }
 
-        private Task HideModal()
-        {
-            return modalRef!.Hide();
-        }
+        private Task HideModal() => modalRef!.Hide();
+        #endregion
 
         #region Create Order
         private async Task CreateOrderAsync()
         {
-            if (validations is not null)
+            if (validations is null)
                 return;
 
-            var isValid = await validations!.ValidateAll();
-
+            var isValid = await validations.ValidateAll();
             if (!isValid)
                 return;
 
-                await OrderAppService.CreateAsync(OrderCreateDto);
-                await HideModal();
-                await EventCallback.InvokeAsync();            
-            
+            await OrderAppService.CreateAsync(OrderCreateDto);
+            await HideModal();
+            await EventCallback.InvokeAsync();                        
+        }
+        #endregion
+
+        #region Validation Methods
+        private void ValidateCustomer(ValidatorEventArgs e)
+        {
+            var value = (Guid?)e.Value;
+
+            if (value == null || value == Guid.Empty)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+        private void ValidateProject(ValidatorEventArgs e)
+        {
+            var value = (Guid?)e.Value;
+
+            if (value == null || value == Guid.Empty)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+            else
+            {
+                e.Status = ValidationStatus.Success;
+            }
         }
         #endregion
     }
+
 }

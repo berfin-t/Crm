@@ -16,10 +16,14 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
+
+                <!--Order Code-->
                 <Field>
                     <FieldLabel>@L["Order Code"]:</FieldLabel>
                     <InputText @bind-Value="OrderUpdateDto.OrderCode" class="form-control" />
                 </Field>
+
+                <!--Customer-->
                 <Field>
                     <FieldLabel>@L["Customer"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.CustomerId">
@@ -30,6 +34,8 @@
                         }
                     </Select>
                 </Field>
+
+                <!--Project-->
                 <Field>
                     <FieldLabel>@L["Project"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="OrderUpdateDto.ProjectId">
@@ -40,18 +46,24 @@
                         }
                     </Select>
                 </Field>
+
+                <!--Order Date-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Order Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.OrderDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
+
+                <!--Delivery Date-->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Delivery Date"]:</FieldLabel>
                         <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderUpdateDto.DeliveryDate" Format="yyyy-MM-dd HH:mm" />
                     </Field>
                 </Card>
+
+                <!--Status-->
                 <Field>
                     <FieldLabel>@L["Status"]:</FieldLabel>
                     <Select @bind-SelectedValue="OrderUpdateDto.Status">
@@ -61,6 +73,7 @@
                         }
                     </Select>
                 </Field>
+
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>

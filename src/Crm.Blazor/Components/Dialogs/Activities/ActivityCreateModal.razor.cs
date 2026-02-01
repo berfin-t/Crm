@@ -59,13 +59,12 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             
             await ActivityAppService.CreateAsync(ActivityCreateDto);
             await HideModal();
-            await EventCallback.InvokeAsync();
-            
-            
+            await EventCallback.InvokeAsync();                   
 
         }
         #endregion
 
+        #region Validation Methods
         private void ValidateEmployee(ValidatorEventArgs e)
         {
             var value = (Guid?)e.Value;
@@ -73,7 +72,6 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             if (value == null || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
-                e.ErrorText = "Employee is required";
             }
             else
             {
@@ -88,14 +86,13 @@ namespace Crm.Blazor.Components.Dialogs.Activities
             if (value == null || value == Guid.Empty)
             {
                 e.Status = ValidationStatus.Error;
-                e.ErrorText = "Customer is required";
             }
             else
             {
                 e.Status = ValidationStatus.Success;
             }
         }
-
+        #endregion
 
     }
 }

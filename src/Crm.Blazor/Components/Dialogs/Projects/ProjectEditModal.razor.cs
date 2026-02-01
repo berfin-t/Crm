@@ -19,10 +19,9 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         private List<EmployeeDto> EmployeeList { get; set; } = new();
         private List<CustomerDto> CustomerList { get; set; } = new();
         private ProjectUpdateDto ProjectUpdateDto { get; set; } = new ProjectUpdateDto();
-        private EnumStatus selectedStatus = Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>().FirstOrDefault();
+        private EnumStatus selectedStatus { get; set; }
         private DateTime? selectedStartTime { get; set; }
         private DateTime? selectedEndTime { get; set; }
-        private List<Guid> selectedEmployeeIds { get; set; } = new();
         private Guid selectedCustomerId { get; set; }
         private EventCallback EventCallback { get; set; }
         #endregion
@@ -33,6 +32,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             CustomerList = await CustomerAppService.GetListAllAsync();
         }
 
+        #region Modal Methods
         public async Task ShowModal(ProjectDto project, EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -58,6 +58,7 @@ namespace Crm.Blazor.Components.Dialogs.Projects
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Update Project
         private async Task UpdateProjectAsync()

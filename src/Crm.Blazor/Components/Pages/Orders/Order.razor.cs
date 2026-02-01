@@ -1,18 +1,20 @@
-﻿using Crm.Orders;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Blazorise;
 using Crm.Blazor.Components.Dialogs.Orders;
 using Crm.Customers;
+using Crm.Orders;
 using Crm.Projects;
 using Microsoft.AspNetCore.Components;
-using System;
 using Microsoft.AspNetCore.SignalR.Client;
-using Blazorise;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Crm.Blazor.Components.Pages.Orders
 {
     public partial class Order
     {
+        #region References
         [Inject] public NavigationManager? NavigationManager { get; set; }
         private OrderDto? OrderDto { get; set; }
         private List<CustomerDto> CustomerList = new List<CustomerDto>();
@@ -25,15 +27,25 @@ namespace Crm.Blazor.Components.Pages.Orders
         private bool isOrderModalVisible = false;
         private EventCallback EventCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         private HubConnection? hubConnection;
-
         private bool showAlert = false;
         private string latestOrderCode = string.Empty;
+        #endregion
 
         protected override async Task OnInitializedAsync()
         {
             OrderList = await OrderAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();
+
+            foreach (var order in OrderList!)
+            {
+                order.CustomerFullName = CustomerList
+                    .FirstOrDefault(c => c.Id == order.CustomerId)?.FullName;
+
+                order.ProjectName = ProjectList
+                    .FirstOrDefault(p => p.Id == order.ProjectId)?.Name;
+            }
+
             await base.OnInitializedAsync();            
 
             hubConnection = new HubConnectionBuilder()
@@ -51,11 +63,13 @@ namespace Crm.Blazor.Components.Pages.Orders
 
             await hubConnection.StartAsync();
         }
+
         private void OnAlertDismissed()
         {
             showAlert = false;
         }
 
+        #region Modal 
         private async Task ShowCreateModal()
         {
             if (orderCreateModal != null)
@@ -71,6 +85,7 @@ namespace Crm.Blazor.Components.Pages.Orders
                 await orderEditModal.ShowModal(order, EventCallback);
             }
         }
+        #endregion
 
         #region Delete 
         private void OnDeleteClicked(OrderDto order)

@@ -19,13 +19,15 @@ namespace Crm.Blazor.Components.Dialogs.Orders
         private List<CustomerDto> CustomerList { get; set; } = new();
         private List<ProjectDto> ProjectList { get; set; } = new();
         private EventCallback EventCallback { get; set; }
-
         #endregion
+
         protected override async Task OnInitializedAsync()
         {
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();
         }
+
+        #region Modal Methods
         public async Task ShowModal(OrderDto order, EventCallback eventCallback)
         {
             EventCallback = eventCallback;
@@ -51,20 +53,14 @@ namespace Crm.Blazor.Components.Dialogs.Orders
         {
             return modalRef!.Hide();
         }
+        #endregion
 
         #region Update Order
         private async Task UpdateOrderAsync()
-        {
-            try
-            {             
+        {                         
                 await OrderAppService.UpdateAsync(OrderUpdateDto.Id, OrderUpdateDto);
                 await HideModal();
-                await EventCallback.InvokeAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating order: {ex.Message}");
-            }
+                await EventCallback.InvokeAsync();            
         }
         #endregion
     }

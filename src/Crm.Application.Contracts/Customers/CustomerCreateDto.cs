@@ -12,11 +12,9 @@ namespace Crm.Customers
         public string Surname { get; set; } = string.Empty;
 
         [Required]
-        [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        [RegularExpression(@"^\+?[0-9\s\-]{11}$")]
         public string Phone { get; set; } = string.Empty;
 
         [Required]

@@ -21,30 +21,25 @@
                 <Validations @ref="validations" Mode="ValidationMode.Manual" Model="OrderCreateDto">
                 
                     <!-- Status -->
-                    <Validation>
                     <Field>
-                    <FieldLabel>@L["Order Status"]:</FieldLabel>
-                    <FieldBody>
-                    <Select @bind-SelectedValue="Status">
-                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
-                        {
-                            <SelectItem Value="@status">@status</SelectItem>
-                        }
-                    </Select>
+                        <FieldLabel>@L["Status"]:</FieldLabel>
+                        <Select TValue="EnumStatus" @bind-SelectedValue="OrderCreateDto.Status">
 
-                            <ValidationError>
-                                @L["Order Status is required"]
-                            </ValidationError>
-
-                            </FieldBody>
-                </Field>
-                    </Validation>
+                            @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                            {
+                                <SelectItem Value="@status">@status</SelectItem>
+                            }
+                        </Select>
+                    </Field>
 
                     <!-- Order Date -->
                 <Card>
                     <Field>
                         <FieldLabel>@L["Order Date"]:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="OrderDate" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime" 
+                            InputMode="DateInputMode.DateTime" 
+                            @bind-Date="OrderCreateDto.OrderDate" 
+                            Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
 
@@ -52,53 +47,76 @@
                 <Card>
                     <Field>
                         <FieldLabel>@L["Delivery Date"]:</FieldLabel>
-                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="DeliveryDate" Format="yyyy-MM-dd" />
+                        <DatePicker TValue="DateTime" 
+                            InputMode="DateInputMode.DateTime" 
+                            @bind-Date="OrderCreateDto.DeliveryDate"
+                            Format="yyyy-MM-dd" />
                     </Field>
                 </Card>
 
-                <!-- Total Amount -->
-                <Validation>
+                <!-- Total Amount -->                
                 <Card>
                     <Field>
                         <FieldLabel>@L["Total Amount"]:</FieldLabel>
                         <FieldBody>
-                        <InputNumber @bind-Value="TotalAmount" class="form-control" />
-                    </FieldBody>
-                        <ValidationError>
-                            @L["Total Amount is required and must be greater than zero"]
-                                </ValidationError>
+                        <InputNumber @bind-Value="OrderCreateDto.TotalAmount" class="form-control" /> 
+                            </FieldBody>
                     </Field>
                 </Card>
+
+                    <!--Order Code-->
+                    <Card>
+                        <Field>
+                            <FieldLabel>@L["Order Code"]:</FieldLabel>
+                            <FieldBody>
+                                    <TextEdit @bind-Text="OrderCreateDto.OrderCode"
+                                              class="form-control" />
+                            </FieldBody>
+                        </Field>
+                    </Card>
+
+                    <!-- Customer -->
+                    <Validation Validator="ValidateCustomer">
+                        <Field>
+                            <FieldLabel>@L["Customer"]:</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid" @bind-SelectedValue="OrderCreateDto.CustomerId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var customer in Customers)
+                                    {
+                                        <SelectItem Value="@customer.Id">@customer.Name @customer.Surname</SelectItem>
+                                    }
+                                </Select>
+
+                                <ValidationError>
+                                    @L["Customer is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
                     </Validation>
 
-                <Card>
-                    <Field>
-                        <FieldLabel>@L["Order Code"]:</FieldLabel>
-                        <TextEdit @bind-Text="OrderCode" class="form-control" />
-                    </Field>
-                </Card>             
+                    <!--Project-->
+                    <Validation Validator="ValidateProject">
+                        <Field>
+                            <FieldLabel>@L["Project"]</FieldLabel>
+                            <FieldBody>
+                                <Select TValue="Guid"
+                                        @bind-SelectedValue="OrderCreateDto.ProjectId">
+                                    <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
+                                    @foreach (var project in Projects)
+                                    {
+                                        <SelectItem Value="@project.Id">
+                                            @project.Name
+                                        </SelectItem>
+                                    }
+                                </Select>
+                                <ValidationError>
+                                    @L["Project is required"]
+                                </ValidationError>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
 
-                <Field>
-                    <FieldLabel>@L["Customers"]:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="SelectedCustomerId">
-                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
-                        @foreach (var customer in Customers)
-                        {
-                            <SelectItem Value="@customer.Id">@customer.Name @customer.Surname</SelectItem>
-                        }
-                    </Select>
-                </Field>
-
-                <Field>
-                    <FieldLabel>@L["Projects"]:</FieldLabel>
-                    <Select TValue="Guid" @bind-SelectedValue="SelectedProjectId">
-                        <SelectItem Value="Guid.Empty">@L["Select"]</SelectItem>
-                        @foreach (var project in Projects)
-                        {
-                            <SelectItem Value="@project.Id">@project.Name</SelectItem>
-                        }
-                    </Select>
-                </Field>             
                 </Validations>
             </ModalBody>
 

@@ -13,17 +13,16 @@ namespace Crm.Orders
         [Required]
         public EnumStatus Status { get; set; }
 
-        public DateTime? OrderDate { get; set; }
+        public DateTime OrderDate { get; set; }
 
-        public DateTime? DeliveryDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
 
-        [Required]
-        [RegularExpression(@"^\+?[0-9\s\-]{10}$")]
+        [Required(ErrorMessage = "Total Amount is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Total Amount must be greater than zero")]
         public decimal TotalAmount { get; set; }
 
-        [Required(ErrorMessage = "Order Code is required.")]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "Order Code must be 6 characters long.")]
-        [RegularExpression(@"^[A-Z]{4}\d{2}$", ErrorMessage = "Order Code format: 4 uppercase letters + 2 digits (ör. ABCD12).")]
+        [Required(ErrorMessage = "Order Code is required")]
+        [StringLength(50, ErrorMessage = "Order Code cannot be longer than 50 characters")]
         public string? OrderCode { get; set; }
 
         [Required]
