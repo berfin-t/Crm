@@ -84,5 +84,6 @@ public class CrmApplicationAutoMapperProfile : Profile
 
         CreateMap<SupportTicket, SupportTicketDto>();
         CreateMap<SupportTicket, SupportTicketUpdateDto>();
+        CreateMap<SupportTicketWithNavigationProperties, SupportTicketWithNavigationPropertyDto>().ReverseMap();
     }
 }

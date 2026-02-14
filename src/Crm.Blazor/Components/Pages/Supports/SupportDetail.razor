@@ -1,0 +1,156 @@
+﻿@page "/supports/detail/{Id:guid}"
+@using Crm.Employees
+@using Crm.Support
+@using Volo.Abp.AspNetCore.Components.Messages
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+@inject ISupportTicketAppService SupportTicketAppService
+@inject NavigationManager NavigationManager
+@inject IUiMessageService Message
+@inject IEmployeeAppService EmployeeAppService
+
+<PageTitle>@L["Support Ticket Detail"]</PageTitle>
+
+<Div class="container mt-4">
+    @if(ticket == null)
+    {
+        <LoadingIndicator/>
+    }
+    else
+    {
+        <Card class="show-lg border-0 rounded-4">
+            <!-- HEADER -->
+            <CardHeader class="bg-light rounded-top-4">
+                <Div class="d-flex justify-content-between align-items-center">
+                    <Div class="d-flex align-items-center">
+                        <i class="fa-solid fa-headset text-primary fa-2x me-3"></i>
+                        <Div>
+                            <h4 class="m-0">@ticket.Subject</h4>
+                            @* <small class="text-muted">#@ticket.Id</small> *@
+                        </Div>
+                    </Div>
+
+                    <Div>
+                        <Badge Color="@GetStatusColor(ticket.TicketStatus)" Class="me-2 px-3 py-2">
+                            @ticket.TicketStatus
+                        </Badge>
+
+                        <Badge Color="@GetPriorityColor(ticket.Priority)" Class="px-3 py-2">
+                            @ticket.Priority
+                        </Badge>
+                    </Div>
+                </Div>
+            </CardHeader>
+
+            <!--Body-->
+            <CardBody class="p-4">
+
+                <Row class="mb-4">
+                    <Column Md="6">
+                        <h6 class="text-muted">@L["Customer"]</h6>
+                        <p>@(selectedSupportWithNav?.Customer?.FullName ?? "-")</p>
+                    </Column>
+
+                    <Column Md="6">
+                        <h6 class="text-muted">@L["Last Response"]</h6>
+                        <p>@(ticket.LastResponseTime?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+                    </Column>
+                </Row>
+
+                <Row class="mb-4">
+                    <Column Md="6">
+                        <h6 class="text-muted d-flex align-items-center justify-content-between">
+                            @L["Assigned Employee"]
+
+                            <Button Color="Color.Light"
+                                    Size="Size.Small"
+                                    Class="rounded-circle shadow-sm"
+                                    Style="width:32px;height:32px;"
+                                    Clicked="OpenAssignModal">
+
+                                <i class="fa-regular fa-pen"></i>
+                            </Button>
+                        </h6>
+
+                        <p class="mb-0 fw-semibold">
+                            @(selectedSupportWithNav?.Employee?.FullName ?? "Unassigned")
+                        </p>
+
+                    </Column>
+
+                    <Column Md="6">
+                        <h6 class="text-muted">@L["Closed Time"]</h6>
+                        <p>@(ticket.ClosedTime?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+                    </Column>
+                </Row>
+
+                <hr />
+
+                <h6 class="text-muted">@L["Description"]</h6>
+                <Card Class="bg-light border-0 rounded-3 p-3">
+                    <p class="mb-0">@ticket.Description</p>
+                </Card>
+
+            </CardBody>
+
+
+            <!-- FOOTER -->
+            <CardFooter class="text-end bg-white rounded-bottom-4">
+                <Button Color="Color.Secondary"
+                        Clicked="@(() => NavigationManager.NavigateTo("/supports"))">
+                    <i class="fa-solid fa-arrow-left me-2"></i>
+                    @L["Back"]
+                </Button>
+            </CardFooter>           
+
+        </Card>
+    }
+</Div>
+
+<!--Assigned Employee Modal-->
+<Modal @bind-Visible="assignModalVisible" Centered>
+    <ModalContent Class="rounded-4 shadow-lg border-0">
+
+        <ModalHeader Class="border-0 pb-0">
+            <h5 class="fw-bold">Assign Employee</h5>
+        </ModalHeader>
+
+        <ModalBody>
+
+            <Select TValue="Guid?"
+                    @bind-SelectedValue="SelectedEmployeeId"
+                    Class="form-select form-select-lg rounded-3 shadow-sm">
+
+                <SelectItem TValue="Guid?" Value="null">
+                    Select employee...
+                </SelectItem>
+
+                @foreach (var emp in employeeList)
+                {
+                    <SelectItem TValue="Guid?" Value="@emp.Id">
+                        @emp.FullName
+                    </SelectItem>
+                }
+
+            </Select>
+
+        </ModalBody>
+
+        <ModalFooter Class="border-0 pt-0">
+
+            <Button Color="Color.Light"
+                    Class="rounded-3 px-4"
+                    Clicked="CloseAssignModal">
+                Cancel
+            </Button>
+
+            <Button Color="Color.Primary"
+                    Class="rounded-3 px-4 shadow-sm"
+                    Clicked="SaveAssign">
+                Save
+            </Button>
+
+        </ModalFooter>
+
+    </ModalContent>
+</Modal>

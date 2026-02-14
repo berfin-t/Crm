@@ -61,10 +61,11 @@
 
                 <DataGridColumn TItem="SupportTicketDto" Caption="@L["Details"]">
                     <DisplayTemplate>
-                        <Button Color="Color.Info">
+                        <Button Color="Color.Info" Clicked="@(() => ShowDetail(context))">
                             <i class="fa-solid fa-eye"></i>
                         </Button>
                     </DisplayTemplate>
+                    
                 </DataGridColumn>
 
 

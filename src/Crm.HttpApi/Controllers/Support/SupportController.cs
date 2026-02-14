@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Crm.Support;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -21,6 +22,19 @@ namespace Crm.Controllers.Support
         [Route("all")]
         public virtual Task<List<SupportTicketDto>> GetListAllAsync() => _supportTicketAppService.GetListAllAsync();
 
+        [HttpGet]
+        [Route("{id}")]
+        public virtual Task<SupportTicketDto> GetAsync(Guid id) => _supportTicketAppService.GetAsync(id);
+
+        [HttpGet]
+        [Route("with-navigation-properties/{id}")]
+        public virtual Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id)
+            => _supportTicketAppService.GetWithNavigationPropertiesAsync(id);
+
+        [HttpPost("{ticketId}/assign/{employeeId}")]
+        public async Task AssignEmployeeAsync(Guid ticketId, Guid employeeId) =>        
+            await _supportTicketAppService.AssignEmployeeAsync(ticketId, employeeId);
+        
         //[HttpPut]
         //[Route("update/{id}")]
         //public virtual Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input) => _supportTicketAppService.UpdateAsync(id, input);

@@ -1,5 +1,6 @@
 ﻿using Crm.Customers;
 using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -48,6 +49,36 @@ namespace Crm.Support
         {
             var items = await supportTicketRepository.GetListAsync();
             return ObjectMapper.Map<List<SupportTicket>, List<SupportTicketDto>>(items);
+        }
+        #endregion
+
+        #region Get
+        [AllowAnonymous]
+        public async Task<SupportTicketDto> GetAsync(Guid id)
+        {
+            return ObjectMapper.Map<SupportTicket, SupportTicketDto>(await supportTicketRepository.GetAsync(id));
+        }
+        #endregion
+
+        #region GetWithNavigationProperties
+        [AllowAnonymous]
+        public virtual async Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
+        ObjectMapper.Map<SupportTicketWithNavigationProperties, SupportTicketWithNavigationPropertyDto>
+            (await supportTicketRepository.GetWithNavigationPropertiesAsync(id));
+        #endregion
+
+        #region AssignEmployeeAsync
+        [AllowAnonymous]
+        public async Task AssignEmployeeAsync(Guid ticketId, Guid employeeId)
+        {
+            var ticket = await supportTicketRepository.GetAsync(ticketId);
+
+            if (ticket == null)
+                throw new UserFriendlyException("Support ticket not found.");
+
+            ticket.AssignEmployee(employeeId);
+
+            await supportTicketRepository.UpdateAsync(ticket, autoSave: true);
         }
         #endregion
 
@@ -111,6 +142,6 @@ namespace Crm.Support
 
         //    await supportTicketRepository.UpdateAsync(ticket, autoSave: true);
         //}
-    }    
+    }
 }
 
