@@ -29,8 +29,14 @@
             }
         </ModalBody>
         <ModalFooter>
+            <Button Color="Color.Warning"
+                    Clicked="OnEditClicked">
+                @L["Edit"]
+            </Button>
             <Button Color="Color.Secondary" @onclick="Hide">@L["Close"]</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
 
+@* ********** EDIT MODAL ********** *@
+<TaskEditModal @ref="taskEditModal" />

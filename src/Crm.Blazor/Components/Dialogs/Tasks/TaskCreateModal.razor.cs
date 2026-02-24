@@ -18,6 +18,10 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
         private TaskCreateDto TaskCreateDto { get; set; } = new();
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<ProjectDto> Projects { get; set; } = new();
+        private EnumStatus selectedStatus;
+        private EnumPriority selectedPriority;
+        private Guid selectedEmployeeId;
+        private EventCallback<TaskDto> OnCreatedCallback { get; set; }
         #endregion
 
         protected override async System.Threading.Tasks.Task OnInitializedAsync()
@@ -29,25 +33,23 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
         #region Modal Methods
         public async System.Threading.Tasks.Task ShowModal(EventCallback<TaskDto> eventCallback)
         {
-            EventCallback = eventCallback;
+            OnCreatedCallback = eventCallback; 
 
             if (validations is not null)
                 await validations.ClearAll();
 
-            TaskCreateDto = new TaskCreateDto
-            {
-                Name = string.Empty,
-                Description = string.Empty,
-                DueDate = DateTime.Now,
-                Priority = EnumPriority.Medium,
-                Status = EnumStatus.Active,
-                EmployeeId = Guid.Empty,
-                ProjectId = Guid.Empty,
-                Group = null
-            };
+            TaskCreateDto = new TaskCreateDto();
 
+            selectedStatus = EnumStatus.Active;
+            selectedPriority = EnumPriority.Medium;
+            selectedEmployeeId = Guid.Empty;
+
+            TaskCreateDto.DueDate = DateTime.Now;
+
+            await InvokeAsync(StateHasChanged); 
             await modalRef!.Show();
         }
+
         private System.Threading.Tasks.Task HideModal() => modalRef!.Hide();
         #endregion
 

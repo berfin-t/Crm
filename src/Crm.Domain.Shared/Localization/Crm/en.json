@@ -17,6 +17,7 @@
     "Menu:Orders": "Orders",
     "Menu:Positions": "Positions",
     "Menu:Dashboard": "Dashboard",
+    "Menu:Supports": "Supports", 
     "WelcomeMessage": "🌟 Welcome, {0}! It's great to see you back here!",
     "ProjectStatus:Active": "Active",
     "ProjectStatus:Pending": "Pending",

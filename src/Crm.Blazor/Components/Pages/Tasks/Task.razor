@@ -80,7 +80,7 @@
     </DropContainer>
 }
 
-<TaskDetailModal @ref="taskDetailModal" Task="@selectedTask" />
+<TaskDetailModal @ref="taskDetailModal" Task="selectedTask" OnUpdated="RefreshCallback" />
 
 @* ********** CREATE MODAL ********** *@
 <TaskCreateModal @ref="taskCreateModal"/>

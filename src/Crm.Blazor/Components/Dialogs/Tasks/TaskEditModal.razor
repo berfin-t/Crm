@@ -1,0 +1,93 @@
+﻿@using Crm.Common
+@using Crm.Employees
+@using Crm.Projects
+@using Crm.Tasks
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+@inject ITaskAppService TaskAppService
+@inject IEmployeeAppService EmployeeAppService
+@inject IProjectAppService ProjectAppService
+
+<CascadingValue Value="this">
+    <Modal @ref="modalRef">
+        <ModalContent Centered>
+            <ModalHeader>
+                <ModalTitle>@L["Edit Activity"]</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>               
+
+                <!--Name-->
+                <Field>
+                    <FieldLabel>@L["Name"]:</FieldLabel>
+                    <InputText @bind-Value="TaskUpdateDto.Name" class="form-control" />
+                </Field>
+
+                <!--Description-->
+                <Field>
+                    <FieldLabel>@L["Description"]:</FieldLabel>
+                    <InputText @bind-Value="TaskUpdateDto.Description" class="form-control" />
+                </Field>
+
+                @* <!--Status-->
+                <Field>
+                    <FieldLabel>@L["Status"]:</FieldLabel>
+                    <Select @bind-SelectedValue="selectedStatus">
+                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                        {
+                            <SelectItem Value="@status">@status</SelectItem>
+                        }
+                    </Select>
+                </Field> *@
+
+                <!--Priority-->
+                <Field>
+                    <FieldLabel>@L["Priority"]:</FieldLabel>
+                    <Select @bind-SelectedValue="selectedPriority">
+                        @foreach (var priority in Enum.GetValues(typeof(EnumPriority)).Cast<EnumPriority>())
+                        {
+                            <SelectItem Value="@priority">@priority</SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+                <!--Due Date-->
+                <Card>
+                    <Field>
+                        <FieldLabel>
+                            @L["Due Date"]:
+                        </FieldLabel>
+                        <DatePicker TValue="DateTime?" InputMode="DateInputMode.DateTime" @bind-Date="selectedDueDate" Format="yyyy-MM-dd HH:mm" />
+                    </Field>
+                </Card>
+
+                <!--Employee-->
+                <Field>
+                    <FieldLabel>@L["Employees"]:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="selectedEmployeeId">
+                        @foreach (var employee in EmployeeList)
+                        {
+                            <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+                <!--Project-->
+                <Field>
+                    <FieldLabel>@L["Projects"]:</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="selectedProjectId">
+                        @foreach (var project in ProjectList)
+                        {
+                            <SelectItem Value="@project.Id">@project.Name</SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
+                <Button Color="Color.Primary" Clicked="@UpdateTaskAsync">@L["Save Changes"]</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</CascadingValue>

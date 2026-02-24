@@ -9,9 +9,20 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
     {
         private Modal? modalRef;
         [Parameter] public TaskDto? Task { get; set; }
+        private TaskDto? selectedTask;
+        private TaskEditModal? taskEditModal;        
+        [Parameter] public EventCallback OnUpdated { get; set; }
 
         public void Show() => modalRef?.Show();
         public void Hide() => modalRef?.Hide();
+
+        #region Edit
+        private async System.Threading.Tasks.Task OnEditClicked()
+        {
+            if (Task != null)
+                await taskEditModal!.ShowModal(Task, OnUpdated);
+        }
+        #endregion
 
         private string GetPriorityTextColor()
         {
