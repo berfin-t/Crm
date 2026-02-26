@@ -1,5 +1,4 @@
-﻿using Blazorise;
-using Crm.Common;
+﻿using Crm.Common;
 using Crm.Employees;
 using Crm.Support;
 using Microsoft.AspNetCore.Components;
@@ -11,6 +10,7 @@ namespace Crm.Blazor.Components.Pages.Supports
 {
     public partial class SupportDetail
     {
+        #region references
         [Parameter] public Guid Id { get; set; }
 
         private SupportTicketDto? ticket;
@@ -19,6 +19,11 @@ namespace Crm.Blazor.Components.Pages.Supports
         private bool assignModalVisible;
         private Guid? SelectedEmployeeId;
         private List<EmployeeDto> employeeList = new();
+
+        private bool statusModalVisible;
+        private UpdateTicketStatusPriorityDto editModel = new();
+        private List<EnumTicketStatus> AllowedStatuses = new();
+        #endregion
 
         protected override async Task OnInitializedAsync()
         {
@@ -30,7 +35,8 @@ namespace Crm.Blazor.Components.Pages.Supports
             employeeList = await EmployeeAppService.GetListAllAsync();
         }
 
-        private Color GetStatusColor(EnumTicketStatus? status)
+        #region UI Helpers
+        private string GetStatusBadgeClass(EnumTicketStatus? status)
         {
             return status switch
             {
@@ -43,7 +49,7 @@ namespace Crm.Blazor.Components.Pages.Supports
             };
         }
 
-        private Color GetPriorityColor(EnumPriority? priority)
+        private string GetPriorityBadgeClass(EnumPriority? priority)
         {
             return priority switch
             {
@@ -54,16 +60,16 @@ namespace Crm.Blazor.Components.Pages.Supports
                 _ => "badge bg-light text-dark"
             };
         }
+        #endregion
+
+        #region Assign Modals
         private void OpenAssignModal()
         {
             SelectedEmployeeId = selectedSupportWithNav?.Employee?.Id;
             assignModalVisible = true;
         }
 
-        private void CloseAssignModal()
-        {
-            assignModalVisible = false;
-        }
+        private void CloseAssignModal() => assignModalVisible = false;
 
         private async Task SaveAssign()
         {
@@ -84,6 +90,50 @@ namespace Crm.Blazor.Components.Pages.Supports
 
             await InvokeAsync(StateHasChanged);
         }
+        #endregion
 
+        #region Status Modals
+        private async Task OpenStatusModal()
+        {
+            if (ticket == null)
+                return;
+
+            AllowedStatuses = await SupportTicketAppService.GetAllowedStatusesAsync(ticket.Id);
+
+            editModel = new UpdateTicketStatusPriorityDto
+            {
+                TicketStatus = ticket.TicketStatus ?? EnumTicketStatus.Open,
+                Priority = ticket.Priority ?? EnumPriority.Medium
+            };
+
+            statusModalVisible = true;
+        }
+
+        private void CloseStatusModal() => statusModalVisible = false;
+
+        private async Task SaveStatus()
+        {
+            if (ticket == null)
+                return;
+
+            try
+            {
+                await SupportTicketAppService.UpdateStatusPriorityAsync(ticket.Id, editModel);
+
+                selectedSupportWithNav =
+                    await SupportTicketAppService.GetWithNavigationPropertiesAsync(Id);
+
+                ticket = selectedSupportWithNav?.SupportTicket;
+
+                statusModalVisible = false;
+
+                await Message.Success("Ticket updated successfully");
+            }
+            catch (Exception ex)
+            {
+                await Message.Error(ex.Message);
+            }
+        }
+        #endregion
     }
 }

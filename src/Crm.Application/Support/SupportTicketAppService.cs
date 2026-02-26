@@ -1,5 +1,4 @@
-﻿using Crm.Customers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,40 +7,9 @@ using Volo.Abp;
 namespace Crm.Support
 {
     [RemoteService(IsEnabled = true)]
-    public class SupportTicketAppService(ISupportTicketRepository supportTicketRepository, ICustomerRepository customerRepository,
-        SupportTicketManager supportTicketManager) : CrmAppService, ISupportTicketAppService
+    public class SupportTicketAppService(ISupportTicketRepository supportTicketRepository)
+        : CrmAppService, ISupportTicketAppService
     {
-        //private async Task<Guid> GetOrCreateCustomerIdAsync(SupportTicketCreateDto input)
-        //{
-        //    var nameParts = input.CustomerFullName.Trim().Split(' ', 2);
-
-        //    var name = nameParts[0];
-        //    var surname = nameParts.Length > 1 ? nameParts[1] : "";
-
-        //    var customer = await customerRepository.FirstOrDefaultAsync(
-        //        x => x.Email == input.Email
-        //    );
-
-        //    if (customer != null)
-        //    {
-        //        return customer.Id;
-        //    }
-
-        //    customer = new Customer(
-        //        GuidGenerator.Create(),
-        //        name,
-        //        surname,
-        //        input.Email,
-        //        phone: string.Empty,
-        //        address: string.Empty,
-        //        companyName: string.Empty,
-        //        EnumCustomer.Lead
-        //    );
-
-        //    await customerRepository.InsertAsync(customer, autoSave: true);
-
-        //    return customer.Id;
-        //}
 
         #region GetListAll
         [AllowAnonymous]
@@ -56,25 +24,27 @@ namespace Crm.Support
         [AllowAnonymous]
         public async Task<SupportTicketDto> GetAsync(Guid id)
         {
-            return ObjectMapper.Map<SupportTicket, SupportTicketDto>(await supportTicketRepository.GetAsync(id));
+            return ObjectMapper.Map<SupportTicket, SupportTicketDto>(
+                await supportTicketRepository.GetAsync(id)
+            );
         }
         #endregion
 
         #region GetWithNavigationProperties
         [AllowAnonymous]
-        public virtual async Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id) =>
-        ObjectMapper.Map<SupportTicketWithNavigationProperties, SupportTicketWithNavigationPropertyDto>
-            (await supportTicketRepository.GetWithNavigationPropertiesAsync(id));
+        public virtual async Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id)
+        {
+            var entity = await supportTicketRepository.GetWithNavigationPropertiesAsync(id);
+            return ObjectMapper.Map<SupportTicketWithNavigationProperties, SupportTicketWithNavigationPropertyDto>(entity);
+        }
         #endregion
 
         #region AssignEmployeeAsync
         [AllowAnonymous]
         public async Task AssignEmployeeAsync(Guid ticketId, Guid employeeId)
         {
-            var ticket = await supportTicketRepository.GetAsync(ticketId);
-
-            if (ticket == null)
-                throw new UserFriendlyException("Support ticket not found.");
+            var ticket = await supportTicketRepository.GetAsync(ticketId)
+                         ?? throw new UserFriendlyException("Support ticket not found.");
 
             ticket.AssignEmployee(employeeId);
 
@@ -82,66 +52,31 @@ namespace Crm.Support
         }
         #endregion
 
-        //#region Update
-        //public async Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input)
-        //{
-        //    var ticket = await supportTicketManager.AdminUpdateAsync(
-        //        id,
-        //        input.TicketStatus,
-        //        input.Priority,
-        //        input.EmployeeId
-        //    );
+        #region Update Status Priority
+        [AllowAnonymous]
+        public async Task UpdateStatusPriorityAsync(Guid id, UpdateTicketStatusPriorityDto input)
+        {
+            var ticket = await supportTicketRepository.GetAsync(id)
+                         ?? throw new UserFriendlyException("Support ticket not found.");
 
-        //    return ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
-        //}
-        //#endregion
+            ticket.UpdateOperationalInfo(
+                input.TicketStatus,
+                input.Priority
+            );
 
-        //#region Create
-        //public async Task<SupportTicketDto> CreateAsync(SupportTicketCreateDto input)
-        //{
-        //    var customerId = await GetOrCreateCustomerIdAsync(input);
+            await supportTicketRepository.UpdateAsync(ticket, autoSave: true);
+        }
+        #endregion
 
+        #region Get Allowed Statuses for UI
+        [AllowAnonymous]
+        public async Task<List<EnumTicketStatus>> GetAllowedStatusesAsync(Guid id)
+        {
+            var ticket = await supportTicketRepository.GetAsync(id)
+                         ?? throw new UserFriendlyException("Support ticket not found.");
 
-        //    var supportTicket = await supportTicketManager.CreateByCustomerAsync(
-        //         input.Subject, input.Description, customerId);            
-
-        //    return ObjectMapper.Map<SupportTicket, SupportTicketDto>(supportTicket);
-        //}
-        //#endregion
-        //public async Task<SupportTicketDto> CreateAsync(SupportTicketCreateDto input)
-        //{
-        //    var customerId = CurrentUser.GetId(); // login olan customer
-
-        //    var ticket = new SupportTicket(
-        //        GuidGenerator.Create(),
-        //        customerId,
-        //        input.Subject,
-        //        input.Description
-        //    );
-
-        //    await supportTicketRepository.InsertAsync(ticket, autoSave: true);
-
-        //    return ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
-        //}
-
-
-        //#region GetWithNavigationProperties
-        //public virtual async Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id)
-        //=> ObjectMapper.Map<SupportTicketWithNavigationProperties, SupportTicketWithNavigationPropertyDto>(
-        //    await supportTicketRepository.GetWithNavigationPropertiesAsync(id));
-        //#endregion
-
-        //[Authorize(Roles = "Admin,Employee")]
-        //public async Task UpdateAsync(Guid id, SupportTicketUpdateDto input)
-        //{
-        //    var ticket = await supportTicketRepository.GetAsync(id);
-
-        //    ticket.AssignEmployee(input.EmployeeId);
-        //    ticket.ChangeStatus(input.TicketStatus);
-        //    ticket.ChangePriority(input.Priority);
-
-        //    await supportTicketRepository.UpdateAsync(ticket, autoSave: true);
-        //}
+            return ticket.GetAllowedStatuses();
+        }
+        #endregion
     }
 }
-

@@ -34,9 +34,13 @@ namespace Crm.Controllers.Support
         [HttpPost("{ticketId}/assign/{employeeId}")]
         public async Task AssignEmployeeAsync(Guid ticketId, Guid employeeId) =>        
             await _supportTicketAppService.AssignEmployeeAsync(ticketId, employeeId);
-        
-        //[HttpPut]
-        //[Route("update/{id}")]
-        //public virtual Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input) => _supportTicketAppService.UpdateAsync(id, input);
+
+        [HttpPost("{id}/update-status-priority")]
+        public async Task UpdateStatusPriorityAsync(Guid id, UpdateTicketStatusPriorityDto input) =>
+            await _supportTicketAppService.UpdateStatusPriorityAsync(id, input);
+
+        [HttpGet("{id}/allowed-statuses")]
+        public async Task<List<EnumTicketStatus>> GetAllowedStatusesAsync(Guid id) =>
+            await _supportTicketAppService.GetAllowedStatusesAsync(id);
     }
 }

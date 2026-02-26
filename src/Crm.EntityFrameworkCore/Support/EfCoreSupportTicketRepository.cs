@@ -2,9 +2,7 @@
 using Crm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
@@ -35,7 +33,7 @@ namespace Crm.Support
         #endregion
 
         #region GetWithNavigationProperties
-        public virtual async Task<SupportTicketWithNavigationProperties> GetWithNavigationPropertiesAsync(
+        public virtual async Task<SupportTicketWithNavigationProperties?> GetWithNavigationPropertiesAsync(
             Guid id,
             CancellationToken cancellationToken = default) =>
             await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.SupportTicket.Id == id);

@@ -2,6 +2,7 @@
 @using Crm.Employees
 @using Crm.Support
 @using Volo.Abp.AspNetCore.Components.Messages
+@using Crm.Common
 
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
 @inject ISupportTicketAppService SupportTicketAppService
@@ -11,38 +12,50 @@
 
 <PageTitle>@L["Support Ticket Detail"]</PageTitle>
 
-<Div class="container mt-4">
-    @if(ticket == null)
+<div class="container mt-4">
+
+    @if (ticket == null)
     {
-        <LoadingIndicator/>
+        <LoadingIndicator />
     }
     else
     {
-        <Card class="show-lg border-0 rounded-4">
+        <Card class="border-0 shadow-sm rounded-4">
+
             <!-- HEADER -->
             <CardHeader class="bg-light rounded-top-4">
-                <Div class="d-flex justify-content-between align-items-center">
-                    <Div class="d-flex align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex align-items-center">
                         <i class="fa-solid fa-headset text-primary fa-2x me-3"></i>
-                        <Div>
+                        <div>
                             <h4 class="m-0">@ticket.Subject</h4>
-                            @* <small class="text-muted">#@ticket.Id</small> *@
-                        </Div>
-                    </Div>
+                        </div>
+                    </div>
 
-                    <Div>
-                        <Badge Color="@GetStatusColor(ticket.TicketStatus)" Class="me-2 px-3 py-2">
+                    <div>
+
+                        <span class="@GetStatusBadgeClass(ticket.TicketStatus) me-2 px-3 py-2 rounded-pill">
                             @ticket.TicketStatus
-                        </Badge>
+                        </span>
 
-                        <Badge Color="@GetPriorityColor(ticket.Priority)" Class="px-3 py-2">
+                        <span class="@GetPriorityBadgeClass(ticket.Priority) px-3 py-2 rounded-pill">
                             @ticket.Priority
-                        </Badge>
-                    </Div>
-                </Div>
+                        </span>
+
+                        <Button Color="Color.Light"
+                                Size="Size.Small"
+                                Class="rounded-circle shadow-sm ms-2"
+                                Style="width:32px;height:32px;"
+                                Clicked="OpenStatusModal">
+                            <i class="fa-solid fa-pen"></i>
+                        </Button>
+
+                    </div>
+                </div>
             </CardHeader>
 
-            <!--Body-->
+            <!-- BODY -->
             <CardBody class="p-4">
 
                 <Row class="mb-4">
@@ -67,15 +80,13 @@
                                     Class="rounded-circle shadow-sm"
                                     Style="width:32px;height:32px;"
                                     Clicked="OpenAssignModal">
-
-                                <i class="fa-regular fa-pen"></i>
+                                <i class="fa-solid fa-pen"></i>
                             </Button>
                         </h6>
 
-                        <p class="mb-0 fw-semibold">
+                        <p class="fw-semibold">
                             @(selectedSupportWithNav?.Employee?.FullName ?? "Unassigned")
                         </p>
-
                     </Column>
 
                     <Column Md="6">
@@ -87,12 +98,11 @@
                 <hr />
 
                 <h6 class="text-muted">@L["Description"]</h6>
-                <Card Class="bg-light border-0 rounded-3 p-3">
+                <Card class="bg-light border-0 rounded-3 p-3">
                     <p class="mb-0">@ticket.Description</p>
                 </Card>
 
             </CardBody>
-
 
             <!-- FOOTER -->
             <CardFooter class="text-end bg-white rounded-bottom-4">
@@ -101,13 +111,14 @@
                     <i class="fa-solid fa-arrow-left me-2"></i>
                     @L["Back"]
                 </Button>
-            </CardFooter>           
+            </CardFooter>
 
         </Card>
     }
-</Div>
+</div>
 
-<!--Assigned Employee Modal-->
+
+<!-- ASSIGN EMPLOYEE MODAL -->
 <Modal @bind-Visible="assignModalVisible" Centered>
     <ModalContent Class="rounded-4 shadow-lg border-0">
 
@@ -116,7 +127,6 @@
         </ModalHeader>
 
         <ModalBody>
-
             <Select TValue="Guid?"
                     @bind-SelectedValue="SelectedEmployeeId"
                     Class="form-select form-select-lg rounded-3 shadow-sm">
@@ -133,11 +143,9 @@
                 }
 
             </Select>
-
         </ModalBody>
 
         <ModalFooter Class="border-0 pt-0">
-
             <Button Color="Color.Light"
                     Class="rounded-3 px-4"
                     Clicked="CloseAssignModal">
@@ -149,7 +157,62 @@
                     Clicked="SaveAssign">
                 Save
             </Button>
+        </ModalFooter>
 
+    </ModalContent>
+</Modal>
+
+
+<!-- STATUS MODAL -->
+<Modal @bind-Visible="statusModalVisible" Centered>
+    <ModalContent Class="rounded-4 shadow border-0">
+
+        <ModalHeader Class="border-0 pb-0">
+            <h5 class="fw-bold">Update Ticket</h5>
+        </ModalHeader>
+
+        <ModalBody>
+
+            <Field>
+                <Label>Status</Label>
+                <Select TValue="EnumTicketStatus"
+                        @bind-SelectedValue="editModel.TicketStatus">
+
+                    @foreach (var status in AllowedStatuses)
+                    {
+                        <SelectItem TValue="EnumTicketStatus" Value="@status">
+                            @status
+                        </SelectItem>
+                    }
+
+                </Select>
+            </Field>
+
+            <Field>
+                <Label>Priority</Label>
+                <Select TValue="EnumPriority"
+                        @bind-SelectedValue="editModel.Priority">
+
+                    @foreach (var priority in Enum.GetValues<EnumPriority>())
+                    {
+                        <SelectItem TValue="EnumPriority" Value="@priority">
+                            @priority
+                        </SelectItem>
+                    }
+
+                </Select>
+            </Field>
+
+        </ModalBody>
+
+        <ModalFooter Class="border-0">
+            <Button Color="Color.Light" Clicked="CloseStatusModal">
+                Cancel
+            </Button>
+
+            <Button Color="Color.Primary" Clicked="SaveStatus">
+                Save
+            </Button>
         </ModalFooter>
 
     </ModalContent>

@@ -21,7 +21,7 @@ namespace Crm.Configurations
 
             builder.Property(x => x.Subject).IsRequired();
             builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.TicketStatus).IsRequired(false);
+            builder.Property(x => x.TicketStatus).IsRequired();
             builder.Property(x => x.Priority).IsRequired(false);
             builder.Property(x => x.LastResponseTime).IsRequired(false);
             builder.Property(x => x.ClosedTime).IsRequired(false);

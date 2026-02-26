@@ -1,10 +1,7 @@
 ﻿using Crm.Common;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.Timing;
@@ -13,13 +10,31 @@ namespace Crm.Support
 {
     public class SupportTicket : FullAuditedAggregateRoot<Guid>
     {
+        private static readonly Dictionary<EnumTicketStatus, EnumTicketStatus[]> AllowedTransitions =
+    new()
+    {
+        { EnumTicketStatus.Open,
+            new[] { EnumTicketStatus.InProgress, EnumTicketStatus.WaitingForCustomer, EnumTicketStatus.Closed } },
+
+        { EnumTicketStatus.InProgress,
+            new[] { EnumTicketStatus.WaitingForCustomer, EnumTicketStatus.Resolved, EnumTicketStatus.Closed } },
+
+        { EnumTicketStatus.WaitingForCustomer,
+            new[] { EnumTicketStatus.InProgress, EnumTicketStatus.Resolved, EnumTicketStatus.Closed } },
+
+        { EnumTicketStatus.Resolved,
+            new[] { EnumTicketStatus.Closed } },
+
+        { EnumTicketStatus.Closed,
+            Array.Empty<EnumTicketStatus>() }
+    };
         public Guid CustomerId { get; private set; }
         public Guid? EmployeeId { get; private set; }        
 
         public string Subject { get; private set; }
         public string Description { get; private set; }
 
-        public EnumTicketStatus? TicketStatus { get; private set; }
+        public EnumTicketStatus TicketStatus { get; private set; }
         public EnumPriority? Priority { get; private set; }
 
         
@@ -45,40 +60,68 @@ namespace Crm.Support
             EmployeeId = null;
         }
 
-        public void AdminUpdate(
-            EnumTicketStatus status,
-            EnumPriority? priority,
-            Guid? employeeId)
-        {
-            TicketStatus = status;
-            Priority = priority;
-            EmployeeId = employeeId;
-
-            LastResponseTime = DateTime.Now;
-
-            if (status == EnumTicketStatus.Closed)
-                ClosedTime = DateTime.Now;
-            else
-                ClosedTime = null;
-        }
-
         public void AssignEmployee(Guid employeeId)
         {
             EmployeeId = employeeId;
             LastResponseTime = DateTime.Now;
+
+            if (TicketStatus == EnumTicketStatus.Open)
+                ChangeStatus(EnumTicketStatus.InProgress);
         }
 
-        public void ChangeStatus(EnumTicketStatus status)
+        public void ChangeStatus(EnumTicketStatus newStatus)
         {
-            TicketStatus = status;
+            if (TicketStatus == newStatus)
+                return;             
 
-            if (status == EnumTicketStatus.Closed)
+            if (!AllowedTransitions.TryGetValue(TicketStatus, out var allowed))
+                throw new BusinessException($"No transition rules defined for {TicketStatus}");
+
+            if (!allowed.Contains(newStatus))
+                throw new BusinessException(
+                    $"Transition from {TicketStatus} to {newStatus} is not allowed."
+                );
+
+            TicketStatus = newStatus;
+
+            if (newStatus == EnumTicketStatus.Closed)
                 ClosedTime = DateTime.Now;
         }
 
         public void ChangePriority(EnumPriority priority)
         {
             Priority = priority;
+        }
+
+        public void UpdateOperationalInfo(
+    EnumTicketStatus status,
+    EnumPriority? priority)
+        {
+            if (TicketStatus != status)
+            {
+                ChangeStatus(status);
+            }
+
+            if (priority.HasValue && Priority != priority)
+            {
+                ChangePriority(priority.Value);
+            }           
+
+            LastResponseTime = DateTime.Now;
+        }
+
+        public List<EnumTicketStatus> GetAllowedStatuses()
+        {
+            var current = TicketStatus;
+
+            var transitions = AllowedTransitions.TryGetValue(current, out var allowed)
+                ? allowed.ToList()
+                : new List<EnumTicketStatus>();
+
+            var result = new List<EnumTicketStatus> { current };
+            result.AddRange(transitions);
+
+            return result;
         }
 
     }

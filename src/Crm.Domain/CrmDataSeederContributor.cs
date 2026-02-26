@@ -111,39 +111,70 @@ public class CrmDataSeederContributor(
         IEnumerable<Guid> customers,
         IEnumerable<Guid> employees)
     {
+        if (await supportTicketRepository.AnyAsync())
+            return await supportTicketRepository.GetListAsync();
+
+        var employeeList = employees.ToList();
+
         var faker = new Faker<SupportTicket>("tr")
-    .CustomInstantiator(f =>
-    {
-        var ticket = new SupportTicket(
-            guidGenerator.Create(),
-            f.PickRandom(customers),
-            f.PickRandom(
-                "Sisteme giriş yapamıyorum",
-                "Fatura hatalı görünüyor",
-                "Hesabım askıya alındı",
-                "Şifre sıfırlama sorunu",
-                "Yetki problemim var",
-                "Destek talebi oluşturulamıyor",
-                "Performans çok yavaş"
-            ),
-            f.Lorem.Paragraph()
-        );
+            .CustomInstantiator(f =>
+            {
+                var ticket = new SupportTicket(
+                    guidGenerator.Create(),
+                    f.PickRandom(customers),
+                    f.PickRandom(
+                        "Sisteme giriş yapamıyorum",
+                        "Fatura hatalı görünüyor",
+                        "Hesabım askıya alındı",
+                        "Şifre sıfırlama sorunu",
+                        "Yetki problemim var",
+                        "Destek talebi oluşturulamıyor",
+                        "Performans çok yavaş"
+                    ),
+                    f.Lorem.Paragraph()
+                );
 
-        var status = f.PickRandom<EnumTicketStatus>();
-        var priority = f.PickRandom<EnumPriority>();
+                ticket.ChangePriority(f.PickRandom<EnumPriority>());
 
-        Guid? employeeId = employees.Any() && f.Random.Bool(0.6f)
-            ? f.PickRandom(employees)
-            : null;
+                var step = f.Random.Int(0, 4);
 
-        ticket.AdminUpdate(status, priority, employeeId);
+                // STEP 1 → Assign + InProgress
+                if (step >= 1)
+                {
+                    var employeeId = f.PickRandom(employeeList);
+                    ticket.AssignEmployee(employeeId);
+                    ticket.ChangeStatus(EnumTicketStatus.InProgress);
+                }
 
-        return ticket;
-    });
+                // STEP 2 → WaitingForCustomer (opsiyonel)
+                if (step >= 2 && f.Random.Bool())
+                {
+                    ticket.ChangeStatus(EnumTicketStatus.WaitingForCustomer);
+                }
+
+                // STEP 3 → Resolved
+                if (step >= 3)
+                {
+                    // Eğer WaitingForCustomer ise önce InProgress'e dön
+                    if (ticket.TicketStatus == EnumTicketStatus.WaitingForCustomer)
+                        ticket.ChangeStatus(EnumTicketStatus.InProgress);
+
+                    ticket.ChangeStatus(EnumTicketStatus.Resolved);
+                }
+
+                // STEP 4 → Closed
+                if (step >= 4)
+                {
+                    ticket.ChangeStatus(EnumTicketStatus.Closed);
+                }
+
+                return ticket;
+            });
 
         var supportTickets = faker.Generate(50);
 
         await supportTicketRepository.InsertManyAsync(supportTickets, true);
+
         return supportTickets;
     }
     #endregion

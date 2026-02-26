@@ -11,7 +11,7 @@ namespace Crm.Support
         Task<SupportTicketDto> GetAsync(Guid id);
         Task<SupportTicketWithNavigationPropertyDto> GetWithNavigationPropertiesAsync(Guid id);
         Task AssignEmployeeAsync(Guid ticketId, Guid employeeId);
-        //Task<SupportTicketDto> UpdateAsync(Guid id, SupportTicketUpdateDto input);
-        //Task<SupportTicketDto> CreateAsync(SupportTicketCreateDto supportTicketCreateDto);
+        Task UpdateStatusPriorityAsync(Guid id, UpdateTicketStatusPriorityDto input);
+        Task<List<EnumTicketStatus>> GetAllowedStatusesAsync(Guid id);
     }
 }

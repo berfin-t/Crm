@@ -21,7 +21,9 @@
                       PagerPosition="DataGridPagerPosition.Bottom">
 
                 <DataGridColumn Field="@nameof(SupportTicketDto.Subject)" Caption="@L["Subject"]" Editable FilterMethod="DataGridColumnFilterMethod.StartsWith" />
-                <DataGridColumn TItem="SupportTicketDto" Caption="@L["Status"]">
+                <DataGridColumn TItem="SupportTicketDto"
+                                Field="@nameof(SupportTicketDto.TicketStatus)"
+                    Caption="@L["Status"]">
                     <DisplayTemplate>
                         @{
                             var status = context.TicketStatus;
@@ -39,7 +41,9 @@
                         <span class="@badgeClass">@status</span>
                     </DisplayTemplate>
                 </DataGridColumn>
-                <DataGridColumn TItem="SupportTicketDto" Caption="@L["Priority"]">
+                <DataGridColumn TItem="SupportTicketDto"
+                                Field="@nameof(SupportTicketDto.Priority)"
+                    Caption="@L["Priority"]">
                     <DisplayTemplate>
                         @{
                             var priority = context.Priority;
