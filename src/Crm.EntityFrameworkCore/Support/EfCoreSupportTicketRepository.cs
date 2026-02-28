@@ -2,6 +2,7 @@
 using Crm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,5 +39,18 @@ namespace Crm.Support
             CancellationToken cancellationToken = default) =>
             await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.SupportTicket.Id == id);
         #endregion
+
+        public async Task<List<SupportTicket>> GetSlaRiskTicketsAsync()
+        {
+            var now = DateTime.UtcNow;
+
+            var dbSet = await GetDbSetAsync();
+
+            return await dbSet
+                .Where(x =>
+                    (x.SLAResponseDeadline.HasValue && x.SLAResponseDeadline < now) ||
+                    (x.SLAResolutionDeadline.HasValue && x.SLAResolutionDeadline < now))
+                .ToListAsync();
+        }
     }
 }

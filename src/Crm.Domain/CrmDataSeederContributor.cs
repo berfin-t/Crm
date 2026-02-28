@@ -117,59 +117,67 @@ public class CrmDataSeederContributor(
         var employeeList = employees.ToList();
 
         var faker = new Faker<SupportTicket>("tr")
-            .CustomInstantiator(f =>
-            {
-                var ticket = new SupportTicket(
-                    guidGenerator.Create(),
-                    f.PickRandom(customers),
-                    f.PickRandom(
-                        "Sisteme giriş yapamıyorum",
-                        "Fatura hatalı görünüyor",
-                        "Hesabım askıya alındı",
-                        "Şifre sıfırlama sorunu",
-                        "Yetki problemim var",
-                        "Destek talebi oluşturulamıyor",
-                        "Performans çok yavaş"
-                    ),
-                    f.Lorem.Paragraph()
-                );
+    .CustomInstantiator(f =>
+    {
+        var ticket = new SupportTicket(
+            guidGenerator.Create(),
+            f.PickRandom(customers),
+            f.PickRandom(
+                "Sisteme giriş yapamıyorum",
+                "Fatura hatalı görünüyor",
+                "Hesabım askıya alındı",
+                "Şifre sıfırlama sorunu",
+                "Yetki problemim var",
+                "Destek talebi oluşturulamıyor",
+                "Performans çok yavaş"
+            ),
+            f.Lorem.Paragraph()
+        );
 
-                ticket.ChangePriority(f.PickRandom<EnumPriority>());
+        ticket.ChangePriority(f.PickRandom<EnumPriority>());
 
-                var step = f.Random.Int(0, 4);
+        var statusRoll = f.Random.Int(1, 100);
 
-                // STEP 1 → Assign + InProgress
-                if (step >= 1)
-                {
-                    var employeeId = f.PickRandom(employeeList);
-                    ticket.AssignEmployee(employeeId);
-                    ticket.ChangeStatus(EnumTicketStatus.InProgress);
-                }
+        // 1️⃣ %15 → OPEN (hiç dokunma)
+        if (statusRoll <= 15)
+        {
+            return ticket;
+        }
 
-                // STEP 2 → WaitingForCustomer (opsiyonel)
-                if (step >= 2 && f.Random.Bool())
-                {
-                    ticket.ChangeStatus(EnumTicketStatus.WaitingForCustomer);
-                }
+        // 2️⃣ %30 → IN PROGRESS
+        if (statusRoll <= 45)
+        {
+            ticket.AssignEmployee(f.PickRandom(employeeList));
+            ticket.ChangeStatus(EnumTicketStatus.InProgress);
+            return ticket;
+        }
 
-                // STEP 3 → Resolved
-                if (step >= 3)
-                {
-                    // Eğer WaitingForCustomer ise önce InProgress'e dön
-                    if (ticket.TicketStatus == EnumTicketStatus.WaitingForCustomer)
-                        ticket.ChangeStatus(EnumTicketStatus.InProgress);
+        // 3️⃣ %20 → WAITING
+        if (statusRoll <= 65)
+        {
+            ticket.AssignEmployee(f.PickRandom(employeeList));
+            ticket.ChangeStatus(EnumTicketStatus.InProgress);
+            ticket.ChangeStatus(EnumTicketStatus.WaitingForCustomer);
+            return ticket;
+        }
 
-                    ticket.ChangeStatus(EnumTicketStatus.Resolved);
-                }
+        // 4️⃣ %20 → RESOLVED
+        if (statusRoll <= 85)
+        {
+            ticket.AssignEmployee(f.PickRandom(employeeList));
+            ticket.ChangeStatus(EnumTicketStatus.InProgress);
+            ticket.ChangeStatus(EnumTicketStatus.Resolved);
+            return ticket;
+        }
 
-                // STEP 4 → Closed
-                if (step >= 4)
-                {
-                    ticket.ChangeStatus(EnumTicketStatus.Closed);
-                }
+        // 5️⃣ %15 → CLOSED
+        ticket.AssignEmployee(f.PickRandom(employeeList));
+        ticket.ChangeStatus(EnumTicketStatus.InProgress);
+        ticket.ChangeStatus(EnumTicketStatus.Resolved);
+        ticket.ChangeStatus(EnumTicketStatus.Closed);
 
-                return ticket;
-            });
+        return ticket;
+    });
 
         var supportTickets = faker.Generate(50);
 

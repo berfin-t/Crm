@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
 
 namespace Crm.Support
 {
@@ -78,5 +80,32 @@ namespace Crm.Support
             return ticket.GetAllowedStatuses();
         }
         #endregion
+
+        public async Task<List<SupportTicketDto>> GetSlaRiskTicketsAsync()
+        {
+            var tickets = await supportTicketRepository.GetSlaRiskTicketsAsync();
+
+            var dtos = tickets.Select(ticket =>
+            {
+                var dto = ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
+
+                var now = DateTime.UtcNow;
+
+                dto.IsResponseOverdue = ticket.SLAResponseDeadline.HasValue &&
+                                        (ticket.TicketStatus == EnumTicketStatus.Open
+                                         || ticket.TicketStatus == EnumTicketStatus.InProgress
+                                         || ticket.TicketStatus == EnumTicketStatus.WaitingForCustomer) &&
+                                        now > ticket.SLAResponseDeadline.Value;
+
+                dto.IsResolutionOverdue = ticket.SLAResolutionDeadline.HasValue &&
+                                          ticket.TicketStatus != EnumTicketStatus.Resolved &&
+                                          ticket.TicketStatus != EnumTicketStatus.Closed &&
+                                          now > ticket.SLAResolutionDeadline.Value;
+
+                return dto;
+            }).ToList();
+
+            return dtos;
+        }
     }
 }

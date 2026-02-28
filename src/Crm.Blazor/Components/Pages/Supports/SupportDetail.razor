@@ -66,7 +66,7 @@
 
                     <Column Md="6">
                         <h6 class="text-muted">@L["Last Response"]</h6>
-                        <p>@(ticket.LastResponseTime?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+                        <p>@(ticket.LastResponseTime?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
                     </Column>
                 </Row>
 
@@ -101,6 +101,34 @@
                 <Card class="bg-light border-0 rounded-3 p-3">
                     <p class="mb-0">@ticket.Description</p>
                 </Card>
+
+                <hr />
+
+                <h6 class="text-muted">SLA Information</h6>
+
+                <Row class="mb-3">
+                    <Column Md="6">
+                        <strong>Response Deadline:</strong>
+                        <div class="@GetSlaClass(ticket.IsResponseOverdue)">
+                            @(ticket.SLAResponseDeadline.HasValue
+                                                    ? DateTime.SpecifyKind(ticket.SLAResponseDeadline.Value, DateTimeKind.Utc)
+                                                    .ToLocalTime()
+                                                    .ToString("dd.MM.yyyy HH:mm")
+                                                    : "-")
+                        </div>
+                    </Column>
+
+                    <Column Md="6">
+                        <strong>Resolution Deadline:</strong>
+                        <div class="@GetSlaClass(ticket.IsResolutionOverdue)">
+                            @(ticket.SLAResolutionDeadline.HasValue
+                                                    ? DateTime.SpecifyKind(ticket.SLAResolutionDeadline.Value, DateTimeKind.Utc)
+                                                    .ToLocalTime()
+                                                    .ToString("dd.MM.yyyy HH:mm")
+                                                    : "-")
+                        </div>
+                    </Column>                    
+                </Row>
 
             </CardBody>
 

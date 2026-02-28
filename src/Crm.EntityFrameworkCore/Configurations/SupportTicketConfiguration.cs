@@ -25,6 +25,8 @@ namespace Crm.Configurations
             builder.Property(x => x.Priority).IsRequired(false);
             builder.Property(x => x.LastResponseTime).IsRequired(false);
             builder.Property(x => x.ClosedTime).IsRequired(false);
+            builder.Property(x => x.SLAResponseDeadline).IsRequired(false);
+            builder.Property(x => x.SLAResolutionDeadline).IsRequired(false);
 
             builder.HasOne<Customer>()
                    .WithMany()

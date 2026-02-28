@@ -14,5 +14,7 @@ namespace Crm.Support
         Task<SupportTicketWithNavigationProperties> GetWithNavigationPropertiesAsync(
             Guid id,
             CancellationToken cancellationToken = default);
+
+        Task<List<SupportTicket>> GetSlaRiskTicketsAsync();
     }
 }

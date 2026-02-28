@@ -19,5 +19,11 @@ namespace Crm.Support
         public DateTime? LastResponseTime { get; set; }
         public DateTime? ClosedTime { get; set; }
 
+        public DateTime? SLAResponseDeadline { get; set; }
+        public DateTime? SLAResolutionDeadline { get; set; }
+
+        public bool IsResponseOverdue { get; set; }
+        public bool IsResolutionOverdue { get; set; }
+
     }
 }

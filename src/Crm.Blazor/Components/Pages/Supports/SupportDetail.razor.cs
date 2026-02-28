@@ -135,5 +135,12 @@ namespace Crm.Blazor.Components.Pages.Supports
             }
         }
         #endregion
+
+        private string GetSlaClass(bool isOverdue)
+        {
+            return isOverdue
+                ? "text-danger fw-bold"
+                : "text-success";
+        }
     }
 }

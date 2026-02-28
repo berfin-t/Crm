@@ -37,12 +37,14 @@ namespace Crm.Support
         public EnumTicketStatus TicketStatus { get; private set; }
         public EnumPriority? Priority { get; private set; }
 
-        
         public DateTime? LastResponseTime { get; private set; }
         public DateTime? ClosedTime { get; private set; }
 
+        public DateTime? SLAResponseDeadline { get; private set; }
+        public DateTime? SLAResolutionDeadline { get; private set; }
+
         protected SupportTicket()
-        {
+        {            
             Subject = string.Empty;
             Description = string.Empty;
             TicketStatus = EnumTicketStatus.Open;
@@ -63,10 +65,12 @@ namespace Crm.Support
         public void AssignEmployee(Guid employeeId)
         {
             EmployeeId = employeeId;
-            LastResponseTime = DateTime.Now;
+            LastResponseTime = DateTime.UtcNow;
 
             if (TicketStatus == EnumTicketStatus.Open)
                 ChangeStatus(EnumTicketStatus.InProgress);
+
+            ApplySLA();
         }
 
         public void ChangeStatus(EnumTicketStatus newStatus)
@@ -85,12 +89,13 @@ namespace Crm.Support
             TicketStatus = newStatus;
 
             if (newStatus == EnumTicketStatus.Closed)
-                ClosedTime = DateTime.Now;
+                ClosedTime = DateTime.UtcNow;
         }
 
         public void ChangePriority(EnumPriority priority)
         {
             Priority = priority;
+            ApplySLA();
         }
 
         public void UpdateOperationalInfo(
@@ -107,7 +112,7 @@ namespace Crm.Support
                 ChangePriority(priority.Value);
             }           
 
-            LastResponseTime = DateTime.Now;
+            LastResponseTime = DateTime.UtcNow;
         }
 
         public List<EnumTicketStatus> GetAllowedStatuses()
@@ -123,6 +128,34 @@ namespace Crm.Support
 
             return result;
         }
+
+        public void ApplySLA()
+        {
+            if (!Priority.HasValue)
+                return;
+
+            var now = DateTime.UtcNow;
+
+            switch (Priority.Value)
+            {
+                case EnumPriority.Critical:
+                    SLAResponseDeadline = now.AddHours(1);
+                    SLAResolutionDeadline = now.AddHours(4);
+                    break;
+                case EnumPriority.High:
+                    SLAResponseDeadline = now.AddHours(4);
+                    SLAResolutionDeadline = now.AddHours(24);
+                    break;
+                case EnumPriority.Medium:
+                    SLAResponseDeadline = now.AddHours(24);
+                    SLAResolutionDeadline = now.AddDays(3);
+                    break;
+                case EnumPriority.Low:
+                    SLAResponseDeadline = now.AddHours(48);
+                    SLAResolutionDeadline = now.AddDays(5);
+                    break;
+            }
+        }       
 
     }
 }
