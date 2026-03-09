@@ -12,8 +12,8 @@ namespace Crm.Support
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public Guid? EmployeeId { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
+        public string? Subject { get; set; }
+        public string? Description { get; set; }
         public EnumTicketStatus? TicketStatus { get; set; }
         public EnumPriority? Priority { get; set; }
         public DateTime? LastResponseTime { get; set; }

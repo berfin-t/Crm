@@ -1,5 +1,4 @@
-﻿using Crm.Contacts;
-using Crm.CustomerNotes;
+﻿using Crm.CustomerNotes;
 using Crm.Customers;
 using Crm.Employees;
 using Crm.Orders;
@@ -39,7 +38,6 @@ public class CrmDbContext :
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Activity> Activities { get; set; }
-    public DbSet<Contact> Contacts { get; set; }
     public DbSet<CustomerNote> CustomerNotes { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Position> Positions { get; set; }

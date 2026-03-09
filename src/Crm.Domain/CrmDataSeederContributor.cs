@@ -2,7 +2,6 @@
 using Bogus.DataSets;
 using Crm.Activities;
 using Crm.Common;
-using Crm.Contacts;
 using Crm.CustomerNotes;
 using Crm.Customers;
 using Crm.Employees;
@@ -36,7 +35,6 @@ public class CrmDataSeederContributor(
     IEmployeeRepository employeeRepository,
     IPositionRepository positionRepository,
     IActivityRepository activityRepository,
-    IContactRepository contactRepository,
     ICustomerNoteRepository customerNoteRepository,
     IOrderRepository orderRepository,
     ITaskRepository taskRepository,
@@ -56,7 +54,6 @@ public class CrmDataSeederContributor(
         var positions = await SeedPositionsAsync();
         var employees = await SeedEmployeesAsync(positions);
         var activities = await SeedActivitiesAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
-        var contacts = await SeedContactsAsync(customers.Select(c => c.Id), employees.Select(e=>e.Id));
         var customerNotes = await SeedCustomerNotesAsync(customers.Select(c => c.Id));
         var projects = await SeedProjectsAsync(customers.Select(c => c.Id), employees.Select(e => e.Id));
         var order = await SeedOrdersAsync(customers.Select(c => c.Id), projects.Select(e => e.Id));
@@ -433,25 +430,6 @@ public class CrmDataSeederContributor(
 
         await activityRepository.InsertManyAsync(activities, true);
         return activities;
-    }
-    #endregion
-
-    #region Contacts
-    private async Task<IEnumerable<Contact>> SeedContactsAsync(IEnumerable<Guid> customers, IEnumerable<Guid> employees)
-    {
-        var faker = new Faker<Contact>("tr")
-            .CustomInstantiator(f => new Contact(
-                guidGenerator.Create(),
-                f.PickRandom<Crm.Contacts.EnumType>(),
-                f.Phone.PhoneNumber(),
-                f.Random.Bool(),
-                f.PickRandom(customers),
-                f.PickRandom(employees)
-                ));
-        var contacts = faker.Generate(50);
-
-        await contactRepository.InsertManyAsync(contacts, true);
-        return contacts;
     }
     #endregion
 

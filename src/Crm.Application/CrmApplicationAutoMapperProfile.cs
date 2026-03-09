@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Crm.Activities;
 using Crm.Common;
-using Crm.Contacts;
 using Crm.CustomerNotes;
 using Crm.Customers;
 using Crm.Employees;
@@ -27,10 +26,6 @@ public class CrmApplicationAutoMapperProfile : Profile
         .ForMember(dest => dest.Activity, opt => opt.MapFrom(src => src.Activity))
         .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
         .ForMember(dest => dest.Employee, opt => opt.MapFrom(src => src.Employee)).ReverseMap();
-
-        CreateMap<Contact, ContactDto>();
-        CreateMap<ContactCreateDto, Contact>();
-        CreateMap<ContactUpdateDto, Contact>();
 
         CreateMap<CustomerNote, CustomerNoteDto>();
         CreateMap<CustomerNoteCreateDto, CustomerNote>();
@@ -71,7 +66,7 @@ public class CrmApplicationAutoMapperProfile : Profile
 
         CreateMap<TaskCreateDto, Task>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<EnumStatus>(src.Group)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<EnumStatus>(src.Group!)))
             .ReverseMap();
 
         CreateMap<TaskUpdateDto, Task>()

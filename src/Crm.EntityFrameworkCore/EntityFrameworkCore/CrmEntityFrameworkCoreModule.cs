@@ -14,7 +14,6 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Crm.Projects;
 using Crm.Activities;
-using Crm.Contacts;
 using Crm.CustomerNotes;
 using Crm.Customers;
 using Crm.Employees;
@@ -56,7 +55,6 @@ public class CrmEntityFrameworkCoreModule : AbpModule
             options.AddDefaultRepositories(includeAllEntities: true);
 
             options.AddRepository<Activity, EfCoreActivityRepository>();
-            options.AddRepository<Contact, EfCoreContactRepository>();
             options.AddRepository<CustomerNote, EfCoreCustomerNoteRepository>();
             options.AddRepository<Customer, EfCoreCustomerRepository>();
             options.AddRepository<Employee, EfCoreEmployeeRepository>();
