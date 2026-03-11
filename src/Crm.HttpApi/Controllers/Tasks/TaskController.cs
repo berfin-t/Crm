@@ -50,6 +50,10 @@ namespace Crm.Controllers.Tasks
         [Route("completed/project/{projectId}")]
         public virtual Task<long> GetCompletedTasksByProjectId(Guid projectId) => _taskAppService.GetCompletedTasksByProjectId(projectId);
     
+        [HttpGet]
+        [Route("my-tasks")]
+        public virtual Task<List<TaskDto>> GetMyTasksAsync() => _taskAppService.GetMyTasksAsync();
+
         //[HttpPut]
         //[Route("update-status/{id}")]
         //public virtual Task<TaskDto> UpdateStatusAsync(Guid id, EnumStatus newStatus) => _taskAppService.UpdateStatusAsync(id, newStatus);

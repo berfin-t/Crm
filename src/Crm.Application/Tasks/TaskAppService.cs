@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Crm.Common;
+using Crm.Employees;
 using Crm.Tasks.Events;
 using System;
 using System.Collections.Generic;
@@ -7,12 +8,13 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.EventBus.Distributed;
+using Volo.Abp.Users;
 
 namespace Crm.Tasks
 {
     [RemoteService(IsEnabled = false)]
     public class TaskAppService(ITaskRepository taskRepository, IMapper _mapper,
-        TaskManager taskManager,
+        TaskManager taskManager, IEmployeeRepository employeeRepository,
         IDistributedEventBus distributedEventBus) : CrmAppService, ITaskAppService
     {
         #region Create
@@ -106,5 +108,23 @@ namespace Crm.Tasks
         //    return _mapper.Map<TaskDto>(task);
         //}
         //#endregion
+
+        public async Task<List<TaskDto>> GetMyTasksAsync()
+        {
+            var userId = CurrentUser.Id;
+            if (userId == null) throw new UserFriendlyException("User not logged in");
+
+            if (CurrentUser.IsInRole("admin"))
+            {
+                var allItems = await taskRepository.GetListAsync();
+                return _mapper.Map<List<TaskDto>>(allItems);
+            }
+
+            var employee = await employeeRepository.FindAsync(e => e.UserId == userId);
+            if (employee == null) return new List<TaskDto>();
+
+            var items = await taskRepository.GetListAsync(employeeId: employee.Id);
+            return _mapper.Map<List<TaskDto>>(items);
+        }
     }
 }

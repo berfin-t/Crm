@@ -37,7 +37,7 @@ namespace Crm.Blazor.Components.Pages.Tasks
 
         private async System.Threading.Tasks.Task LoadDataAsync()
         {
-            items = (await TaskAppService.GetListAllAsync())
+            items = (await TaskAppService.GetMyTasksAsync())
                 .OrderByDescending(x => x.Priority)
                 .ToList();
         }

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
 @using Crm.Permissions
+@using Crm.Support
 @using Volo.Abp.MultiTenancy
 @using Crm.Projects
 @using Crm.Tasks
@@ -16,6 +17,7 @@
 @inject ICustomerAppService CustomersAppService
 @inject IEmployeeAppService EmployeeAppService
 @inject IAuthorizationService AuthorizationService
+@inject ISupportTicketAppService SupportTicketAppService
 
 <Div class="card-container">
     <Card class="left-card">        
@@ -100,11 +102,13 @@
 </div>
 
 <div class="row mt-4">
+
+    <!-- SOL TABLO -->
     <div class="col-md-6">
         <Card>
             <CardBody>
                 <Div class="top-label mb-2">
-                    📅 Number of Tasks Assigned This Month (Employee Based)
+                    📅 Number of Tasks Assigned This Month
                 </Div>
 
                 <div class="table-responsive scroll-table">
@@ -126,13 +130,66 @@
                                     </tr>
                                 }
                             }
-                            else
+                        </tbody>
+                    </table>
+                </div>
+            </CardBody>
+        </Card>
+    </div>
+
+    <!-- SAĞ TABLO -->
+    <div class="col-md-6">
+        <Card>
+            <CardBody>
+                <Div class="top-label mb-2">
+                    Open Support Tickets
+                </Div>
+
+                <div class="table-responsive scroll-table">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th class="text-end">Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (openTickets.Any())
                             {
-                                <tr>
-                                    <td colspan="2" class="text-center text-muted">
-                                        No data found
-                                    </td>
-                                </tr>
+                                @foreach (var item in openTickets)
+                                {
+                                    var status = item.TicketStatus;
+                                    var badgeClassStatus = status switch
+                                    {
+                                        EnumTicketStatus.Open => "badge bg-secondary",
+                                        EnumTicketStatus.InProgress => "badge bg-info",
+                                        EnumTicketStatus.WaitingForCustomer => "badge bg-warning text-dark",
+                                        EnumTicketStatus.Resolved => "badge bg-success",
+                                        EnumTicketStatus.Closed => "badge bg-danger",
+                                        _ => "badge bg-light text-dark"
+                                    };
+
+                                    var priority = item.Priority;
+                                    var badgeClassPriority = priority switch
+                                    {
+                                        EnumPriority.Low => "badge bg-secondary",
+                                        EnumPriority.Medium => "badge bg-info",
+                                        EnumPriority.High => "badge bg-warning text-dark",
+                                        EnumPriority.Critical => "badge bg-danger",
+                                        _ => "badge bg-light text-dark"
+                                    };
+
+                                    <tr>
+                                        <td>@item.Subject</td>
+                                        <td>
+                                            <span class="@badgeClassStatus">@status</span>
+                                        </td>
+                                        <td class="text-end">
+                                             <span class="@badgeClassPriority">@item.Priority</span>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
@@ -140,12 +197,11 @@
             </CardBody>
         </Card>
     </div>
+
 </div>
 
-
-
 @code {
-    
+
     private long totalProjects;
     private long totalTasks;
     private long totalCustomer;
@@ -153,9 +209,17 @@
     private decimal? successRate = null;
     private bool CanViewCustomers;    
     private List<EmployeeMonthlyTaskCountDto> employeeMonthlyTasks = new();
+    private List<SupportTicketDto> supportTickets = new(); 
+    private List<SupportTicketDto> openTickets = new();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
+        supportTickets = await SupportTicketAppService.GetListAllAsync();
+
+        openTickets = supportTickets
+            .Where(x => x.TicketStatus == EnumTicketStatus.Open)
+            .ToList();
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
