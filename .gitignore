@@ -263,3 +263,5 @@ src/Crm.Blazor.Tiered/Logs/*
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*
+
+appsettings.secrets.json
