@@ -2,10 +2,13 @@
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Crm.Blazor.Components;
+using Crm.Blazor.Hubs;
 using Crm.Blazor.Menus;
 using Crm.EntityFrameworkCore;
 using Crm.Localization;
 using Crm.MultiTenancy;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +35,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Serilog;
+using Volo.Abp.AspNetCore.SignalR;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Identity.Blazor.Server;
@@ -45,8 +49,6 @@ using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Abp.AspNetCore.SignalR;
-using Crm.Blazor.Hubs;
 
 namespace Crm.Blazor;
 
@@ -114,6 +116,16 @@ namespace Crm.Blazor;
         // Add services to the container.
         context.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        // Hangfire
+        context.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(o =>
+        o.UseNpgsqlConnection(configuration.GetConnectionString("Hangfire"))));
+
+        context.Services.AddHangfireServer();        
 
         ConfigureAuthentication(context);
         ConfigureUrls(configuration);
@@ -278,6 +290,7 @@ namespace Crm.Blazor;
         app.UseDynamicClaims();
         app.UseAntiforgery();
         app.UseAuthorization();
+        app.UseHangfireDashboard("/hangfire");
 
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>

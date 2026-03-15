@@ -1,5 +1,6 @@
 ﻿using Crm.Employees;
 using Crm.Permissions;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Crm.Activities
 {
     [RemoteService(IsEnabled = false)]
     public class ActivityAppService(IActivityRepository activityRepository, IEmployeeRepository employeeRepository,
-        ActivityManager activityManager) : CrmAppService, IActivityAppService
+        ActivityManager activityManager, IBackgroundJobClient backgroundJobClient) : CrmAppService, IActivityAppService
     {
         #region Create
         [Authorize(CrmPermissions.Activities.Create)]
@@ -22,6 +23,9 @@ namespace Crm.Activities
             var activity = await activityManager.CreateAsync(
                 input.CustomerId, input.EmployeeId, input.Type,
                 input.Description!, input.Date);
+
+            backgroundJobClient.Enqueue<ActivityMailJob>(job =>
+                job.SendActivityNotificationAsync(activity.Id));
 
             return ObjectMapper.Map<Activity, ActivityDto>(activity);
         }
