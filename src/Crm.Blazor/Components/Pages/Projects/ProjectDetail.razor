@@ -40,7 +40,21 @@
                         <Div class="top-label">@L["Team Size"]</Div>
                         <Div class="field-label">@teamSize</Div>
                     </Div>
-                </Div>                
+                </Div>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.DollarSign" Class="icon" />
+                    <Div>
+                        <Div class="top-label">@L["Revenue"]</Div>
+                        <Div class="field-label">@project.Revenue.ToString("N2")</Div>
+                    </Div>
+                </Div>
+                <Div class="overview-item">
+                    <Blazorise.Icons.FontAwesome.Icon Name="IconName.ChartLine" Class="icon" />
+                    <Div>
+                        <Div class="top-label">@L["Success Rate"]</Div>
+                        <Div class="field-label">%@project.SuccessRate.ToString("F1")</Div>
+                    </Div>
+                </Div>
             </Div>
         </CardBody>
     </Card>
@@ -79,6 +93,10 @@
                 <Div>
                     <strong>@L["End Date"]</strong>
                     <p>@(project.EndTime?.ToString("dd MMMM yyyy h:mm tt") ?? "-")</p>
+                </Div>
+                <Div>
+                    <strong>@L["Customer"]</strong>
+                    <p>@(project.CustomerName ?? "-")</p>
                 </Div>
             </Div>
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Uow;
 using AutoMapper;
+using Crm.Customers;
 
 namespace Crm.Projects
 {
@@ -15,41 +16,17 @@ namespace Crm.Projects
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
         private readonly ProjectManager _projectManager;
+        private readonly ICustomerRepository _customerRepository;
 
         public ProjectAppService(
-            IProjectRepository projectRepository,
-            IMapper mapper,
-            ProjectManager projectManager)
+            IProjectRepository projectRepository, IMapper mapper,
+            ProjectManager projectManager, ICustomerRepository customerRepository)
         {
             _projectRepository = projectRepository;
             _mapper = mapper;
             _projectManager = projectManager;
+            _customerRepository = customerRepository;
         }
-
-        //#region GetListPaged
-        //[AllowAnonymous]
-        //public virtual async Task<PagedResultDto<ProjectDto>> GetListAsync(GetPagedProjectsInput input)
-        //{
-        //    var totalCount = await _projectRepository.GetCountAsync(
-        //        input.Name, input.Description, input.StartTime,
-        //        input.EndTime, input.Statues,
-        //        input.Revenue, input.SuccesRate,
-        //        input.EmployeeIds, input.CustomerId);
-
-        //    var items = await _projectRepository.GetListAllAsync(
-        //        input.Name, input.Description, input.StartTime,
-        //        input.EndTime, input.Statues,
-        //        input.Revenue, input.SuccesRate,
-        //        input.EmployeeIds, input.CustomerId,
-        //        input.Sorting, input.MaxResultCount, input.SkipCount);
-
-        //    return new PagedResultDto<ProjectDto>
-        //    {
-        //        TotalCount = totalCount,
-        //        Items = _mapper.Map<List<ProjectDto>>(items)
-        //    };
-        //}
-        //#endregion
 
         #region GetListAll
         [AllowAnonymous]
@@ -66,7 +43,14 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> GetAsync(Guid id)
         {
             var project = await _projectRepository.GetAsync(id);
-            return _mapper.Map<ProjectDto>(project);
+            var dto = _mapper.Map<ProjectDto>(project);
+
+            var customer = await _customerRepository.FindAsync(project.CustomerId);
+            dto.CustomerName = customer != null
+                ? $"{customer.Name} {customer.Surname}".Trim()
+                : null;
+
+            return dto;
         }
         #endregion
 
@@ -137,16 +121,5 @@ namespace Crm.Projects
             await _projectRepository.UpdateAsync(project);
         }
         #endregion
-
-        //#region Search By Name
-        //[AllowAnonymous]
-        //public virtual async Task<List<ProjectDto>> SearchByNameAsync(string name)
-        //{
-        //    var query = await _projectRepository.GetQueryableAsync();
-        //    var filteredQuery = _projectRepository.ApplyDataFilters(query, name: name);
-        //    var projects = filteredQuery.ToList();
-        //    return _mapper.Map<List<ProjectDto>>(projects);
-        //}
-        //#endregion
     }
 }

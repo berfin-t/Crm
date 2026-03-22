@@ -27,7 +27,7 @@ namespace Crm.Projects
             int skipCount = 0,
             CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
+            var query = (await GetQueryableAsync()).AsNoTracking();          
 
             if (projectId != null)
                 query = query.Where(pe => pe.ProjectId == projectId);
@@ -48,7 +48,7 @@ namespace Crm.Projects
             Guid? employeeId = null,
             CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
+            var query = (await GetQueryableAsync()).AsNoTracking();
 
             if (projectId != null)
                 query = query.Where(pe => pe.ProjectId == projectId);

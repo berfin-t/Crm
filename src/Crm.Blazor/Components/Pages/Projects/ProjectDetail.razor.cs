@@ -30,7 +30,7 @@ namespace Crm.Blazor.Components.Pages.Projects
 
         private long totalTasks;
         private long completedTasks;
-        private long teamSize;
+        private int teamSize;
 
         private bool canEditProject;
         private bool canDeleteProject;

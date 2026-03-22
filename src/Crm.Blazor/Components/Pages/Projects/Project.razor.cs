@@ -21,7 +21,8 @@ namespace Crm.Blazor.Components.Pages.Projects
         private ProjectCreateModal? projectCreateModal;
 
         private string selectedAutoCompleteText = string.Empty;
-        private EnumStatus? selectedStatus = null;        
+        private EnumStatus? selectedStatus = null;
+        private string selectedStatusStr = string.Empty;
         private int CurrentPage { get; set; } = 0;
         private int PageSize { get; set; } = 9;
 
@@ -38,6 +39,13 @@ namespace Crm.Blazor.Components.Pages.Projects
             ApplyFilters();
         }
 
+        private void OnStatusChanged(string value)
+        {
+            selectedStatusStr = value;
+            CurrentPage = 0;
+            ApplyFilters();
+            StateHasChanged();
+        }
         private async Task OnHandleReadData(AutocompleteReadDataEventArgs args)
         {
             if (args.CancellationToken.IsCancellationRequested) return;
@@ -55,12 +63,17 @@ namespace Crm.Blazor.Components.Pages.Projects
         {
             CurrentPage++;
             ApplyFilters();
+            StateHasChanged();
         }
 
         public void OnEntered(KeyboardEventArgs args)
         {
             if (args.Code == "Enter" || args.Code == "NumpadEnter")
+            {
+                CurrentPage = 0;
                 ApplyFilters();
+                StateHasChanged();
+            }
         }            
         private void ApplyFilters()
         {
@@ -74,9 +87,10 @@ namespace Crm.Blazor.Components.Pages.Projects
             }
 
             // Status filtresi
-            if (selectedStatus.HasValue)
+            if (!string.IsNullOrWhiteSpace(selectedStatusStr) &&
+    Enum.TryParse<EnumStatus>(selectedStatusStr, out var parsedStatus))
             {
-                filtered = filtered.Where(p => p.Status == selectedStatus.Value);
+                filtered = filtered.Where(p => p.Status == parsedStatus);
             }
 
             // Sayfalama

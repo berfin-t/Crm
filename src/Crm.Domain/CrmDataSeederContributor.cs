@@ -472,8 +472,8 @@ public class CrmDataSeederContributor(
                         Enum.GetValues(typeof(EnumStatus))
                             .Cast<EnumStatus>().Where(x => x != 0)
                     ),
-                    f.Random.Decimal(1000, 5000),
-                    f.Random.Decimal(0, 100),
+                    Math.Round(f.Random.Decimal(1000, 5000), 2),
+                    Math.Round(f.Random.Decimal(0, 100), 2),
                     selectedEmployees,
                     f.PickRandom(customerIds)
                 );

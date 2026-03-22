@@ -16,10 +16,11 @@ namespace Crm.Projects
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public EnumStatus Status { get; set; } 
-        public decimal Revenue { get; set; }
+        public decimal Revenue { get; set; } 
         public decimal SuccessRate { get; set; }
         public List<Guid> EmployeeIds { get; set; } = new();
         public Guid CustomerId { get; set; }
+        public string? CustomerName { get; set; }
 
         public string ConcurrencyStamp { get; set; } = null!;
     }

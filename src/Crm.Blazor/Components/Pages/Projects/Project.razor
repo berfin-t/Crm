@@ -31,20 +31,16 @@
                 </Field>                          
             </Div>
             <Div Flex="Flex.JustifyContent.Between.AlignItems.Center" Gap="Gap.Is3">              
-                <Select TValue="EnumStatus?"
-                         @bind-SelectedValue="selectedStatus"
-                         @onkeydown="@OnEntered">
-                    <SelectItem Value="@(null as EnumStatus?)">@L["All"]</SelectItem>
+                <Select TValue="string"
+                        SelectedValue="@selectedStatusStr"
+                        SelectedValueChanged="@OnStatusChanged"
+                        @onkeydown="@OnEntered">
+                    <SelectItem Value="@("")">@L["All"]</SelectItem>
                     @foreach (EnumStatus status in Enum.GetValues(typeof(EnumStatus)))
                     {
-                        <SelectItem Value="@(status)">@status</SelectItem>
+                        <SelectItem Value="@status.ToString()">@status</SelectItem>
                     }
                 </Select>
-
-                @* <Button Color="Color.Primary" Size="Size.Small" Clicked="ApplyFilters">
-                    <Blazorise.Icons.FontAwesome.Icon Name="@IconName.Search" />
-                    Ara
-                </Button> *@
                 @if (canCreateProject)
                 {
                     <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">

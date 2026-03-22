@@ -59,14 +59,13 @@
                 <!--Revenue-->
                 <Field>
                     <FieldLabel>@L["Revenue"]:</FieldLabel>
-                    <InputNumber @bind-Value="ProjectUpdateDto.Revenue" class="form-control" />
+                    <NumericEdit @bind-Value="ProjectUpdateDto.Revenue" Decimals="2" class="form-control" />
                 </Field>
-
                 <!--Success Rate-->
                 <Field>
                     <FieldLabel>@L["SuccessRate"]:</FieldLabel>
-                    <InputNumber @bind-Value="ProjectUpdateDto.SuccessRate" class="form-control" />
-                </Field>               
+                    <NumericEdit @bind-Value="ProjectUpdateDto.SuccessRate" Decimals="2" class="form-control" />
+                </Field>
 
                 <!--Customer-->
                 <Field>

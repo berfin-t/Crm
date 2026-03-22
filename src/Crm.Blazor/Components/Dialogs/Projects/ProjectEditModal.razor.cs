@@ -45,8 +45,8 @@ namespace Crm.Blazor.Components.Dialogs.Projects
                 ProjectUpdateDto.StartTime = project.StartTime;
                 ProjectUpdateDto.EndTime = project.EndTime;
                 ProjectUpdateDto.Status = project.Status;
-                ProjectUpdateDto.Revenue = project.Revenue;
-                ProjectUpdateDto.SuccessRate = project.SuccessRate;
+                ProjectUpdateDto.Revenue = Math.Round(project.Revenue, 2);
+                ProjectUpdateDto.SuccessRate = Math.Round(project.SuccessRate, 2);
                 selectedStatus = project.Status;
                 selectedStartTime = project.StartTime;
                 selectedEndTime = project.EndTime;
