@@ -13,7 +13,7 @@
     <Modal @ref="modalRef">
         <ModalContent Centered>
             <ModalHeader>
-                <ModalTitle>@L["Edit Activity"]</ModalTitle>
+                <ModalTitle>@L["Edit Project"]</ModalTitle>
             </ModalHeader>
             <ModalBody>
 
@@ -51,7 +51,7 @@
                     <Select @bind-SelectedValue="selectedStatus">
                         @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                         {
-                            <SelectItem Value="@status">@status</SelectItem>
+                            <SelectItem Value="@status">@L[$"Status_{status}"]</SelectItem>
                         }
                     </Select>
                 </Field>
@@ -63,7 +63,7 @@
                 </Field>
                 <!--Success Rate-->
                 <Field>
-                    <FieldLabel>@L["SuccessRate"]:</FieldLabel>
+                    <FieldLabel>@L["Success Rate"]:</FieldLabel>
                     <NumericEdit @bind-Value="ProjectUpdateDto.SuccessRate" Decimals="2" class="form-control" />
                 </Field>
 

@@ -38,7 +38,7 @@
                     <SelectItem Value="@("")">@L["All"]</SelectItem>
                     @foreach (EnumStatus status in Enum.GetValues(typeof(EnumStatus)))
                     {
-                        <SelectItem Value="@status.ToString()">@status</SelectItem>
+                        <SelectItem Value="@status.ToString()">@L[$"Status_{status}"].ToString()</SelectItem>
                     }
                 </Select>
                 @if (canCreateProject)
@@ -62,7 +62,7 @@
                         <Div Flex="Flex.JustifyContent.Between">
                             <Span>@project.Name</Span>
                             <span class="status-label status-@project.Status.ToString().ToLower()">
-                                @L["ProjectStatus:" + project.Status.ToString()]
+                                @L[$"Status_{project.Status.ToString()}"]
                             </span>
                         </Div>
                     </CardTitle>

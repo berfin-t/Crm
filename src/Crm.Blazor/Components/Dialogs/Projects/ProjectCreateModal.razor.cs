@@ -46,13 +46,16 @@ namespace Crm.Blazor.Components.Dialogs.Projects
             if(validations is not null)
                 await validations.ClearAll();
 
-            ProjectCreateDto.Name = Name ?? string.Empty;
-            ProjectCreateDto.Description = Description ?? string.Empty;
-            ProjectCreateDto.StartTime = DateTime.Now;
-            ProjectCreateDto.EndTime = DateTime.Now;
-            ProjectCreateDto.Statues = EnumStatus.Active;
-            ProjectCreateDto.Revenue = 0;
-            ProjectCreateDto.SuccesRate = 0;
+            ProjectCreateDto = new ProjectCreateDto
+            {
+                Name = string.Empty,
+                Description = string.Empty,
+                StartTime = DateTime.Today,
+                EndTime = DateTime.Today.AddDays(1),
+                Statues = EnumStatus.Active,
+                Revenue = 0,
+                SuccesRate = 0
+            };
 
             SelectedEmployeeIds = new List<Guid>();   
             SelectedCustomerId = Guid.Empty;
@@ -81,9 +84,6 @@ namespace Crm.Blazor.Components.Dialogs.Projects
                 return;
             ProjectCreateDto.CustomerId = SelectedCustomerId;
             ProjectCreateDto.EmployeeIds = SelectedEmployeeIds;
-            ProjectCreateDto.Statues = Status;
-            ProjectCreateDto.Revenue = Revenue;
-            ProjectCreateDto.SuccesRate = SuccesRate;
 
             await ProjectEmployeeAppService.CreateAsync(ProjectCreateDto);
                 await HideModal();

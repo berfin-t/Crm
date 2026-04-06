@@ -42,7 +42,7 @@
                     <Div class="overview-item">
                         <Blazorise.Icons.FontAwesome.Icon Name="IconName.Users" Class="icon" />
                         <Div>
-                            <Div class="top-label">@L["Total Customer"]</Div>
+                            <Div class="top-label">@L["Total Customers"]</Div>
                             <Div class="field-label">@totalCustomer</Div>
                         </Div>
                     </Div>
@@ -108,15 +108,15 @@
         <Card>
             <CardBody>
                 <Div class="top-label mb-2">
-                    📅 Number of Tasks Assigned This Month
+                    📅 @L["Number of Tasks Assigned This Month"]
                 </Div>
 
                 <div class="table-responsive scroll-table">
                     <table class="table table-sm table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Employee</th>
-                                <th class="text-end">Task</th>
+                                <th>@L["Employee"]</th>
+                                <th class="text-end">@L["Task"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,16 +142,16 @@
         <Card>
             <CardBody>
                 <Div class="top-label mb-2">
-                    Open Support Tickets
+                    @L["Open Support Tickets"]
                 </Div>
 
                 <div class="table-responsive scroll-table">
                     <table class="table table-sm table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Subject</th>
-                                <th>Status</th>
-                                <th class="text-end">Priority</th>
+                                <th>@L["Subject"]</th>
+                                <th>@L["Status"]</th>
+                                <th class="text-end">@L["Priority"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -183,10 +183,10 @@
                                     <tr>
                                         <td>@item.Subject</td>
                                         <td>
-                                            <span class="@badgeClassStatus">@status</span>
+                                            <span class="@badgeClassStatus">@L[$"TicketStatus_{status}"]</span>
                                         </td>
                                         <td class="text-end">
-                                             <span class="@badgeClassPriority">@item.Priority</span>
+                                            <span class="@badgeClassPriority">@L[$"Priority_{item.Priority}"]</span>
                                         </td>
                                     </tr>
                                 }
@@ -223,12 +223,10 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        // ABP izin kontrolü
         var isAdmin = user.IsInRole("Admin");
         var canViewCustomersResult = await AuthorizationService.AuthorizeAsync(user, CrmPermissions.Customers.Default);
         CanViewCustomers = isAdmin || canViewCustomersResult.Succeeded;
 
-        // Dashboard verileri
         totalProjects = await ProjectAppService.GetTotalProjectCountAsync();
         totalTasks = await TasksAppService.GetTotalTaskCountAsync();
 

@@ -70,68 +70,84 @@
                         </Card>
 
                 <!-- Status -->
-                <Field>
-                    <FieldLabel>@L["Status"]:</FieldLabel>
-                    <Select @bind-SelectedValue="Status">
-                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
-                        {
-                            <SelectItem Value="@status">@status</SelectItem>
-                        }
-                    </Select>
-                </Field>
+                    <Field>
+                        <FieldLabel>@L["Status"]:</FieldLabel>
+                        <Select TValue="string"
+                                SelectedValue="@ProjectCreateDto.Statues.ToString()"
+                                SelectedValueChanged="@(v => ProjectCreateDto.Statues = Enum.Parse<EnumStatus>(v))">
+                            @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
+                            {
+                                <SelectItem TValue="string" Value="@status.ToString()">
+                                    @L[$"Status_{status.ToString()}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
 
                     <!-- Revenue -->
-                    <Validation Validator="ValidateRevenue"> 
+                    <Validation Validator="ValidateRevenue">
                         <Field>
                             <FieldLabel>@L["Revenue"]:</FieldLabel>
                             <FieldBody>
                                 <NumericEdit TValue="decimal"
-                                             @bind-Value="Revenue"
-                                             class="form-control"/>
-                                <ValidationError />
+                                             @bind-Value="ProjectCreateDto.Revenue"
+                                             Min="0"
+                                             class="form-control">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </NumericEdit>
                             </FieldBody>
-                            <ValidationError>
-                                @L["Revenue must be greater than 0"]
-                            </ValidationError>
                         </Field>
                     </Validation>
                     
 
                     <!-- Success Rate -->
-                    <Validation Validator="ValidateSuccesRate"> 
-                    <Field>
-                        <FieldLabel>@L["Succes Rate"]:</FieldLabel>
-                        <FieldBody>
-                            <NumericEdit TValue="decimal"
-                                         @bind-Value="SuccesRate"
-                                         class="form-control"
-                                         Validator="ValidateSuccesRate" />                            
-                        </FieldBody>
-                            <ValidationError>
-                                @L["Success Rate must be greater than 0"]
-                            </ValidationError> 
-                    </Field>
-                   </Validation> 
+                    <Validation Validator="ValidateSuccesRate">
+                        <Field>
+                            <FieldLabel>@L["Succes Rate"]:</FieldLabel>
+                            <FieldBody>
+                                <NumericEdit TValue="decimal"
+                                             @bind-Value="ProjectCreateDto.SuccesRate"
+                                             Min="0"
+                                             Max="100"
+                                             class="form-control">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </NumericEdit>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
                 
                 <!-- Employee -->
-                <Validation Validator="ValidateEmployee"> 
+                <Validation Validator="ValidateEmployee">
                         <Field>
-                            <FieldLabel>@L["Employees"]:</FieldLabel>
+                            <FieldLabel>
+                                @L["Employees"]:
+                                <span class="text-muted ms-1">
+                                    (@SelectedEmployeeIds.Count / 20)
+                                </span>
+                            </FieldLabel>
                             <FieldBody>
                                 <Select TValue="Guid" Multiple="true" SelectedValues="SelectedEmployeeIds"
                                         SelectedValuesChanged="@(v => SelectedEmployeeIds = v.ToList())">
                                     @foreach (var employee in Employees)
                                     {
-                                        <SelectItem Value="@employee.Id">@employee.FirstName @employee.LastName</SelectItem>
+                                        <SelectItem Value="@employee.Id">
+                                            @employee.FirstName @employee.LastName
+                                        </SelectItem>
                                     }
                                 </Select>
-
-                                <ValidationError>
-                                    @L["Employee is required"]
-                                </ValidationError> 
-                            </FieldBody>                            
+                                @if (SelectedEmployeeIds.Count >= 20)
+                                {
+                                    <span class="text-warning">
+                                        @L["Max 20 employees allowed"]
+                                    </span>
+                                }
+                            </FieldBody>
                         </Field>
-                    </Validation> 
+                    </Validation>
 
                 <!-- Customer -->
                <Validation Validator="ValidateCustomer"> 
@@ -152,7 +168,9 @@
                                 </ValidationError> 
                             </FieldBody>                            
                         </Field>
-                   </Validation> 
+                   </Validation>
+
+                    
 
                 </Validations>
             </ModalBody>
@@ -160,6 +178,7 @@
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@HideModal">@L["Close"]</Button>
                 <Button Color="Color.Primary" Clicked="@CreateProjectAsync">@L["Save Changes"]</Button>
+
             </ModalFooter>
 
         </ModalContent>

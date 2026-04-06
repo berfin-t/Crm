@@ -165,7 +165,7 @@
                                     _ => "badge bg-light text-dark"
                                 };
                             }
-                            <span class="@badgeClass">@status</span>
+                                    <span class="@badgeClass">@L[$"Status_{status.ToString()}"]</span>
                             </td>
                                 <td>
                                     @{
@@ -226,7 +226,7 @@ else
     <ModalContent>
 
         <ModalHeader>
-            <ModalTitle>Add Employee</ModalTitle>
+            <ModalTitle>@L["Add Employee"]</ModalTitle>
             <CloseButton/>
         </ModalHeader>
 
