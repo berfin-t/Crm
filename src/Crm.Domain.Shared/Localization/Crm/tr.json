@@ -146,7 +146,9 @@
     "TicketStatus_Closed": "Kapalı",
     "Employee": "Çalışan",
     "Task": "Görev",
-    "Subject": "Konu"
-
+    "Subject": "Konu",
+    "Timeline": "Zaman Çizelgesi",
+    "Call": "Çağrı",
+    "Meeting": "Toplantı"
   }
 }

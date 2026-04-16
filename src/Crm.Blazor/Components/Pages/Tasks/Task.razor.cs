@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Users;
 
 namespace Crm.Blazor.Components.Pages.Tasks
 {
@@ -26,6 +27,9 @@ namespace Crm.Blazor.Components.Pages.Tasks
 
         private bool showAlert = false;
         private string latestTaskName = string.Empty;
+
+        [Inject] public ICurrentUser? CurrentUser { get; set; }
+        private Guid? CurrentUserId => CurrentUser!.Id;
 
         #region Initialization
 
@@ -55,6 +59,11 @@ namespace Crm.Blazor.Components.Pages.Tasks
 
             hubConnection.On<TaskDto>("TaskCreated", async task =>
             {
+                var isAdmin = CurrentUser.IsInRole("admin");
+
+                if (!isAdmin && task.EmployeeId != CurrentUserId)
+                    return;
+
                 if (!items.Any(x => x.Id == task.Id))
                 {
                     items.Insert(0, task);

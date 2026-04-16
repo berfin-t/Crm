@@ -34,6 +34,7 @@ namespace Crm.Blazor.Components.Pages.Projects
 
         private bool canEditProject;
         private bool canDeleteProject;
+        private bool canAddEmployee;
 
         private EventCallback RefreshCallback => EventCallback.Factory.Create(this, OnInitializedAsync);
         private bool isActivityModalVisible = false;
@@ -68,6 +69,7 @@ namespace Crm.Blazor.Components.Pages.Projects
 
             canEditProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Edit);
             canDeleteProject = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Delete);
+            canAddEmployee = await AuthorizationService.IsGrantedAsync(CrmPermissions.Projects.Create);
 
             await base.OnInitializedAsync();
         }

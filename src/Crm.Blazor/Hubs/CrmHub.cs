@@ -21,7 +21,12 @@ namespace Crm.Blazor.Hubs
 
         public async System.Threading.Tasks.Task SendTaskCreated(TaskDto task)
         {
-            await Clients.All.SendAsync("TaskCreated", task);
+            //await Clients.All.SendAsync("TaskCreated", task);
+            
+            await Clients.Group("Admins").SendAsync("TaskCreated", task);
+           
+            await Clients.User(task.EmployeeId.ToString())
+                .SendAsync("TaskCreated", task);
         }
     }
 }

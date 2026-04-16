@@ -11,7 +11,7 @@
 <Container>
     @if(canCreateActivity) {
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="text-center">Timeline</h3>
+        <h3 class="text-center">@L["Timeline"]</h3>
         <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Activity"]</Button>
     </div>
     }
@@ -24,7 +24,7 @@
                 <div class="timeline-date">@activity.Date.ToString("dd")<br>@activity.Date.ToString("MMM")</div>
                 <div class="timeline-content">
                     <h5 style="font-weight: bold; font-size: 16px; display: flex; justify-content: space-between;">
-                        <span style="color: black">@activity.Type</span>
+                        <span style="color: black">@L[$"{@activity.Type}"]</span>
                         <span style="color: dodgerblue">@activity.Date.ToString("HH:mm")</span>
                     </h5>
                     <p>@activity.Description</p>
@@ -50,7 +50,7 @@
                     <p><strong>@L["Date"]:</strong> @selectedActivity.Date.ToString("dd MMMM yyyy HH:mm")</p>
                     <p><strong>@L["Customer Name"]:</strong> @selectedActivityWithNav!.Customer.FullName</p>
                     <p><strong>@L["Employee Name"]:</strong> @selectedActivityWithNav.Employee.FullName</p>
-                    <p><strong>@L["Type"]:</strong> @selectedActivity.Type.ToString()</p>
+                    <p><strong>@L["Type"]:</strong> @L[$"{selectedActivity.Type}"].ToString()</p>
                 </div>
             }
         </ModalBody>

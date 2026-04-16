@@ -9,7 +9,6 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
     {
         private Modal? modalRef;
         [Parameter] public TaskDto? Task { get; set; }
-        private TaskDto? selectedTask;
         private TaskEditModal? taskEditModal;        
         [Parameter] public EventCallback OnUpdated { get; set; }
 

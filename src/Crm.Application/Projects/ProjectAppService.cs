@@ -59,7 +59,7 @@ namespace Crm.Projects
         public virtual async Task<ProjectDto> CreateAsync(ProjectCreateDto input)
         {
             var project = await _projectManager.CreateAsync(
-                input.EmployeeIds,       // List<Guid> artık
+                input.EmployeeIds,      
                 input.CustomerId,
                 input.Name,
                 input.StartTime!.Value,
@@ -79,7 +79,7 @@ namespace Crm.Projects
         {
             var project = await _projectManager.UpdateAsync(
                 id,
-                input.EmployeeIds,       // List<Guid> artık
+                input.EmployeeIds,      
                 input.CustomerId,
                 input.Name!,
                 input.StartTime!.Value,

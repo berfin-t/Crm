@@ -120,11 +120,14 @@
                         <p>@L["No team members assigned"].</p>
                     }
                 </Div>
+                @if(canAddEmployee)
+                {                                 
                 <Field Display="Display.InlineFlex" Margin="Margin.Is0.FromBottom">
                     <Button Color="Color.Success" Style="width: 125px;" Clicked="@ShowAddEmployeeModal">
                         @L["Add Employee"]
                     </Button>
                 </Field>
+                }
             </Div>
             
 
