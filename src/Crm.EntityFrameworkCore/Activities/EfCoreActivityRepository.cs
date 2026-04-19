@@ -1,14 +1,15 @@
-﻿using Crm.EntityFrameworkCore;
+﻿using Crm.Customers;
+using Crm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using Crm.Customers;
 
 
 namespace Crm.Activities
@@ -21,7 +22,7 @@ namespace Crm.Activities
             string? description = null, DateTime? date = null, Guid? customerId = null, 
             Guid? employeeId = null, CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
+            var query = (await GetQueryableAsync()).AsNoTracking();
             query = ApplyDataFilters(query, type, description, date, customerId, employeeId);
             return await query.LongCountAsync(GetCancellationToken(cancellationToken));
 
@@ -34,7 +35,7 @@ namespace Crm.Activities
             Guid? employeeId = null, string? sorting = null, int maxResults = int.MaxValue, 
             int skipCount = 0, CancellationToken cancellationToken = default)
         {
-           var query = ApplyDataFilters(await GetQueryableAsync(), type, description, date, customerId, employeeId);
+           var query = ApplyDataFilters((await GetQueryableAsync()).AsNoTracking(), type, description, date, customerId, employeeId);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? ActivityConsts.GetDefaultSorting(false) : sorting);
             return await query.PageBy(skipCount, maxResults).ToListAsync(cancellationToken);
         }
@@ -80,7 +81,8 @@ namespace Crm.Activities
             Guid id,
             CancellationToken cancellationToken = default
         ) =>
-            await (await GetQueryForNavigationPropertiesAsync()).FirstOrDefaultAsync(b => b.Activity.Id == id);
+            await (await GetQueryForNavigationPropertiesAsync()).AsNoTracking().FirstOrDefaultAsync(b => b.Activity.Id == id)
+        ?? throw new EntityNotFoundException(typeof(Activity), id);
         #endregion
 
         #region GetListByCustomerAsync
@@ -88,9 +90,10 @@ namespace Crm.Activities
             Guid? customerId = null,
             CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
+            var query = (await GetQueryableAsync()).AsNoTracking();
             return await query
                 .Where(x => x.CustomerId == customerId)
+                .Include(x => x.Employee)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync(cancellationToken);
         }

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Crm.Employees;
+using JetBrains.Annotations;
 using System;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -17,6 +18,7 @@ namespace Crm.Activities
         public virtual Guid CustomerId { get; private set; }
         [NotNull]
         public virtual Guid EmployeeId { get; private set; }
+        public Employee Employee { get; set; }
 
         protected Activity()
         {

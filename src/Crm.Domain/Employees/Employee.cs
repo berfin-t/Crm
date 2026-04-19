@@ -1,11 +1,8 @@
-﻿using Crm.Projects;
-using Crm.Tasks;
+﻿using Crm.Activities;
+using Crm.Projects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 
@@ -31,6 +28,7 @@ namespace Crm.Employees
         public virtual Guid PositionId { get; private set; }
         public virtual Guid UserId { get; private set; }
         public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
 
         protected Employee()
         {
@@ -41,6 +39,7 @@ namespace Crm.Employees
             BirthDate = DateTime.Now;
             PhotoPath = string.Empty;
             ProjectEmployees = new HashSet<ProjectEmployee>();
+            Activities = new HashSet<Activity>();
         }
         public Employee(Guid id,
             string firstName,
@@ -61,6 +60,7 @@ namespace Crm.Employees
             SetPhotoPath(photoPath);
             SetGender(gender);
             ProjectEmployees = new HashSet<ProjectEmployee>();
+            Activities = new HashSet<Activity>();
         }
 
         public Employee(Guid id,

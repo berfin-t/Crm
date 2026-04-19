@@ -61,7 +61,7 @@
                                         };
                                     }
 
-                                    <span class="@badgeClass">@type</span>
+                                    <span class="@badgeClass">@L[$"{@type}"]</span>
                                 </p>
 
                             </CardBody>
@@ -144,17 +144,17 @@
                             <Table Hoverable Striped>
                                 <thead>
                                     <tr>
-                                        <th>Type</th>
-                                        <th>Description</th>
-                                        <th>Date</th>
-                                        <th>Employee</th>
+                                        <th>@L["Type"]</th>
+                                        <th>@L["Description"]</th>
+                                        <th>@L["Date"]</th>
+                                        <th>@L["Employee"]</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var act in activities)
                                 {
                                     <tr>
-                                    <td>@act.Type.ToString()</td>
+                                    <td>@L[$"EnumType.{act.Type}"]</td>
                                     <td>@act.Description</td>
                                     <td>@act.Date.ToString("dd MMM yyyy HH:mm")</td>
                                     <td>@act.EmployeeName @act.EmployeeSurname</td>

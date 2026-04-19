@@ -149,6 +149,18 @@
     "Subject": "Konu",
     "Timeline": "Zaman Çizelgesi",
     "Call": "Çağrı",
-    "Meeting": "Toplantı"
+    "Meeting": "Toplantı",
+    "Lead": "Potansiyel Müşteri",
+    "Prospect": "Aday Müşteri",
+    "ProposalStage": "Teklif Aşamasında Müşteri",
+    "Won": "Kazanıldı",
+    "Lost": "Kaybedildi",
+    "ActiveProjectCustomer": "Aktif Proje Müşterisi",
+    "Personal Infos": "Kişisel Bilgiler",
+    "Phone number": "Telefon Numarası",
+    "EnumType.Call": "Arama",
+    "EnumType.Meeting": "Toplantı",
+    "EnumType.Email": "E-posta",
+    "EnumType.Note": "Not"
   }
 }

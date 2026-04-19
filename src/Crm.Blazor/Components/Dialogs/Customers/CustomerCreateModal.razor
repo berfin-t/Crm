@@ -107,7 +107,7 @@
 
                                 @foreach (var type in Enum.GetValues(typeof(EnumCustomer)).Cast<EnumCustomer>())
                                 {
-                                    <SelectItem Value="@type">@type</SelectItem>
+                                    <SelectItem Value="@type">@L[$"{@type}"]</SelectItem>
                                 }
                             </Select>
                         </Field>

@@ -18,7 +18,7 @@ namespace Crm.Customers
         #region GetCountAsync
         public async Task<long> GetCountAsync(string? name = null, string? surname = null, string? email = null, string? phone = null, string? address = null, string? companyName = null, EnumCustomer? customerType=null, CancellationToken cancellationToken = default)
         {
-            var query = await GetQueryableAsync();
+            var query = (await GetQueryableAsync()).AsNoTracking();
             query = ApplyDataFilters(query, name, surname, email, phone, address, companyName);
             return await query.LongCountAsync(GetCancellationToken(cancellationToken));
         }
@@ -28,7 +28,7 @@ namespace Crm.Customers
         #region GetListAsync
         public async Task<List<Customer>> GetListAsync(string? name = null, string? surname = null, string? email = null, string? phone = null, string? address = null, string? companyName = null, EnumCustomer? customerType = null, string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default)
         {
-            var query = ApplyDataFilters(await GetQueryableAsync(), name, surname, email, phone, address, companyName, customerType);
+            var query = ApplyDataFilters((await GetQueryableAsync()).AsNoTracking(), name, surname, email, phone, address, companyName, customerType);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? CustomerConsts.GetDefaultSorting(false) : sorting);
             return await query.PageBy(skipCount, maxResults).ToListAsync(cancellationToken);
         }
@@ -43,8 +43,8 @@ namespace Crm.Customers
                 .WhereIf(!string.IsNullOrWhiteSpace(surname), e => e.Surname.Contains(surname!))
                 .WhereIf(!string.IsNullOrWhiteSpace(email), e => e.Email.Contains(email!))
                 .WhereIf(!string.IsNullOrWhiteSpace(phone), e => e.Phone.Contains(phone!))
-                .WhereIf(!string.IsNullOrWhiteSpace(address), e => e.Address.Contains(address!))
-                .WhereIf(!string.IsNullOrWhiteSpace(companyName), e => e.CompanyName.Contains(companyName!))
+                .WhereIf(!string.IsNullOrWhiteSpace(address), e => e.Address!.Contains(address!))
+                .WhereIf(!string.IsNullOrWhiteSpace(companyName), e => e.CompanyName!.Contains(companyName!))
                 .WhereIf(customerType != null && customerType != 0, e => e.CustomerType == customerType);
             return query;
         }

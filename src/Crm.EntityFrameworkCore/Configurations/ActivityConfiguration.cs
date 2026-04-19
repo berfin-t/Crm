@@ -16,7 +16,7 @@ namespace Crm.Configurations
             builder.Property(x => x.Description).HasColumnName(nameof(Activity.Description)).HasMaxLength(1024);
             builder.Property(x => x.Date).HasColumnName(nameof(Activity.Date)).IsRequired();
 
-            builder.HasOne<Employee>().WithMany().IsRequired().HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<Employee>(x => x.Employee).WithMany(x => x.Activities).IsRequired().HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne<Customer>().WithMany().IsRequired().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
         }
     }
