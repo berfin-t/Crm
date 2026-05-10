@@ -11,6 +11,7 @@
 @inject ICustomerAppService CustomerAppService
 @inject IProjectAppService ProjectAppService
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Crm.Localization.CrmResource> L
+@inject IAuthorizationService AuthorizationService
 
     <Alert Color="Color.Success"
            Visible="@showAlert"
@@ -57,31 +58,42 @@
                         </span>
                     </DisplayTemplate>
                 </DataGridColumn>
+               
+                    <DataGridCommandColumn>
 
-                <DataGridCommandColumn>
                     <NewCommandTemplate>
+                         @if (canCreateOrder) { 
                         <Field>
                             <Button Color="Color.Success" Clicked="@ShowCreateModal">@L["Add Order"]</Button>
                         </Field>
+                            } 
                     </NewCommandTemplate>
+                    
 
                     <EditCommandTemplate>
-                        <Field>
-                            <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(context.Item))">
+                         @if (canEditOrder)
+                        { 
+                            <Field>
+                                <Button Color="Color.Primary" Clicked="@(()=>ShowEditModal(context.Item))">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </Button>
                         </Field>
+                         } 
                     </EditCommandTemplate>
 
                     <DeleteCommandTemplate>
-                        <Field>
-                            <Button Color="Color.Danger" @onclick="() => OnDeleteClicked(context.Item)">
+                         @if (canDeleteOrder)
+                        { 
+                            <Field>
+                                <Button Color="Color.Danger" @onclick="() => OnDeleteClicked(context.Item)">
                                 <i class="fa-regular fa-trash-can"></i>
                             </Button>
                         </Field>
+                         } 
                     </DeleteCommandTemplate>
 
                 </DataGridCommandColumn>
+                
 
             </DataGrid>
         </CardBody>

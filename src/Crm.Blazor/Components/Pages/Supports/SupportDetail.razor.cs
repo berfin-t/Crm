@@ -1,6 +1,8 @@
 ﻿using Crm.Common;
 using Crm.Employees;
+using Crm.Permissions;
 using Crm.Support;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,8 @@ namespace Crm.Blazor.Components.Pages.Supports
         private bool statusModalVisible;
         private UpdateTicketStatusPriorityDto editModel = new();
         private List<EnumTicketStatus> AllowedStatuses = new();
+        private bool canAssignEmployee;
+
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -33,6 +37,9 @@ namespace Crm.Blazor.Components.Pages.Supports
             ticket = selectedSupportWithNav?.SupportTicket;
 
             employeeList = await EmployeeAppService.GetListAllAsync();
+
+            canAssignEmployee = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.SupportTickets.Edit);
+
         }
 
         #region UI Helpers

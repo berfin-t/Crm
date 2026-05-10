@@ -1,4 +1,5 @@
 ﻿using Crm.Activities;
+using Crm.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,11 @@ namespace Crm.Support
             CancellationToken cancellationToken = default);
 
         Task<List<SupportTicket>> GetSlaRiskTicketsAsync();
+        Task<List<SupportTicket>> GetListAsync(Guid? customerId = null, Guid? employeeId = null,
+            string? subject = null, string? description = null,
+            ICollection<EnumTicketStatus>? ticketStatus = null, ICollection<EnumPriority>? priority = null,
+            DateTime? lastResponseTime = null, DateTime? closedTime = null,
+            DateTime? slaResponseDeadLine = null, DateTime? slaResolutionDeadline = null,
+            string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default);
     }
 }

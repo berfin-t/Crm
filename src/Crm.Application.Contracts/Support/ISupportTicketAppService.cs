@@ -13,5 +13,6 @@ namespace Crm.Support
         Task AssignEmployeeAsync(Guid ticketId, Guid employeeId);
         Task UpdateStatusPriorityAsync(Guid id, UpdateTicketStatusPriorityDto input);
         Task<List<EnumTicketStatus>> GetAllowedStatusesAsync(Guid id);
+        Task<List<SupportTicketDto>> GetMyTicketsAsync();
     }
 }

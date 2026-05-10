@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Crm.Permissions;
 
 namespace Crm.Blazor.Components.Pages.Orders
 {
@@ -29,10 +31,17 @@ namespace Crm.Blazor.Components.Pages.Orders
         private HubConnection? hubConnection;
         private bool showAlert = false;
         private string latestOrderCode = string.Empty;
+        private bool canCreateOrder;
+        private bool canEditOrder;
+        private bool canDeleteOrder;
         #endregion
 
         protected override async Task OnInitializedAsync()
         {
+            canCreateOrder = await AuthorizationService.IsGrantedAsync(CrmPermissions.Orders.Create);
+            canEditOrder = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Orders.Edit);
+            canDeleteOrder = await AuthorizationService.IsGrantedAnyAsync(CrmPermissions.Orders.Delete);
+
             OrderList = await OrderAppService.GetListAllAsync();
             CustomerList = await CustomerAppService.GetListAllAsync();
             ProjectList = await ProjectAppService.GetListAllAsync();

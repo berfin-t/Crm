@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Crm.Employees;
+using Crm.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,8 @@ using Volo.Abp.Domain.Repositories;
 namespace Crm.Support
 {
     [RemoteService(IsEnabled = true)]
-    public class SupportTicketAppService(ISupportTicketRepository supportTicketRepository)
+    public class SupportTicketAppService(ISupportTicketRepository supportTicketRepository,
+        IEmployeeRepository employeeRepository, IMapper _mapper)
         : CrmAppService, ISupportTicketAppService
     {
 
@@ -42,7 +46,7 @@ namespace Crm.Support
         #endregion
 
         #region AssignEmployeeAsync
-        [AllowAnonymous]
+        [Authorize(CrmPermissions.SupportTickets.Edit)]
         public async Task AssignEmployeeAsync(Guid ticketId, Guid employeeId)
         {
             var ticket = await supportTicketRepository.GetAsync(ticketId)
@@ -81,31 +85,52 @@ namespace Crm.Support
         }
         #endregion
 
-        public async Task<List<SupportTicketDto>> GetSlaRiskTicketsAsync()
+        //public async Task<List<SupportTicketDto>> GetSlaRiskTicketsAsync()
+        //{
+        //    var tickets = await supportTicketRepository.GetSlaRiskTicketsAsync();
+
+        //    var dtos = tickets.Select(ticket =>
+        //    {
+        //        var dto = ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
+
+        //        var now = DateTime.UtcNow;
+
+        //        dto.IsResponseOverdue = ticket.SLAResponseDeadline.HasValue &&
+        //                                (ticket.TicketStatus == EnumTicketStatus.Open
+        //                                 || ticket.TicketStatus == EnumTicketStatus.InProgress
+        //                                 || ticket.TicketStatus == EnumTicketStatus.WaitingForCustomer) &&
+        //                                now > ticket.SLAResponseDeadline.Value;
+
+        //        dto.IsResolutionOverdue = ticket.SLAResolutionDeadline.HasValue &&
+        //                                  ticket.TicketStatus != EnumTicketStatus.Resolved &&
+        //                                  ticket.TicketStatus != EnumTicketStatus.Closed &&
+        //                                  now > ticket.SLAResolutionDeadline.Value;
+
+        //        return dto;
+        //    }).ToList();
+
+        //    return dtos;
+        //}
+
+        #region GetMySupportyAsync
+        public async Task<List<SupportTicketDto>> GetMyTicketsAsync()
         {
-            var tickets = await supportTicketRepository.GetSlaRiskTicketsAsync();
+            var userId = CurrentUser.Id;
+            if (userId == null) throw new UserFriendlyException("User not logged in");
 
-            var dtos = tickets.Select(ticket =>
+            if(CurrentUser.IsInRole("admin"))
             {
-                var dto = ObjectMapper.Map<SupportTicket, SupportTicketDto>(ticket);
+                var allItems = await supportTicketRepository.GetListAsync();
+                return _mapper.Map<List<SupportTicketDto>>(allItems);
+            }
 
-                var now = DateTime.UtcNow;
+            var employee = await employeeRepository.FindAsync(e => e.UserId == userId);
+            if (employee == null) return new List<SupportTicketDto>();
 
-                dto.IsResponseOverdue = ticket.SLAResponseDeadline.HasValue &&
-                                        (ticket.TicketStatus == EnumTicketStatus.Open
-                                         || ticket.TicketStatus == EnumTicketStatus.InProgress
-                                         || ticket.TicketStatus == EnumTicketStatus.WaitingForCustomer) &&
-                                        now > ticket.SLAResponseDeadline.Value;
-
-                dto.IsResolutionOverdue = ticket.SLAResolutionDeadline.HasValue &&
-                                          ticket.TicketStatus != EnumTicketStatus.Resolved &&
-                                          ticket.TicketStatus != EnumTicketStatus.Closed &&
-                                          now > ticket.SLAResolutionDeadline.Value;
-
-                return dto;
-            }).ToList();
-
-            return dtos;
+            var items = await supportTicketRepository.GetListAsync(employeeId: employee.Id);
+            return _mapper.Map<List<SupportTicketDto>>(items);
         }
+        #endregion
+
     }
 }

@@ -9,6 +9,7 @@
 @inject NavigationManager NavigationManager
 @inject IUiMessageService Message
 @inject IEmployeeAppService EmployeeAppService
+@inject IAuthorizationService AuthorizationService
 
 <PageTitle>@L["Support Ticket Detail"]</PageTitle>
 
@@ -74,14 +75,16 @@
                     <Column Md="6">
                         <h6 class="text-muted d-flex align-items-center justify-content-between">
                             @L["Assigned Employee"]
-
-                            <Button Color="Color.Light"
-                                    Size="Size.Small"
+                            @if (canAssignEmployee)
+                            {
+                                <Button Color="Color.Light"
+                                Size="Size.Small"
                                     Class="rounded-circle shadow-sm"
                                     Style="width:32px;height:32px;"
                                     Clicked="OpenAssignModal">
                                 <i class="fa-solid fa-pen"></i>
                             </Button>
+                            }
                         </h6>
 
                         <p class="fw-semibold">

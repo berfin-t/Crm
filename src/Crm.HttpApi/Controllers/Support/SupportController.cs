@@ -42,5 +42,9 @@ namespace Crm.Controllers.Support
         [HttpGet("{id}/allowed-statuses")]
         public async Task<List<EnumTicketStatus>> GetAllowedStatusesAsync(Guid id) =>
             await _supportTicketAppService.GetAllowedStatusesAsync(id);
+
+        [HttpGet("my-tickets")]
+        public async Task<List<SupportTicketDto>> GetMyTicketsAsync() =>
+            await _supportTicketAppService.GetMyTicketsAsync();
     }
 }
