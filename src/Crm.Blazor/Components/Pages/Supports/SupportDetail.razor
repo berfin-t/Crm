@@ -37,11 +37,11 @@
                     <div>
 
                         <span class="@GetStatusBadgeClass(ticket.TicketStatus) me-2 px-3 py-2 rounded-pill">
-                            @ticket.TicketStatus
+                            @L["TicketStatus_" + ticket.TicketStatus.ToString()]
                         </span>
 
                         <span class="@GetPriorityBadgeClass(ticket.Priority) px-3 py-2 rounded-pill">
-                            @ticket.Priority
+                            @L["Priority_" + ticket.Priority.ToString()]
                         </span>
 
                         <Button Color="Color.Light"
@@ -66,7 +66,7 @@
                     </Column>
 
                     <Column Md="6">
-                        <h6 class="text-muted">@L["Last Response"]</h6>
+                        <h6 class="text-muted">@L["Last Response Time"]</h6>
                         <p>@(ticket.LastResponseTime?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
                     </Column>
                 </Row>
@@ -88,7 +88,7 @@
                         </h6>
 
                         <p class="fw-semibold">
-                            @(selectedSupportWithNav?.Employee?.FullName ?? "Unassigned")
+                            @(selectedSupportWithNav?.Employee?.FullName ?? @L["Unassigned"])
                         </p>
                     </Column>
 
@@ -107,11 +107,11 @@
 
                 <hr />
 
-                <h6 class="text-muted">SLA Information</h6>
+                <h6 class="text-muted">@L["SLA Information"]</h6>
 
                 <Row class="mb-3">
                     <Column Md="6">
-                        <strong>Response Deadline:</strong>
+                        <strong>@L["Response Deadline"]:</strong>
                         <div class="@GetSlaClass(ticket.IsResponseOverdue)">
                             @(ticket.SLAResponseDeadline.HasValue
                                                     ? DateTime.SpecifyKind(ticket.SLAResponseDeadline.Value, DateTimeKind.Utc)
@@ -122,7 +122,7 @@
                     </Column>
 
                     <Column Md="6">
-                        <strong>Resolution Deadline:</strong>
+                        <strong>@L["Resolution Deadline"]:</strong>
                         <div class="@GetSlaClass(ticket.IsResolutionOverdue)">
                             @(ticket.SLAResolutionDeadline.HasValue
                                                     ? DateTime.SpecifyKind(ticket.SLAResolutionDeadline.Value, DateTimeKind.Utc)
@@ -154,7 +154,7 @@
     <ModalContent Class="rounded-4 shadow-lg border-0">
 
         <ModalHeader Class="border-0 pb-0">
-            <h5 class="fw-bold">Assign Employee</h5>
+            <h5 class="fw-bold">@L["Assign Employee"]</h5>
         </ModalHeader>
 
         <ModalBody>
@@ -163,7 +163,7 @@
                     Class="form-select form-select-lg rounded-3 shadow-sm">
 
                 <SelectItem TValue="Guid?" Value="null">
-                    Select employee...
+                    @L["Select employee"]...
                 </SelectItem>
 
                 @foreach (var emp in employeeList)
@@ -180,13 +180,13 @@
             <Button Color="Color.Light"
                     Class="rounded-3 px-4"
                     Clicked="CloseAssignModal">
-                Cancel
+                @L["Cancel"]
             </Button>
 
             <Button Color="Color.Primary"
                     Class="rounded-3 px-4 shadow-sm"
                     Clicked="SaveAssign">
-                Save
+                @L["Save"]
             </Button>
         </ModalFooter>
 
@@ -199,20 +199,20 @@
     <ModalContent Class="rounded-4 shadow border-0">
 
         <ModalHeader Class="border-0 pb-0">
-            <h5 class="fw-bold">Update Ticket</h5>
+            <h5 class="fw-bold">@L["Update Ticket"]</h5>
         </ModalHeader>
 
         <ModalBody>
 
             <Field>
-                <Label>Status</Label>
+                <Label>@L["Status"]</Label>
                 <Select TValue="EnumTicketStatus"
                         @bind-SelectedValue="editModel.TicketStatus">
 
                     @foreach (var status in AllowedStatuses)
                     {
                         <SelectItem TValue="EnumTicketStatus" Value="@status">
-                            @status
+                            @L["Status_" + status.ToString()]
                         </SelectItem>
                     }
 
@@ -220,14 +220,14 @@
             </Field>
 
             <Field>
-                <Label>Priority</Label>
+                <Label>@L["Priority"]</Label>
                 <Select TValue="EnumPriority"
                         @bind-SelectedValue="editModel.Priority">
 
                     @foreach (var priority in Enum.GetValues<EnumPriority>())
                     {
                         <SelectItem TValue="EnumPriority" Value="@priority">
-                            @priority
+                            @L["Priority_" + priority.ToString()]
                         </SelectItem>
                     }
 
@@ -238,11 +238,11 @@
 
         <ModalFooter Class="border-0">
             <Button Color="Color.Light" Clicked="CloseStatusModal">
-                Cancel
+                @L["Cancel"]
             </Button>
 
             <Button Color="Color.Primary" Clicked="SaveStatus">
-                Save
+                @L["Save"]
             </Button>
         </ModalFooter>
 

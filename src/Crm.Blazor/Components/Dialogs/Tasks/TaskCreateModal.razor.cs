@@ -18,9 +18,6 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
         private TaskCreateDto TaskCreateDto { get; set; } = new();
         private List<EmployeeDto> Employees { get; set; } = new();
         private List<ProjectDto> Projects { get; set; } = new();
-        private EnumStatus selectedStatus;
-        private EnumPriority selectedPriority;
-        private Guid selectedEmployeeId;
         private EventCallback<TaskDto> OnCreatedCallback { get; set; }
         #endregion
 
@@ -40,11 +37,9 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
 
             TaskCreateDto = new TaskCreateDto();
 
-            selectedStatus = EnumStatus.Active;
-            selectedPriority = EnumPriority.Medium;
-            selectedEmployeeId = Guid.Empty;
-
             TaskCreateDto.DueDate = DateTime.Now;
+            TaskCreateDto.Status = EnumStatus.Active;    
+            TaskCreateDto.Priority = EnumPriority.Medium;
 
             await InvokeAsync(StateHasChanged); 
             await modalRef!.Show();
@@ -66,8 +61,8 @@ namespace Crm.Blazor.Components.Dialogs.Tasks
 
             await HideModal();
 
-            if (EventCallback.HasDelegate)
-                await EventCallback.InvokeAsync(createdTask);
+            if (OnCreatedCallback.HasDelegate)
+                await OnCreatedCallback.InvokeAsync(createdTask);
         }
         #endregion
 

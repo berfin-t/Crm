@@ -29,24 +29,14 @@
                     <InputText @bind-Value="TaskUpdateDto.Description" class="form-control" />
                 </Field>
 
-                @* <!--Status-->
-                <Field>
-                    <FieldLabel>@L["Status"]:</FieldLabel>
-                    <Select @bind-SelectedValue="selectedStatus">
-                        @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
-                        {
-                            <SelectItem Value="@status">@status</SelectItem>
-                        }
-                    </Select>
-                </Field> *@
-
                 <!--Priority-->
                 <Field>
                     <FieldLabel>@L["Priority"]:</FieldLabel>
                     <Select @bind-SelectedValue="selectedPriority">
                         @foreach (var priority in Enum.GetValues(typeof(EnumPriority)).Cast<EnumPriority>())
                         {
-                            <SelectItem Value="@priority">@priority</SelectItem>
+                            <SelectItem Value="@priority">@L["Priority_" + priority.ToString()]</SelectItem>
+                            
                         }
                     </Select>
                 </Field>
@@ -74,7 +64,7 @@
 
                 <!--Project-->
                 <Field>
-                    <FieldLabel>@L["Projects"]:</FieldLabel>
+                    <FieldLabel>@L["Project"]:</FieldLabel>
                     <Select TValue="Guid" @bind-SelectedValue="selectedProjectId">
                         @foreach (var project in ProjectList)
                         {

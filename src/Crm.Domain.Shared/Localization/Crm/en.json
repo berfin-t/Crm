@@ -17,11 +17,27 @@
     "Menu:Orders": "Orders",
     "Menu:Positions": "Positions",
     "Menu:Dashboard": "Dashboard",
-    "Menu:Supports": "Supports", 
+    "Menu:Supports": "Supports",
     "WelcomeMessage": "🌟 Welcome, {0}! It's great to see you back here!",
     "ProjectStatus:Active": "Active",
     "ProjectStatus:Pending": "Pending",
-    "ProjectStatus:Completed": "Completed"
-
+    "ProjectStatus:Completed": "Completed",
+    "Status_Active": "Active",
+    "Status_Pending": "Pending",
+    "Status_Completed": "Completed",
+    "Status_Canceled": "Canceled",
+    "Priority_Low": "Low",
+    "Priority_Medium": "Medium",
+    "Priority_High": "High",
+    "Priority_Critical": "Critical",
+    "TicketStatus_Open": "Open",
+    "TicketStatus_InProgress": "In Progress",
+    "TicketStatus_WaitingForCustomer": "Waiting for Customer",
+    "TicketStatus_Resolved": "Resolved",
+    "TicketStatus_Closed": "Closed",
+    "EnumType.Call": "Call",
+    "EnumType.Meeting": "Meeting",
+    "EnumType.Email": "Email",
+    "EnumType.Note": "Note"
   }
 }

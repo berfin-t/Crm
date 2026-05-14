@@ -24,7 +24,7 @@ namespace Crm.Tasks
         public EnumPriority Priority { get; set; }
 
         [Required]
-        public EnumStatus Status { get; set; }
+        public EnumStatus Status { get; set; } 
 
         [Required]
         public Guid EmployeeId { get; set; }

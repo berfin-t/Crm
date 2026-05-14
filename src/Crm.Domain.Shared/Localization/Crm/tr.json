@@ -161,6 +161,20 @@
     "EnumType.Call": "Arama",
     "EnumType.Meeting": "Toplantı",
     "EnumType.Email": "E-posta",
-    "EnumType.Note": "Not"
+    "EnumType.Note": "Not",
+    "A new order has been added": "Yeni bir sipariş eklendi.",
+    "Open Support Tickets": "Destek Talebi Aç",
+    "Creation Time": "Oluşturma Zamanı",
+    "Task Title": "Görev Başlığı",
+    "Last Response Time": "Son Yanıt Zamanı",
+    "Assigned Employee": "Görevlendirilen Çalışan",
+    "Unassigned": "Atanmamış",
+    "Closed Time": "Kapanış Zamanı",
+    "SLA Information": "SLA Bilgileri",
+    "Response Deadline": "Yanıt Son Tarihi",
+    "Resolution Deadline": "Çözüm Son Tarihi",
+    "Select employee": "Çalışanı seçin",
+    "Assign Employee": "Çalışanı Ata",
+    "Update Ticket": "Bileti Güncelle"
   }
 }

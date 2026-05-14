@@ -38,7 +38,7 @@
                             };
                         }
 
-                        <span class="@badgeClass">@status</span>
+                        <span class="@badgeClass">@L["TicketStatus_" + status.ToString()]</span>
                     </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn TItem="SupportTicketDto"
@@ -57,7 +57,7 @@
                             };
                         }
 
-                        <span class="@badgeClass">@priority</span>
+                        <span class="@badgeClass">@L["Priority_" + priority.ToString()]</span>
                     </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn Field="@nameof(SupportTicketDto.LastResponseTime)" Caption="@L["Last Response Time"]" Editable />

@@ -62,7 +62,7 @@ namespace Crm.Support
             DateTime? slaResponseDeadLine = null, DateTime? slaResolutionDeadline = null,
             string? sorting = null, int maxResults = int.MaxValue, int skipCount = 0, CancellationToken cancellationToken = default)
         {
-            var query = ApplyDataFilters(await GetQueryableAsync(), customerId,employeeId,subject,description,ticketStatus,priority,lastResponseTime,closedTime,slaResponseDeadLine,slaResolutionDeadline);
+            var query = ApplyDataFilters((await GetQueryableAsync()).AsNoTracking(), customerId,employeeId,subject,description,ticketStatus,priority,lastResponseTime,closedTime,slaResponseDeadLine,slaResolutionDeadline);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? SupportTicketConsts.GetDefaultSorting(false) : sorting);
             return await query.PageBy(skipCount, maxResults).ToListAsync(cancellationToken);
         }

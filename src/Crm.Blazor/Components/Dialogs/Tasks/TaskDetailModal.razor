@@ -18,10 +18,10 @@
             @if (Task != null)
             {
                 <p><strong>@L["Description"]:</strong> @Task.Description</p>
-                <p><strong>@L["Status"]:</strong> @Task.Group</p>
+                <p><strong>@L["Status"]:</strong>@L["Status_" + Task.Group.ToString()]</p>
                 <p><strong>@L["Priority"]:</strong> 
                     <span style="font-weight:bold; color:@GetPriorityTextColor();">
-                        @Task.Priority
+                        @L["Priority_" + Task.Priority.ToString()]
                     </span>
                 </p>
                 <p><strong>@L["Due Date"]:</strong> @Task.DueDate.ToShortDateString()</p>

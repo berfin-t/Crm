@@ -19,7 +19,7 @@
            Dismissed="@OnAlertDismissed">
         <div Class="d-flex justify-content-between align-items-center">
             <div>
-            📦 A new order has been added: <strong>@latestOrderCode</strong>
+            📦 @L["A new order has been added"]: <strong>@latestOrderCode</strong>
             </div>
             <button type="button" class="btn-close" @onclick="() => showAlert = false"></button>
         </div>
@@ -54,7 +54,7 @@
                 <DataGridColumn Field="@nameof(OrderDto.Status)" Caption="@L["Status"]" Editable>
                     <DisplayTemplate Context="order">
                         <span class="status-label status-@order.Status.ToString().ToLower()">
-                            @order.Status
+                            @L["Status_" + order.Status.ToString()]
                         </span>
                     </DisplayTemplate>
                 </DataGridColumn>

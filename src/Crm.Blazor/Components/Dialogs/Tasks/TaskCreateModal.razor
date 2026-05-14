@@ -68,7 +68,7 @@
                                 <Select @bind-SelectedValue="TaskCreateDto.Priority">
                                     @foreach (var priority in Enum.GetValues(typeof(EnumPriority)).Cast<EnumPriority>())
                                     {
-                                        <SelectItem Value="@priority">@priority</SelectItem>
+                                    <SelectItem Value="@priority">@L["Priority_" + priority.ToString()]</SelectItem>
                                     }
                                 </Select>
                             </FieldBody>
@@ -78,10 +78,10 @@
                     <Field>
                         <FieldLabel>@L["Status"]:</FieldLabel>
                         <FieldBody>
-                            <Select @bind-SelectedValue="TaskCreateDto.Status">
+                            <Select TValue="EnumStatus" @bind-SelectedValue="TaskCreateDto.Status">
                                 @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                                 {
-                                    <SelectItem Value="@status">@status</SelectItem>
+                                    <SelectItem Value="@status">@L["Status_" + status.ToString()]</SelectItem>
                                 }
                             </Select>
                         </FieldBody>

@@ -24,10 +24,9 @@
                     <Field>
                         <FieldLabel>@L["Status"]:</FieldLabel>
                         <Select TValue="EnumStatus" @bind-SelectedValue="OrderCreateDto.Status">
-
                             @foreach (var status in Enum.GetValues(typeof(EnumStatus)).Cast<EnumStatus>())
                             {
-                                <SelectItem Value="@status">@status</SelectItem>
+                                <SelectItem Value="@status">@L["Status_" + status.ToString()]</SelectItem>
                             }
                         </Select>
                     </Field>
