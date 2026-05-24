@@ -129,6 +129,8 @@ Each notification email contains the key details of the newly created activity, 
 | **Automatic** | No manual action needed — notifications are triggered on every activity creation |
  
 > 💡 Hangfire's built-in dashboard can be used to monitor job status, retry failed jobs, and inspect execution history.
+
+ <img width="1146" height="568" alt="image" src="https://github.com/user-attachments/assets/28b566b6-5d0f-4171-ad49-12df5879b82e" />
  
 ---
 
