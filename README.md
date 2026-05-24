@@ -88,6 +88,49 @@ Logical deletion using ABP’s soft delete mechanism.
 Clear separation of read and write operations at service level.
 
 ---
+## 📬 Automated Activity Email Notifications
+ 
+The application integrates **Hangfire** as a background job processor to deliver automated email notifications whenever a new activity is created.
+ 
+### How It Works
+ 
+When a new activity (e.g. a **meeting** or **call**) is added to the system, Hangfire enqueues a background job that automatically sends an informational email to **all associated customers and employees** whose email addresses are registered in the system.
+ 
+```
+New Activity Created
+        │
+        ▼
+ Hangfire Job Enqueued
+        │
+        ▼
+ Resolve Recipients
+ (Customers & Employees linked to the activity)
+        │
+        ▼
+ Send Email Notification
+ (Activity details delivered to each recipient)
+```
+ 
+### Email Content
+ 
+Each notification email contains the key details of the newly created activity, including:
+ 
+- Activity type (Meeting, Call, etc.)
+- Activity title and description
+- Scheduled date and time
+- Linked customer and employee information
+### Key Benefits
+ 
+| Benefit | Description |
+|---|---|
+| **Non-blocking** | Email delivery runs in the background without affecting the user experience |
+| **Reliable** | Hangfire persists jobs to the database, ensuring delivery even after restarts |
+| **Scalable** | Background processing is decoupled from the main request pipeline |
+| **Automatic** | No manual action needed — notifications are triggered on every activity creation |
+ 
+> 💡 Hangfire's built-in dashboard can be used to monitor job status, retry failed jobs, and inspect execution history.
+ 
+---
 
 ## ⚙️ Setup & Installation
 
